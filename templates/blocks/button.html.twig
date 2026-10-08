@@ -1,0 +1,5 @@
+{% if data.label and data.url %}
+<p class="block block-button">
+    <a class="button button--{{ data.style }}" href="{{ data.url }}">{{ data.label }}</a>
+</p>
+{% endif %}

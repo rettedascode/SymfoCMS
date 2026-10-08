@@ -1,0 +1,86 @@
+{#
+    Shared layout of the block editor, used for pages and posts.
+
+    Child templates set: content, back_url, back_label, public_url
+    and may fill the blocks "settings_main" and "settings_extra".
+#}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ content.title }}{% endblock %}
+{% block body_class %}admin--editor{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/editor.css') }}">
+{% endblock %}
+
+{% block main %}
+    {% set is_draft = content.status.value == 'draft' %}
+    <div class="editor" data-controller="editor" data-editor-config-value="{{ editor_config|json_encode }}">
+        {{ form_start(form, {attr: {
+            'data-editor-target': 'form',
+            'data-action': 'submit->editor#submit input->editor#fieldChanged change->editor#fieldChanged keydown->editor#preventImplicitSubmit',
+        }}) }}
+
+        <div class="editor__bar">
+            <a class="editor__back" href="{{ back_url }}">← {{ back_label|trans }}</a>
+            <span class="editor__status" data-editor-target="status" role="status" aria-live="polite"></span>
+            <div class="editor__bar-actions">
+                <div class="segmented editor__view-switch" role="group" aria-label="{{ 'editor.view'|trans }}">
+                    <button type="button" data-editor-target="viewButton" data-view="edit" data-action="editor#showView" aria-pressed="true">{{ 'editor.view_edit'|trans }}</button>
+                    <button type="button" data-editor-target="viewButton" data-view="preview" data-action="editor#showView" aria-pressed="false">{{ 'editor.view_preview'|trans }}</button>
+                </div>
+                <a class="button" href="{{ public_url }}" target="_blank" rel="noopener">{{ (content.public ? 'editor.open_public' : 'editor.open_draft')|trans }} ↗</a>
+                {% if is_draft %}
+                    <button type="submit" class="button">{{ 'editor.save_draft'|trans }}</button>
+                    <button type="submit" name="publish" value="1" class="button button--primary">{{ 'editor.publish'|trans }}</button>
+                {% else %}
+                    <button type="submit" class="button button--primary">{{ 'editor.save_changes'|trans }}</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flash flash--info editor__restore" data-editor-target="restore" hidden>
+            <span data-editor-target="restoreText"></span>
+            <button type="button" class="link-button" data-action="editor#discardAutosave">{{ 'editor.restore_discard'|trans }}</button>
+        </div>
+
+        {{ form_errors(form) }}
+
+        <div class="editor__layout">
+            <div class="editor__main">
+                {{ form_row(form.title) }}
+
+                <div class="tabs" role="tablist">
+                    <button type="button" role="tab" data-editor-target="tab" data-tab="content" data-action="editor#showTab" aria-selected="true">{{ 'editor.tab_content'|trans }}</button>
+                    <button type="button" role="tab" data-editor-target="tab" data-tab="settings" data-action="editor#showTab" aria-selected="false">{{ 'editor.tab_settings'|trans }}</button>
+                </div>
+
+                <div data-editor-target="panel" data-panel="content">
+                    <div class="blocks" data-editor-target="list"></div>
+                    <noscript><p class="flash flash--error">{{ 'editor.needs_javascript'|trans }}</p></noscript>
+                </div>
+
+                <div data-editor-target="panel" data-panel="settings" hidden>
+                    <div class="card">
+                        {% block settings_main %}{% endblock %}
+                        {{ form_row(form.slug) }}
+                        {{ form_row(form.status) }}
+                        {% block settings_extra %}{% endblock %}
+                        <h2 class="card__heading">{{ 'editor.seo_heading'|trans }}</h2>
+                        <p class="muted">{{ 'editor.seo_intro'|trans }}</p>
+                        {{ form_row(form.seoTitle) }}
+                        {{ form_row(form.metaDescription) }}
+                    </div>
+                </div>
+            </div>
+
+            <aside class="editor__preview" aria-label="{{ 'editor.preview_label'|trans }}">
+                <div class="editor__preview-label">{{ 'editor.preview_label'|trans }}</div>
+                {# allow-same-origin without allow-scripts: the editor can update the document, scripts inside never run. #}
+                <iframe data-editor-target="preview" title="{{ 'editor.preview_label'|trans }}" sandbox="allow-same-origin"></iframe>
+            </aside>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

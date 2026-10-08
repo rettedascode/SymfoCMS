@@ -73,3 +73,118 @@ user.delete_confirm: 'Delete the user "%name%"? Their blog posts will be kept.'
 account.title: My account
 account.change_password: Change password
 account.change_password_help: Only fill this in if you want a new password.
+
+action.continue: Continue
+
+content.slug: Web address
+content.slug_help: 'The last part of the link, for example "about-us". Leave empty to create it from the title.'
+content.seo_title: Title for search engines
+content.seo_title_help: Shown in search results and in the browser tab. Leave empty to use the title.
+content.meta_description: Description for search engines
+content.meta_description_help: One or two sentences that summarise the content. Search engines often show them below the title.
+
+page.new: New page
+page.new_intro: What should the page be called? You can change the title at any time.
+page.empty_title: No pages yet
+page.empty_text: Create your first page to get started.
+page.homepage: Use this page as the homepage
+page.homepage_help: The homepage is what visitors see first. Only one page can be the homepage.
+page.homepage_badge: Homepage
+page.delete_confirm: 'Delete the page "%title%"? This cannot be undone.'
+
+flash.page_published: The page has been saved and is published.
+flash.draft_saved: The draft has been saved. It is not visible to visitors yet.
+flash.page_deleted: The page has been deleted.
+
+block.heading.label: Heading
+block.heading.text: Heading text
+block.heading.level: Size
+block.heading.level_large: Large heading
+block.heading.level_small: Small heading
+block.text.label: Text
+block.text.content: Text
+block.image.label: Image
+block.image.image: Image
+block.image.alt: Image description
+block.image.alt_help: Describes the image for people who cannot see it and for search engines.
+block.image.caption: Caption (optional)
+block.button.label: Button
+block.button.text: Button text
+block.button.url: Link
+block.button.url_help: 'A web address, or a page of this site such as "/contact".'
+block.button.style: Appearance
+block.button.style_primary: Filled
+block.button.style_secondary: Outlined
+block.quote.label: Quote
+block.quote.text: Quote
+block.quote.author: Who said it? (optional)
+block.divider.label: Divider
+block.columns.label: Two columns
+block.columns.left: Left column
+block.columns.right: Right column
+
+editor.view: View
+editor.view_edit: Edit
+editor.view_preview: Preview
+editor.open_public: View
+editor.open_draft: Open draft
+editor.save_draft: Save draft
+editor.save_changes: Save changes
+editor.publish: Publish
+editor.tab_content: Content
+editor.tab_settings: Settings
+editor.seo_heading: Search engines
+editor.seo_intro: Optional. These texts help people find this content on Google and other search engines.
+editor.preview_label: Live preview
+editor.needs_javascript: The editor needs JavaScript. Please enable it in your browser.
+editor.restore_message: We restored changes from %time% that had not been saved.
+editor.restore_discard: Discard these changes
+editor.status_saved: All changes saved
+editor.status_unsaved: Unsaved changes
+editor.status_saving: Backing up…
+editor.status_autosaved: 'Backed up automatically at %time%. Press "Save" to keep your changes.'
+editor.status_error: Automatic backup failed. Please save your changes.
+editor.add_block: Add block
+editor.add_block_below: Add a block below
+editor.empty: Nothing here yet. Add your first block to start writing.
+editor.empty_column: This column is empty.
+editor.drag: Drag to reorder
+editor.move_up: Move up
+editor.move_down: Move down
+editor.duplicate: Duplicate
+editor.delete: Delete
+editor.deleted: Block deleted.
+editor.undo: Undo
+editor.choose_image: Choose image
+editor.change_image: Change image
+editor.remove_image: Remove
+editor.image_missing: This image is no longer in the media library.
+editor.rt_toolbar: Text formatting
+editor.rt_bold: Bold
+editor.rt_italic: Italic
+editor.rt_link: Link
+editor.rt_unlink: Remove link
+editor.rt_bullets: Bulleted list
+editor.rt_numbers: Numbered list
+editor.rt_link_placeholder: Paste or type a web address
+editor.rt_link_apply: Apply
+editor.rt_link_cancel: Cancel
+editor.picker_title: Choose an image
+editor.picker_close: Close
+editor.picker_upload: Upload new images
+editor.picker_drop: Click here or drop image files into this window.
+editor.picker_loading: Loading…
+editor.picker_empty: The media library is empty. Upload your first image above.
+editor.picker_more: Show more
+editor.picker_uploading: Uploading…
+editor.picker_uploaded: '%count% images uploaded. Click one to use it.'
+editor.picker_error: Something went wrong. Please try again.
+
+site.skip_to_content: Skip to content
+site.draft_notice: Draft – only visible to you
+site.logged_in_as: Logged in as %name%
+site.edit_this: Edit this page
+site.to_admin: Admin area
+site.welcome_title: Welcome to %name%
+site.welcome_text: This website has no homepage yet. Log in to create your first page.
+site.welcome_action: Go to the admin area

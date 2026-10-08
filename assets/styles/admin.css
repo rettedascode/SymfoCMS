@@ -126,6 +126,7 @@ img { max-width: 100%; }
     width: 36px; height: 36px; border: 0; border-radius: 6px;
     background: none; color: var(--muted); font-size: 1.05rem; cursor: pointer;
 }
+.icon { display: block; flex: none; }
 .icon-button:hover { background: #eceff3; color: var(--text); }
 .icon-button--danger:hover { background: var(--danger-soft); color: var(--danger); }
 .icon-button[disabled] { opacity: .35; cursor: default; }

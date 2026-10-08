@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title>{% block title %}{{ 'admin.title'|trans }}{% endblock %} · {{ site_name }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
     <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
     {% block stylesheets %}{% endblock %}
     {{ importmap('admin') }}
@@ -25,6 +26,9 @@
         <a class="sidebar__brand" href="{{ path('admin_dashboard') }}">{{ site_name }}</a>
         <nav aria-label="{{ 'admin.navigation'|trans }}">
             <ul class="sidebar__nav">
+                {% if is_granted('PAGE_MANAGE') %}
+                    <li><a href="{{ path('admin_page_index') }}" {% if route starts with 'admin_page_' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span> {{ 'nav.pages'|trans }}</a></li>
+                {% endif %}
                 {# NAV #}
                 {% if is_granted('USER_MANAGE') %}
                     <li><a href="{{ path('admin_user_index') }}" {% if route starts with 'admin_user_' %}aria-current="page"{% endif %}><span aria-hidden="true">☺</span> {{ 'nav.users'|trans }}</a></li>

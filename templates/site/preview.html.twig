@@ -1,0 +1,25 @@
+{# Rendered into the live preview frame of the editor. #}
+{% extends 'site/base.html.twig' %}
+
+{% set noindex = true %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {# The preview is for looking, not for navigating away from the editor. #}
+    <style>a { pointer-events: none; }</style>
+{% endblock %}
+
+{% block edit_bar %}{% endblock %}
+{% block javascripts %}{% endblock %}
+
+{% block content %}
+    <article class="content">
+        {% if kind == 'post' %}
+            <header class="post-header"><h1>{{ title }}</h1></header>
+        {% else %}
+            <h1 class="page-title">{{ title }}</h1>
+        {% endif %}
+        {{ render_blocks(blocks) }}
+    </article>
+{% endblock %}

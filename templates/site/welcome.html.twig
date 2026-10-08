@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="{{ app.locale }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ site_name }}</title>
-</head>
-<body>
-<main>
-    <h1>{{ site_name }}</h1>
-    <p><a href="{{ path('app_login') }}">{{ 'login.submit'|trans }}</a></p>
-</main>
-</body>
-</html>
+{# Shown on "/" as long as no published page is marked as homepage. #}
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ site_name }}{% endblock %}
+
+{% block content %}
+    <div class="notice">
+        <h1>{{ 'site.welcome_title'|trans({'%name%': site_name}) }}</h1>
+        <p>{{ 'site.welcome_text'|trans }}</p>
+        <p><a class="button button--primary" href="{{ path('admin_dashboard') }}">{{ 'site.welcome_action'|trans }}</a></p>
+    </div>
+{% endblock %}

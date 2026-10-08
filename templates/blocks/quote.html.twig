@@ -1,0 +1,6 @@
+{% if data.text %}
+<figure class="block block-quote">
+    <blockquote><p>{{ data.text|nl2br }}</p></blockquote>
+    {% if data.author %}<figcaption>— {{ data.author }}</figcaption>{% endif %}
+</figure>
+{% endif %}

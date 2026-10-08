@@ -1,0 +1,16 @@
+{% extends 'site/base.html.twig' %}
+
+{% set meta_description = page.metaDescription %}
+{% set canonical_url = page.homepage ? url('app_home') : url('app_page', {slug: page.slug}) %}
+{% set is_draft = not page.public %}
+{% set noindex = not page.public %}
+{% set edit_url = is_granted('PAGE_MANAGE') ? path('admin_page_edit', {id: page.id}) : null %}
+
+{% block title %}{{ page.seoTitle ?: page.title }}{% endblock %}
+
+{% block content %}
+    <article class="content">
+        <h1 class="page-title">{{ page.title }}</h1>
+        {{ render_blocks(page.blocks) }}
+    </article>
+{% endblock %}

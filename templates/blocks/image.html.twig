@@ -1,0 +1,11 @@
+{% set image = cms_media(data.image) %}
+{% if image %}
+<figure class="block block-image">
+    <img src="{{ media_url(image, 'large') }}"
+         srcset="{{ media_srcset(image) }}"
+         sizes="(min-width: 800px) 760px, 100vw"
+         width="{{ image.width }}" height="{{ image.height }}"
+         alt="{{ data.alt ?: image.alt }}" loading="lazy">
+    {% if data.caption %}<figcaption>{{ data.caption }}</figcaption>{% endif %}
+</figure>
+{% endif %}

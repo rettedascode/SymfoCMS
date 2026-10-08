@@ -2,7 +2,9 @@
 
 namespace App\Tests;
 
+use App\Entity\Page;
 use App\Entity\User;
+use App\Enum\ContentStatus;
 use App\Enum\UserRole;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -51,6 +53,20 @@ abstract class AppWebTestCase extends WebTestCase
         $this->em()->flush();
 
         return $user;
+    }
+
+    protected function createPage(string $title, ContentStatus $status, bool $homepage = false): Page
+    {
+        $page = (new Page())
+            ->setTitle($title)
+            ->setSlug(strtolower(str_replace(' ', '-', $title)))
+            ->setStatus($status)
+            ->setHomepage($homepage);
+
+        $this->em()->persist($page);
+        $this->em()->flush();
+
+        return $page;
     }
 
     protected function loginAs(UserRole $role): User

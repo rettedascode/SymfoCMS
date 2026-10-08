@@ -72,3 +72,118 @@ user.delete_confirm: 'Benutzer „%name%“ löschen? Die Blogbeiträge bleiben 
 account.title: Mein Konto
 account.change_password: Passwort ändern
 account.change_password_help: Nur ausfüllen, wenn du ein neues Passwort möchtest.
+
+action.continue: Weiter
+
+content.slug: Webadresse
+content.slug_help: 'Der letzte Teil des Links, zum Beispiel „ueber-uns“. Leer lassen, um ihn aus dem Titel zu erzeugen.'
+content.seo_title: Titel für Suchmaschinen
+content.seo_title_help: Erscheint in Suchergebnissen und im Browser-Tab. Leer lassen, um den Titel zu verwenden.
+content.meta_description: Beschreibung für Suchmaschinen
+content.meta_description_help: Ein oder zwei Sätze, die den Inhalt zusammenfassen. Suchmaschinen zeigen sie oft unter dem Titel an.
+
+page.new: Neue Seite
+page.new_intro: Wie soll die Seite heißen? Du kannst den Titel jederzeit ändern.
+page.empty_title: Noch keine Seiten
+page.empty_text: Lege deine erste Seite an, um loszulegen.
+page.homepage: Diese Seite als Startseite verwenden
+page.homepage_help: Die Startseite sehen Besucher zuerst. Es kann nur eine Startseite geben.
+page.homepage_badge: Startseite
+page.delete_confirm: 'Seite „%title%“ löschen? Das kann nicht rückgängig gemacht werden.'
+
+flash.page_published: Die Seite wurde gespeichert und ist veröffentlicht.
+flash.draft_saved: Der Entwurf wurde gespeichert. Er ist für Besucher noch nicht sichtbar.
+flash.page_deleted: Die Seite wurde gelöscht.
+
+block.heading.label: Überschrift
+block.heading.text: Text der Überschrift
+block.heading.level: Größe
+block.heading.level_large: Große Überschrift
+block.heading.level_small: Kleine Überschrift
+block.text.label: Text
+block.text.content: Text
+block.image.label: Bild
+block.image.image: Bild
+block.image.alt: Bildbeschreibung
+block.image.alt_help: Beschreibt das Bild für Menschen, die es nicht sehen können, und für Suchmaschinen.
+block.image.caption: Bildunterschrift (optional)
+block.button.label: Button
+block.button.text: Beschriftung
+block.button.url: Link
+block.button.url_help: 'Eine Webadresse oder eine Seite dieser Website, zum Beispiel „/kontakt“.'
+block.button.style: Aussehen
+block.button.style_primary: Gefüllt
+block.button.style_secondary: Umrandet
+block.quote.label: Zitat
+block.quote.text: Zitat
+block.quote.author: Von wem stammt es? (optional)
+block.divider.label: Trennlinie
+block.columns.label: Zwei Spalten
+block.columns.left: Linke Spalte
+block.columns.right: Rechte Spalte
+
+editor.view: Ansicht
+editor.view_edit: Bearbeiten
+editor.view_preview: Vorschau
+editor.open_public: Ansehen
+editor.open_draft: Entwurf öffnen
+editor.save_draft: Entwurf speichern
+editor.save_changes: Änderungen speichern
+editor.publish: Veröffentlichen
+editor.tab_content: Inhalt
+editor.tab_settings: Einstellungen
+editor.seo_heading: Suchmaschinen
+editor.seo_intro: Optional. Diese Texte helfen dabei, dass der Inhalt bei Google und anderen Suchmaschinen gefunden wird.
+editor.preview_label: Live-Vorschau
+editor.needs_javascript: Der Editor benötigt JavaScript. Bitte aktiviere es in deinem Browser.
+editor.restore_message: Wir haben nicht gespeicherte Änderungen vom %time% wiederhergestellt.
+editor.restore_discard: Diese Änderungen verwerfen
+editor.status_saved: Alle Änderungen gespeichert
+editor.status_unsaved: Nicht gespeicherte Änderungen
+editor.status_saving: Wird gesichert …
+editor.status_autosaved: 'Automatisch gesichert um %time%. Klicke auf „Speichern“, um die Änderungen zu übernehmen.'
+editor.status_error: Die automatische Sicherung ist fehlgeschlagen. Bitte speichere deine Änderungen.
+editor.add_block: Block hinzufügen
+editor.add_block_below: Block darunter hinzufügen
+editor.empty: Hier ist noch nichts. Füge deinen ersten Block hinzu, um loszuschreiben.
+editor.empty_column: Diese Spalte ist leer.
+editor.drag: Zum Verschieben ziehen
+editor.move_up: Nach oben
+editor.move_down: Nach unten
+editor.duplicate: Duplizieren
+editor.delete: Löschen
+editor.deleted: Block gelöscht.
+editor.undo: Rückgängig
+editor.choose_image: Bild auswählen
+editor.change_image: Bild ändern
+editor.remove_image: Entfernen
+editor.image_missing: Dieses Bild ist nicht mehr in der Mediathek vorhanden.
+editor.rt_toolbar: Textformatierung
+editor.rt_bold: Fett
+editor.rt_italic: Kursiv
+editor.rt_link: Link
+editor.rt_unlink: Link entfernen
+editor.rt_bullets: Aufzählung
+editor.rt_numbers: Nummerierte Liste
+editor.rt_link_placeholder: Webadresse einfügen oder eingeben
+editor.rt_link_apply: Übernehmen
+editor.rt_link_cancel: Abbrechen
+editor.picker_title: Bild auswählen
+editor.picker_close: Schließen
+editor.picker_upload: Neue Bilder hochladen
+editor.picker_drop: Hier klicken oder Bilddateien in dieses Fenster ziehen.
+editor.picker_loading: Wird geladen …
+editor.picker_empty: Die Mediathek ist leer. Lade oben dein erstes Bild hoch.
+editor.picker_more: Mehr anzeigen
+editor.picker_uploading: Wird hochgeladen …
+editor.picker_uploaded: '%count% Bilder hochgeladen. Klicke eines an, um es zu verwenden.'
+editor.picker_error: Etwas ist schiefgelaufen. Bitte versuche es erneut.
+
+site.skip_to_content: Zum Inhalt springen
+site.draft_notice: Entwurf – nur für dich sichtbar
+site.logged_in_as: Angemeldet als %name%
+site.edit_this: Diese Seite bearbeiten
+site.to_admin: Verwaltung
+site.welcome_title: Willkommen bei %name%
+site.welcome_text: Diese Website hat noch keine Startseite. Melde dich an, um deine erste Seite anzulegen.
+site.welcome_action: Zur Verwaltung

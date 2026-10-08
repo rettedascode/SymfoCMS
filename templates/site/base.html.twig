@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="{{ app.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% set page_title = block('title') is defined ? block('title')|trim : '' %}
+    {% set full_title = page_title and page_title != site_name ? page_title ~ ' – ' ~ site_name : site_name %}
+    {% set description = meta_description|default(site_tagline) %}
+    {% set canonical = canonical_url|default(null) %}
+    <title>{{ full_title }}</title>
+    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+    {% if noindex|default(false) %}<meta name="robots" content="noindex">{% endif %}
+    {% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:title" content="{{ page_title ?: site_name }}">
+    <meta property="og:type" content="{{ og_type|default('website') }}">
+    {% if description %}<meta property="og:description" content="{{ description }}">{% endif %}
+    {% if canonical %}<meta property="og:url" content="{{ canonical }}">{% endif %}
+    {% if og_image|default(null) %}<meta property="og:image" content="{{ og_image }}">{% endif %}
+    <meta name="twitter:card" content="{{ og_image|default(null) ? 'summary_large_image' : 'summary' }}">
+    {% block head %}{% endblock %}
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ asset('styles/site.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<a class="skip-link" href="#content">{{ 'site.skip_to_content'|trans }}</a>
+
+{% block edit_bar %}
+    {% if is_granted('ROLE_AUTHOR') %}
+        <div class="edit-bar">
+            <div class="container">
+                <span>
+                    {% if is_draft|default(false) %}<span class="edit-bar__draft">{{ 'site.draft_notice'|trans }}</span>{% endif %}
+                    {{ 'site.logged_in_as'|trans({'%name%': app.user.name}) }}
+                </span>
+                <span>
+                    {% if edit_url|default(null) %}<a href="{{ edit_url }}">{{ 'site.edit_this'|trans }}</a> ·{% endif %}
+                    <a href="{{ path('admin_dashboard') }}">{{ 'site.to_admin'|trans }}</a>
+                </span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+<header class="site-header">
+    <div class="container">
+        <a class="site-brand" href="{{ path('app_home') }}">{{ site_name }}</a>
+        {% block navigation %}{% endblock %}
+    </div>
+</header>
+
+<main class="site-main" id="content">
+    {% block main %}
+        <div class="container container--narrow">
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© {{ 'now'|date('Y') }} {{ site_name }}</p>
+        {% block footer_navigation %}{% endblock %}
+    </div>
+</footer>
+
+{% block javascripts %}
+    <script src="{{ asset('site.js') }}" defer></script>
+{% endblock %}
+</body>
+</html>

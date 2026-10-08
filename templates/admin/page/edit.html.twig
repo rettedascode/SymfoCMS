@@ -1,0 +1,10 @@
+{% extends 'admin/content/editor.html.twig' %}
+
+{% set content = page %}
+{% set back_url = path('admin_page_index') %}
+{% set back_label = 'nav.pages' %}
+{% set public_url = path('app_page', {slug: page.slug}) %}
+
+{% block settings_extra %}
+    {{ form_row(form.homepage) }}
+{% endblock %}
