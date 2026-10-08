@@ -180,6 +180,72 @@ editor.picker_uploading: Uploading…
 editor.picker_uploaded: '%count% images uploaded. Click one to use it.'
 editor.picker_error: Something went wrong. Please try again.
 
+action.previous: Previous
+action.next: Next
+label.pagination: Pages
+label.page_of: Page %page% of %pages%
+
+flash.media_deleted: The image has been deleted.
+
+media.upload_title: Upload images
+media.upload_hint: Click here or drag image files onto this page. JPG, PNG, GIF or WebP, up to %limit% MB each.
+media.uploading: Uploading…
+media.empty_title: No images yet
+media.empty_text: Upload your first image above. You can select several files at once.
+media.no_alt: No description
+media.edit: Image details
+media.alt: Image description (alt text)
+media.alt_help: Describe what the image shows. Screen readers read this text aloud, and search engines use it.
+media.delete_heading: Delete this image
+media.delete_help: Pages and posts that use this image will simply no longer show it.
+media.delete: Delete image
+media.delete_confirm: Delete this image permanently?
+
+menu.location_main: Main navigation
+menu.location_footer: Footer navigation
+menu.intro_main: The main navigation appears at the top of every page. Drag an item slightly to the right, below another one, to turn it into a dropdown entry.
+menu.intro_footer: The footer navigation appears at the bottom of every page, for example for the legal notice.
+menu.save: Save menu
+menu.add_heading: Add menu item
+menu.add: Add
+menu.add_page: Page
+menu.add_post: Blog post
+menu.add_blog: Blog
+menu.add_blog_button: Add link to the blog
+menu.add_url: Custom link
+menu.url_label: Text, e.g. "Shop"
+menu.url_address: Web address, e.g. https://example.com
+menu.js.empty: This menu is empty. Add your first item using the box on the right.
+menu.js.unsaved: Unsaved changes
+menu.js.saving: Saving…
+menu.js.saved: Menu saved.
+menu.js.error: The menu could not be saved. Please try again.
+menu.js.label: Menu text
+menu.js.drag: Drag to reorder
+menu.js.move_up: Move up
+menu.js.move_down: Move down
+menu.js.indent: Make this a sub-item of the item above
+menu.js.outdent: Move back to the top level
+menu.js.delete: Remove from menu
+menu.js.type_page: 'Page: %title%'
+menu.js.type_post: 'Post: %title%'
+menu.js.blog_label: Blog
+
+site.main_navigation: Main navigation
+site.footer_navigation: Footer navigation
+site.menu: Menu
+site.submenu: Show submenu for %label%
+site.blog: Blog
+site.categories: Categories
+site.all_posts: All posts
+site.no_posts: There are no posts yet.
+site.pagination: Blog pages
+site.newer_posts: Newer posts
+site.older_posts: Older posts
+site.page_of: Page %page% of %pages%
+site.page_number: Page %page%
+site.by_author: by %name%
+site.back_to_blog: Back to the blog
 site.skip_to_content: Skip to content
 site.draft_notice: Draft – only visible to you
 site.logged_in_as: Logged in as %name%

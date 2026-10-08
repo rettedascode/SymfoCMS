@@ -30,6 +30,10 @@
                     <li><a href="{{ path('admin_page_index') }}" {% if route starts with 'admin_page_' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span> {{ 'nav.pages'|trans }}</a></li>
                 {% endif %}
                 {# NAV #}
+                <li><a href="{{ path('admin_media_index') }}" {% if route starts with 'admin_media_' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span> {{ 'nav.media'|trans }}</a></li>
+                {% if is_granted('MENU_MANAGE') %}
+                    <li><a href="{{ path('admin_menu_index') }}" {% if route starts with 'admin_menu_' %}aria-current="page"{% endif %}><span aria-hidden="true">☰</span> {{ 'nav.menus'|trans }}</a></li>
+                {% endif %}
                 {% if is_granted('USER_MANAGE') %}
                     <li><a href="{{ path('admin_user_index') }}" {% if route starts with 'admin_user_' %}aria-current="page"{% endif %}><span aria-hidden="true">☺</span> {{ 'nav.users'|trans }}</a></li>
                 {% endif %}

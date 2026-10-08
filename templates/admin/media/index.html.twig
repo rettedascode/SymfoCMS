@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.media'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.media'|trans }}</h1>
+    </div>
+
+    <div data-controller="uploader"
+         data-uploader-url-value="{{ path('admin_media_upload') }}"
+         data-uploader-csrf-value="{{ csrf_token('admin') }}"
+         data-uploader-uploading-value="{{ 'media.uploading'|trans }}"
+         data-uploader-error-value="{{ i18n.picker_error }}">
+        <label class="dropzone" data-uploader-target="dropzone">
+            <input type="file" class="visually-hidden" accept="{{ accept }}" multiple data-uploader-target="input" data-action="uploader#pick">
+            <strong>{{ 'media.upload_title'|trans }}</strong>
+            <span class="muted">{{ 'media.upload_hint'|trans({'%limit%': max_upload_mb}) }}</span>
+        </label>
+        <ul class="upload-messages" data-uploader-target="messages" role="status"></ul>
+    </div>
+
+    {% if media is empty %}
+        <div class="empty">
+            <h2>{{ 'media.empty_title'|trans }}</h2>
+            <p>{{ 'media.empty_text'|trans }}</p>
+        </div>
+    {% else %}
+        <ul class="media-grid">
+            {% for item in media %}
+                <li>
+                    <a class="media-tile" href="{{ path('admin_media_edit', {id: item.id}) }}" title="{{ item.originalName }}">
+                        <img src="{{ media_url(item, 'thumb') }}" alt="{{ item.alt ?: item.originalName }}" loading="lazy">
+                        {% if not item.alt %}<span class="media-tile__flag">{{ 'media.no_alt'|trans }}</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if pages > 1 %}
+            <nav class="pager" aria-label="{{ 'label.pagination'|trans }}">
+                {% if page > 1 %}<a class="button" href="{{ path('admin_media_index', {page: page - 1}) }}">← {{ 'action.previous'|trans }}</a>{% endif %}
+                <span class="muted">{{ 'label.page_of'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                {% if page < pages %}<a class="button" href="{{ path('admin_media_index', {page: page + 1}) }}">{{ 'action.next'|trans }} →</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

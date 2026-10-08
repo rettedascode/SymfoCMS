@@ -4,7 +4,9 @@ namespace App\Twig;
 
 use App\Block\BlockRenderer;
 use App\Entity\Media;
+use App\Enum\MenuLocation;
 use App\Repository\MediaRepository;
+use App\Service\MenuBuilder;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
@@ -26,6 +28,7 @@ final class CmsExtension
         #[Autowire(param: 'app.media_public_path')]
         private readonly string $mediaPublicPath,
         private readonly LocaleAwareInterface $localeAware,
+        private readonly MenuBuilder $menuBuilder,
     ) {
     }
 
@@ -79,6 +82,17 @@ final class CmsExtension
         ksort($candidates);
 
         return implode(', ', $candidates);
+    }
+
+    /**
+     * Items of a menu ("main" or "footer") with resolved links.
+     *
+     * @return list<array{label: string, url: string, current: bool, children: list<array{label: string, url: string, current: bool, children: array{}}>}>
+     */
+    #[AsTwigFunction('cms_menu')]
+    public function menu(string $location): array
+    {
+        return $this->menuBuilder->build(MenuLocation::from($location));
     }
 
     /**

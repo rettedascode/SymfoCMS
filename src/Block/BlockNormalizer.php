@@ -2,6 +2,7 @@
 
 namespace App\Block;
 
+use App\Service\LinkSanitizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
 
@@ -22,6 +23,7 @@ final class BlockNormalizer
         private readonly BlockRegistry $registry,
         #[Autowire(service: 'html_sanitizer.sanitizer.rich_text')]
         private readonly HtmlSanitizerInterface $richTextSanitizer,
+        private readonly LinkSanitizer $linkSanitizer,
     ) {
     }
 
@@ -81,7 +83,7 @@ final class BlockNormalizer
             Field::TEXTAREA => mb_substr($this->plainText($value), 0, self::MAX_TEXTAREA_LENGTH),
             Field::RICH_TEXT => $this->richText($value),
             Field::SELECT => \is_scalar($value) && isset($field->options[(string) $value]) ? (string) $value : $field->default,
-            Field::URL => $this->url($value),
+            Field::URL => $this->linkSanitizer->sanitize($value),
             Field::IMAGE => is_numeric($value) && (int) $value > 0 ? (int) $value : null,
             Field::CHECKBOX => filter_var($value, \FILTER_VALIDATE_BOOLEAN),
             Field::BLOCKS => $this->normalize($value, nested: true),
@@ -104,27 +106,5 @@ final class BlockNormalizer
 
         // An editor that was emptied may still contain a blank paragraph.
         return '' === trim(strip_tags($html)) ? '' : $html;
-    }
-
-    /**
-     * Accepts links within the site ("/contact", "#top") and http(s), mailto and tel URLs.
-     */
-    private function url(mixed $value): string
-    {
-        $url = \is_scalar($value) ? trim((string) $value) : '';
-        if ('' === $url || mb_strlen($url) > 2000 || preg_match('/[\s<>"]/', $url)) {
-            return '';
-        }
-
-        if (preg_match('~^(/(?!/)|#|\?)~', $url) || preg_match('~^(https?://|mailto:|tel:)~i', $url)) {
-            return $url;
-        }
-
-        // "example.com/page" was most likely meant as an external link.
-        if (preg_match('~^[a-z0-9-]+(\.[a-z0-9-]+)+(/.*)?$~i', $url)) {
-            return 'https://'.$url;
-        }
-
-        return '';
     }
 }

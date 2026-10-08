@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
@@ -30,6 +31,9 @@ abstract class AppWebTestCase extends WebTestCase
         $schemaTool = new SchemaTool($entityManager);
         $schemaTool->dropSchema($metadata);
         $schemaTool->createSchema($metadata);
+
+        // Uploads of earlier tests are removed together with their database rows.
+        (new Filesystem())->remove($this->mediaDir());
 
         // Login throttling counters must not leak from one test (or test run) into the next.
         static::getContainer()->get('cache.rate_limiter')->clear();
@@ -80,12 +84,17 @@ abstract class AppWebTestCase extends WebTestCase
     /**
      * Reads the session-based CSRF token used by hand-written admin forms and fetch() requests.
      */
-    protected function csrfToken(string $url, string $selector = 'input[name="_token"]'): string
+    protected function csrfToken(string $url, string $selector = 'input[name="_token"]', string $attribute = 'value'): string
     {
         $crawler = $this->client->request('GET', $url);
         $node = $crawler->filter($selector);
         self::assertGreaterThan(0, $node->count(), \sprintf('No CSRF token found on %s using "%s".', $url, $selector));
 
-        return (string) ($node->first()->attr('value') ?? $node->first()->attr('content'));
+        return (string) $node->first()->attr($attribute);
+    }
+
+    protected function mediaDir(): string
+    {
+        return (string) static::getContainer()->getParameter('app.media_dir');
     }
 }

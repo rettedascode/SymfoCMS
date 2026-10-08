@@ -1,0 +1,37 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ media.originalName }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'media.edit'|trans }}</h1>
+    </div>
+
+    <div class="media-edit">
+        <figure class="media-edit__preview">
+            <img src="{{ media_url(media, 'medium') }}" alt="{{ media.alt }}">
+            <figcaption class="muted">
+                {{ media.originalName }} · {{ media.width }} × {{ media.height }} px · {{ (media.size / 1024)|round }} KB
+            </figcaption>
+        </figure>
+
+        <div class="card">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="form-actions">
+                {% if can_edit %}<button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>{% endif %}
+                <a class="button" href="{{ path('admin_media_index') }}">{{ 'action.back'|trans }}</a>
+            </div>
+            {{ form_end(form) }}
+
+            {% if is_granted('MEDIA_DELETE', media) %}
+                <h2 class="card__heading">{{ 'media.delete_heading'|trans }}</h2>
+                <p class="muted">{{ 'media.delete_help'|trans }}</p>
+                <form method="post" action="{{ path('admin_media_delete', {id: media.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'media.delete_confirm'|trans }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                    <button class="button button--danger">{{ 'media.delete'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

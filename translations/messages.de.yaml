@@ -179,6 +179,72 @@ editor.picker_uploading: Wird hochgeladen …
 editor.picker_uploaded: '%count% Bilder hochgeladen. Klicke eines an, um es zu verwenden.'
 editor.picker_error: Etwas ist schiefgelaufen. Bitte versuche es erneut.
 
+action.previous: Zurück
+action.next: Weiter
+label.pagination: Seiten
+label.page_of: Seite %page% von %pages%
+
+flash.media_deleted: Das Bild wurde gelöscht.
+
+media.upload_title: Bilder hochladen
+media.upload_hint: Hier klicken oder Bilddateien auf diese Seite ziehen. JPG, PNG, GIF oder WebP, jeweils bis zu %limit% MB.
+media.uploading: Wird hochgeladen …
+media.empty_title: Noch keine Bilder
+media.empty_text: Lade oben dein erstes Bild hoch. Du kannst mehrere Dateien gleichzeitig auswählen.
+media.no_alt: Keine Beschreibung
+media.edit: Bilddetails
+media.alt: Bildbeschreibung (Alt-Text)
+media.alt_help: Beschreibe, was auf dem Bild zu sehen ist. Screenreader lesen diesen Text vor, und Suchmaschinen nutzen ihn.
+media.delete_heading: Dieses Bild löschen
+media.delete_help: Seiten und Beiträge, die dieses Bild verwenden, zeigen es dann einfach nicht mehr an.
+media.delete: Bild löschen
+media.delete_confirm: Dieses Bild endgültig löschen?
+
+menu.location_main: Hauptnavigation
+menu.location_footer: Fußzeilen-Navigation
+menu.intro_main: Die Hauptnavigation erscheint oben auf jeder Seite. Ziehe einen Eintrag leicht nach rechts unter einen anderen, um daraus einen Eintrag im Aufklappmenü zu machen.
+menu.intro_footer: Die Fußzeilen-Navigation erscheint unten auf jeder Seite, zum Beispiel für das Impressum.
+menu.save: Menü speichern
+menu.add_heading: Menüeintrag hinzufügen
+menu.add: Hinzufügen
+menu.add_page: Seite
+menu.add_post: Blogbeitrag
+menu.add_blog: Blog
+menu.add_blog_button: Link zum Blog hinzufügen
+menu.add_url: Eigener Link
+menu.url_label: Text, z. B. „Shop“
+menu.url_address: Webadresse, z. B. https://example.com
+menu.js.empty: Dieses Menü ist leer. Füge über das Feld rechts den ersten Eintrag hinzu.
+menu.js.unsaved: Nicht gespeicherte Änderungen
+menu.js.saving: Wird gespeichert …
+menu.js.saved: Menü gespeichert.
+menu.js.error: Das Menü konnte nicht gespeichert werden. Bitte versuche es erneut.
+menu.js.label: Menütext
+menu.js.drag: Zum Verschieben ziehen
+menu.js.move_up: Nach oben
+menu.js.move_down: Nach unten
+menu.js.indent: Zum Unterpunkt des Eintrags darüber machen
+menu.js.outdent: Zurück auf die oberste Ebene
+menu.js.delete: Aus dem Menü entfernen
+menu.js.type_page: 'Seite: %title%'
+menu.js.type_post: 'Beitrag: %title%'
+menu.js.blog_label: Blog
+
+site.main_navigation: Hauptnavigation
+site.footer_navigation: Fußzeilen-Navigation
+site.menu: Menü
+site.submenu: Untermenü für %label% anzeigen
+site.blog: Blog
+site.categories: Kategorien
+site.all_posts: Alle Beiträge
+site.no_posts: Es gibt noch keine Beiträge.
+site.pagination: Blogseiten
+site.newer_posts: Neuere Beiträge
+site.older_posts: Ältere Beiträge
+site.page_of: Seite %page% von %pages%
+site.page_number: Seite %page%
+site.by_author: von %name%
+site.back_to_blog: Zurück zum Blog
 site.skip_to_content: Zum Inhalt springen
 site.draft_notice: Entwurf – nur für dich sichtbar
 site.logged_in_as: Angemeldet als %name%

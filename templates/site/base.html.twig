@@ -18,6 +18,7 @@
     {% if canonical %}<meta property="og:url" content="{{ canonical }}">{% endif %}
     {% if og_image|default(null) %}<meta property="og:image" content="{{ og_image }}">{% endif %}
     <meta name="twitter:card" content="{{ og_image|default(null) ? 'summary_large_image' : 'summary' }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ site_name }}" href="{{ path('app_feed') }}">
     {% block head %}{% endblock %}
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
     <link rel="stylesheet" href="{{ asset('styles/site.css') }}">
@@ -46,7 +47,31 @@
 <header class="site-header">
     <div class="container">
         <a class="site-brand" href="{{ path('app_home') }}">{{ site_name }}</a>
-        {% block navigation %}{% endblock %}
+        {% block navigation %}
+            {% set main_menu = cms_menu('main') %}
+            {% if main_menu is not empty %}
+                <nav class="site-nav" aria-label="{{ 'site.main_navigation'|trans }}">
+                    <button type="button" class="site-nav__toggle" aria-expanded="false" aria-controls="site-menu">
+                        <span aria-hidden="true">☰</span> {{ 'site.menu'|trans }}
+                    </button>
+                    <ul class="site-nav__list" id="site-menu">
+                        {% for item in main_menu %}
+                            <li{% if item.children is not empty %} class="has-children"{% endif %}>
+                                <a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a>
+                                {% if item.children is not empty %}
+                                    <button type="button" class="site-nav__sub-toggle" aria-expanded="false" aria-label="{{ 'site.submenu'|trans({'%label%': item.label}) }}">▾</button>
+                                    <ul class="site-nav__sub">
+                                        {% for child in item.children %}
+                                            <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.label }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% endblock %}
     </div>
 </header>
 
@@ -61,7 +86,18 @@
 <footer class="site-footer">
     <div class="container">
         <p>© {{ 'now'|date('Y') }} {{ site_name }}</p>
-        {% block footer_navigation %}{% endblock %}
+        {% block footer_navigation %}
+            {% set footer_menu = cms_menu('footer') %}
+            {% if footer_menu is not empty %}
+                <nav aria-label="{{ 'site.footer_navigation'|trans }}">
+                    <ul class="footer-nav">
+                        {% for item in footer_menu %}
+                            <li><a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% endblock %}
     </div>
 </footer>
 

@@ -61,6 +61,8 @@ final class ContentEditor
             'locale' => $this->translator->getLocale(),
             'urls' => $urls + [
                 'preview' => $this->urlGenerator->generate('admin_preview'),
+                'mediaList' => $this->urlGenerator->generate('admin_media_list'),
+                'mediaUpload' => $this->urlGenerator->generate('admin_media_upload'),
             ],
         ];
     }

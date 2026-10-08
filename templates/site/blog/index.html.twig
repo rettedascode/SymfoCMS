@@ -1,0 +1,57 @@
+{% extends 'site/base.html.twig' %}
+
+{% set route_params = category ? {slug: category.slug} : {} %}
+{% set first_page_route = category ? 'app_blog_category' : 'app_blog' %}
+{% set paged_route = category ? 'app_blog_category_page' : 'app_blog_page' %}
+{% set canonical_url = page == 1 ? url(first_page_route, route_params) : url(paged_route, route_params|merge({page: page})) %}
+
+{% block title %}{{ category ? category.name : 'site.blog'|trans }}{% if page > 1 %} – {{ 'site.page_number'|trans({'%page%': page}) }}{% endif %}{% endblock %}
+
+{% block head %}
+    {% if page > 1 %}<link rel="prev" href="{{ page == 2 ? url(first_page_route, route_params) : url(paged_route, route_params|merge({page: page - 1})) }}">{% endif %}
+    {% if page < pages %}<link rel="next" href="{{ url(paged_route, route_params|merge({page: page + 1})) }}">{% endif %}
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <header class="blog-header">
+            <h1>{{ category ? category.name : 'site.blog'|trans }}</h1>
+            {% if categories is not empty %}
+                <nav aria-label="{{ 'site.categories'|trans }}">
+                    <ul class="category-nav">
+                        <li><a href="{{ path('app_blog') }}" {% if not category %}aria-current="page"{% endif %}>{{ 'site.all_posts'|trans }}</a></li>
+                        {% for item in categories %}
+                            <li><a href="{{ path('app_blog_category', {slug: item.slug}) }}" {% if category and category.id == item.id %}aria-current="page"{% endif %}>{{ item.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </header>
+
+        {% if posts is empty %}
+            <p class="notice">{{ 'site.no_posts'|trans }}</p>
+        {% else %}
+            <ul class="post-list">
+                {% for post in posts %}
+                    <li>{{ include('site/blog/_card.html.twig', {post: post}) }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if pages > 1 %}
+            <nav class="pagination" aria-label="{{ 'site.pagination'|trans }}">
+                {% if page > 1 %}
+                    <a rel="prev" href="{{ page == 2 ? path(first_page_route, route_params) : path(paged_route, route_params|merge({page: page - 1})) }}">← {{ 'site.newer_posts'|trans }}</a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                <span class="pagination__status">{{ 'site.page_of'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                {% if page < pages %}
+                    <a rel="next" href="{{ path(paged_route, route_params|merge({page: page + 1})) }}">{{ 'site.older_posts'|trans }} →</a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </div>
+{% endblock %}

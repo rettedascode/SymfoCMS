@@ -1,6 +1,10 @@
 user.email_taken: There is already a user with this email address.
 user.password_too_short: The password must be at least 8 characters long.
 user.current_password_wrong: The current password is not correct.
+media.invalid_type: This file is not a supported image. Please upload a JPG, PNG, GIF or WebP file.
+media.too_large: This file is too large. The maximum size is %limit% MB.
+media.too_many_pixels: This image has too many pixels. Please reduce its dimensions and try again.
+media.upload_failed: The upload did not work. Please try again.
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.
 content.slug_reserved: This address is reserved by the system. Please choose another one.

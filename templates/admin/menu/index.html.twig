@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.menus'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.menus'|trans }}</h1>
+    </div>
+
+    <nav class="tabs" aria-label="{{ 'nav.menus'|trans }}">
+        {% for item in locations %}
+            <a href="{{ path('admin_menu_index', {location: item.value}) }}" {% if item == location %}aria-current="page"{% endif %}>{{ ('menu.location_' ~ item.value)|trans }}</a>
+        {% endfor %}
+    </nav>
+
+    <p class="muted">{{ ('menu.intro_' ~ location.value)|trans }}</p>
+
+    <div class="menu-editor" data-controller="menu" data-menu-config-value="{{ config|json_encode }}">
+        <div class="menu-editor__list">
+            <div data-menu-target="list"></div>
+            <div class="form-actions">
+                <button type="button" class="button button--primary" data-action="menu#save" data-menu-target="saveButton">{{ 'menu.save'|trans }}</button>
+                <span class="muted" role="status" data-menu-target="status"></span>
+            </div>
+        </div>
+
+        <aside class="menu-editor__add card" aria-label="{{ 'menu.add_heading'|trans }}">
+            <h2>{{ 'menu.add_heading'|trans }}</h2>
+
+            <div class="field">
+                <label for="menu-add-page">{{ 'menu.add_page'|trans }}</label>
+                <div class="inline-form">
+                    <select id="menu-add-page" data-menu-target="pageSelect"></select>
+                    <button type="button" class="button" data-action="menu#addPage">{{ 'menu.add'|trans }}</button>
+                </div>
+            </div>
+
+            <div class="field" data-menu-target="postField">
+                <label for="menu-add-post">{{ 'menu.add_post'|trans }}</label>
+                <div class="inline-form">
+                    <select id="menu-add-post" data-menu-target="postSelect"></select>
+                    <button type="button" class="button" data-action="menu#addPost">{{ 'menu.add'|trans }}</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="field__title">{{ 'menu.add_blog'|trans }}</span>
+                <button type="button" class="button" data-action="menu#addBlog">{{ 'menu.add_blog_button'|trans }}</button>
+            </div>
+
+            <fieldset class="field menu-editor__custom">
+                <legend>{{ 'menu.add_url'|trans }}</legend>
+                <label for="menu-add-label" class="visually-hidden">{{ 'menu.url_label'|trans }}</label>
+                <input type="text" id="menu-add-label" placeholder="{{ 'menu.url_label'|trans }}" data-menu-target="urlLabel">
+                <label for="menu-add-url" class="visually-hidden">{{ 'menu.url_address'|trans }}</label>
+                <input type="text" id="menu-add-url" placeholder="{{ 'menu.url_address'|trans }}" data-menu-target="urlAddress">
+                <button type="button" class="button" data-action="menu#addUrl">{{ 'menu.add'|trans }}</button>
+            </fieldset>
+        </aside>
+    </div>
+{% endblock %}

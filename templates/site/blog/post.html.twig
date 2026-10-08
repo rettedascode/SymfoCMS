@@ -1,0 +1,46 @@
+{% extends 'site/base.html.twig' %}
+
+{% set meta_description = post.metaDescription ?: post.excerpt %}
+{% set canonical_url = url('app_blog_post', {slug: post.slug}) %}
+{% set og_type = 'article' %}
+{% set og_image = post.coverImage ? absolute_url(media_url(post.coverImage, 'large')) : null %}
+{% set is_draft = not post.public %}
+{% set noindex = not post.public %}
+{% set edit_url = is_granted('POST_EDIT', post) ? path('admin_post_edit', {id: post.id}) : null %}
+
+{% block title %}{{ post.seoTitle ?: post.title }}{% endblock %}
+
+{% block head %}
+    {% if post.publishedAt %}<meta property="article:published_time" content="{{ post.publishedAt|date('c') }}">{% endif %}
+    <meta property="article:modified_time" content="{{ post.updatedAt|date('c') }}">
+{% endblock %}
+
+{% block content %}
+    <article class="content">
+        <header class="post-header">
+            <h1>{{ post.title }}</h1>
+            <p class="post-meta">
+                {% if post.publishedAt %}
+                    <time datetime="{{ post.publishedAt|date('Y-m-d') }}">{{ post.publishedAt|local_date }}</time>
+                {% endif %}
+                {% if post.author %} · {{ 'site.by_author'|trans({'%name%': post.author.name}) }}{% endif %}
+                {% if post.category %} · <a href="{{ path('app_blog_category', {slug: post.category.slug}) }}">{{ post.category.name }}</a>{% endif %}
+            </p>
+        </header>
+
+        {% if post.coverImage %}
+            <figure class="post-cover">
+                <img src="{{ media_url(post.coverImage, 'large') }}" srcset="{{ media_srcset(post.coverImage) }}"
+                     sizes="(min-width: 800px) 760px, 100vw"
+                     width="{{ post.coverImage.width }}" height="{{ post.coverImage.height }}"
+                     alt="{{ post.coverImage.alt }}">
+            </figure>
+        {% endif %}
+
+        {{ render_blocks(post.blocks) }}
+
+        <footer class="post-footer">
+            <a href="{{ path('app_blog') }}">← {{ 'site.back_to_blog'|trans }}</a>
+        </footer>
+    </article>
+{% endblock %}
