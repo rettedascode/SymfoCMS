@@ -15,6 +15,6 @@ final class DashboardController extends AbstractController
     #[Route('/admin', name: 'admin_dashboard')]
     public function index(): Response
     {
-        return $this->redirectToRoute($this->isGranted(PageVoter::MANAGE) ? 'admin_page_index' : 'admin_media_index');
+        return $this->redirectToRoute($this->isGranted(PageVoter::MANAGE) ? 'admin_page_index' : 'admin_post_index');
     }
 }

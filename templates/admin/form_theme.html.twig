@@ -32,6 +32,14 @@
     </div>
 {%- endblock choice_widget_expanded -%}
 
+{# Field of App\Form\MediaPickerType: a hidden input plus a thumbnail and buttons drawn by the image-field controller. #}
+{%- block media_picker_widget -%}
+    <div data-controller="image-field" data-image-field-config-value="{{ picker_config|json_encode }}">
+        <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" data-image-field-target="input">
+        <div data-image-field-target="view"></div>
+    </div>
+{%- endblock media_picker_widget -%}
+
 {%- block form_help -%}
     {%- if help is not empty -%}
         <p id="{{ id }}_help" class="field__help">{{ translation_domain is same as(false) ? help : help|trans(help_translation_parameters, translation_domain) }}</p>

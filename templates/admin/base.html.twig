@@ -29,7 +29,7 @@
                 {% if is_granted('PAGE_MANAGE') %}
                     <li><a href="{{ path('admin_page_index') }}" {% if route starts with 'admin_page_' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span> {{ 'nav.pages'|trans }}</a></li>
                 {% endif %}
-                {# NAV #}
+                <li><a href="{{ path('admin_post_index') }}" {% if route starts with 'admin_post_' or route starts with 'admin_category_' %}aria-current="page"{% endif %}><span aria-hidden="true">✎</span> {{ 'nav.blog'|trans }}</a></li>
                 <li><a href="{{ path('admin_media_index') }}" {% if route starts with 'admin_media_' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span> {{ 'nav.media'|trans }}</a></li>
                 {% if is_granted('MENU_MANAGE') %}
                     <li><a href="{{ path('admin_menu_index') }}" {% if route starts with 'admin_menu_' %}aria-current="page"{% endif %}><span aria-hidden="true">☰</span> {{ 'nav.menus'|trans }}</a></li>

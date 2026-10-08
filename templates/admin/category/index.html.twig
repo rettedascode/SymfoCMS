@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'post.tab_categories'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.blog'|trans }}</h1>
+    </div>
+
+    {{ include('admin/post/_tabs.html.twig', {active: 'categories'}) }}
+
+    <div class="card card--narrow">
+        <h2>{{ 'category.add'|trans }}</h2>
+        {{ form_start(form, {attr: {class: 'inline-form inline-form--top'}}) }}
+        {{ form_row(form.name) }}
+        <button type="submit" class="button button--primary">{{ 'category.add_button'|trans }}</button>
+        {{ form_end(form) }}
+    </div>
+
+    {% if categories is not empty %}
+        <div class="table-wrap table-wrap--spaced">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'category.name'|trans }}</th>
+                    <th scope="col">{{ 'content.slug'|trans }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <th scope="row"><a href="{{ path('admin_category_edit', {id: category.id}) }}">{{ category.name }}</a></th>
+                        <td class="muted">/blog/category/{{ category.slug }}</td>
+                        <td class="table__actions">
+                            <a class="button button--small" href="{{ path('admin_category_edit', {id: category.id}) }}">{{ 'action.edit'|trans }}</a>
+                            <form method="post" action="{{ path('admin_category_delete', {id: category.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'category.delete_confirm'|trans({'%name%': category.name}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

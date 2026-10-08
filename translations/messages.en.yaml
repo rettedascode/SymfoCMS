@@ -201,6 +201,38 @@ media.delete_help: Pages and posts that use this image will simply no longer sho
 media.delete: Delete image
 media.delete_confirm: Delete this image permanently?
 
+post.new: New post
+post.new_intro: What is the post about? You can change the title at any time.
+post.tab_posts: Posts
+post.tab_categories: Categories
+post.empty_title: No posts yet
+post.empty_text: Write your first blog post to get started.
+post.excerpt: Short summary
+post.excerpt_help: One or two sentences shown in the blog overview and in the feed.
+post.cover_image: Cover image
+post.cover_image_help: Shown at the top of the post and in the blog overview.
+post.category: Category
+post.no_category: No category
+post.author: Author
+post.no_author: No author
+post.date: Publish date
+post.published_at: Publish date
+post.published_at_help: Leave empty to use the moment you publish. A date in the future schedules the post - it appears on its own at that time.
+post.delete_confirm: 'Delete the post "%title%"? This cannot be undone.'
+
+category.add: Add a category
+category.add_button: Add category
+category.edit: Edit category
+category.name: Name
+category.slug_help: The last part of the link to this category. Leave empty to create it from the name.
+category.delete_confirm: 'Delete the category "%name%"? Its posts are kept without a category.'
+
+flash.post_published: The post has been saved and is published.
+flash.post_scheduled: The post has been saved. It will be published automatically on the chosen date.
+flash.post_deleted: The post has been deleted.
+flash.category_created: The category has been added.
+flash.category_deleted: The category has been deleted.
+
 menu.location_main: Main navigation
 menu.location_footer: Footer navigation
 menu.intro_main: The main navigation appears at the top of every page. Drag an item slightly to the right, below another one, to turn it into a dropdown entry.

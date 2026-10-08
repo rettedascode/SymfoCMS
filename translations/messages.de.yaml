@@ -200,6 +200,38 @@ media.delete_help: Seiten und Beiträge, die dieses Bild verwenden, zeigen es da
 media.delete: Bild löschen
 media.delete_confirm: Dieses Bild endgültig löschen?
 
+post.new: Neuer Beitrag
+post.new_intro: Worum geht es in dem Beitrag? Du kannst den Titel jederzeit ändern.
+post.tab_posts: Beiträge
+post.tab_categories: Kategorien
+post.empty_title: Noch keine Beiträge
+post.empty_text: Schreibe deinen ersten Blogbeitrag, um loszulegen.
+post.excerpt: Kurze Zusammenfassung
+post.excerpt_help: Ein oder zwei Sätze, die in der Blogübersicht und im Feed erscheinen.
+post.cover_image: Titelbild
+post.cover_image_help: Erscheint oben im Beitrag und in der Blogübersicht.
+post.category: Kategorie
+post.no_category: Keine Kategorie
+post.author: Autor
+post.no_author: Kein Autor
+post.date: Veröffentlichungsdatum
+post.published_at: Veröffentlichungsdatum
+post.published_at_help: Leer lassen, um den Zeitpunkt der Veröffentlichung zu verwenden. Ein Datum in der Zukunft plant den Beitrag - er erscheint dann von selbst.
+post.delete_confirm: 'Beitrag „%title%“ löschen? Das kann nicht rückgängig gemacht werden.'
+
+category.add: Kategorie hinzufügen
+category.add_button: Kategorie hinzufügen
+category.edit: Kategorie bearbeiten
+category.name: Name
+category.slug_help: Der letzte Teil des Links zu dieser Kategorie. Leer lassen, um ihn aus dem Namen zu erzeugen.
+category.delete_confirm: 'Kategorie „%name%“ löschen? Die Beiträge bleiben ohne Kategorie erhalten.'
+
+flash.post_published: Der Beitrag wurde gespeichert und ist veröffentlicht.
+flash.post_scheduled: Der Beitrag wurde gespeichert. Er wird zum gewählten Datum automatisch veröffentlicht.
+flash.post_deleted: Der Beitrag wurde gelöscht.
+flash.category_created: Die Kategorie wurde hinzugefügt.
+flash.category_deleted: Die Kategorie wurde gelöscht.
+
 menu.location_main: Hauptnavigation
 menu.location_footer: Fußzeilen-Navigation
 menu.intro_main: Die Hauptnavigation erscheint oben auf jeder Seite. Ziehe einen Eintrag leicht nach rechts unter einen anderen, um daraus einen Eintrag im Aufklappmenü zu machen.

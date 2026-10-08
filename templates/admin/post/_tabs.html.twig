@@ -1,0 +1,6 @@
+{% if is_granted('CATEGORY_MANAGE') %}
+    <nav class="tabs" aria-label="{{ 'nav.blog'|trans }}">
+        <a href="{{ path('admin_post_index') }}" {% if active == 'posts' %}aria-current="page"{% endif %}>{{ 'post.tab_posts'|trans }}</a>
+        <a href="{{ path('admin_category_index') }}" {% if active == 'categories' %}aria-current="page"{% endif %}>{{ 'post.tab_categories'|trans }}</a>
+    </nav>
+{% endif %}

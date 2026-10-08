@@ -1,0 +1,14 @@
+{% extends 'admin/content/editor.html.twig' %}
+
+{% set content = post %}
+{% set back_url = path('admin_post_index') %}
+{% set back_label = 'nav.blog' %}
+{% set public_url = path('app_blog_post', {slug: post.slug}) %}
+
+{% block settings_main %}
+    {{ form_row(form.excerpt) }}
+    {{ form_row(form.coverImage) }}
+    {{ form_row(form.category) }}
+    {% if form.author is defined %}{{ form_row(form.author) }}{% endif %}
+    {{ form_row(form.publishedAt) }}
+{% endblock %}

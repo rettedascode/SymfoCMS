@@ -54,6 +54,13 @@ final class MediaController extends AdminController
     #[Route('/list', name: 'list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
     {
+        // "?id=5" looks up a single image, e.g. to show the thumbnail of a restored form value.
+        if ($request->query->has('id')) {
+            $media = $this->mediaRepository->find($request->query->getInt('id'));
+
+            return $this->json(['items' => null === $media ? [] : [$this->editor->describeMedia($media)], 'hasMore' => false]);
+        }
+
         $page = max(1, $request->query->getInt('page', 1));
         // Fetch one extra item to know whether there is a next page.
         $items = $this->mediaRepository->findPage($page, self::PER_PAGE + 1);

@@ -187,6 +187,11 @@ input:focus, select:focus, textarea:focus { outline: 3px solid rgba(59, 91, 219,
 .form-actions { display: flex; gap: .6rem; margin-top: 1.5rem; flex-wrap: wrap; }
 .inline-form { display: flex; gap: .5rem; align-items: flex-end; flex-wrap: wrap; }
 .inline-form .field { margin: 0; flex: 1 1 200px; }
+.inline-form--top { margin-top: 1rem; }
+.table-wrap--spaced { margin-top: 1.5rem; }
+.image-field { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.image-field img { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); }
+.image-field__actions { display: flex; gap: .4rem; flex-wrap: wrap; }
 
 /* ---------- Login ---------- */
 

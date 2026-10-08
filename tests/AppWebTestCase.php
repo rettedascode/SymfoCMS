@@ -2,7 +2,9 @@
 
 namespace App\Tests;
 
+use App\Entity\Category;
 use App\Entity\Page;
+use App\Entity\Post;
 use App\Entity\User;
 use App\Enum\ContentStatus;
 use App\Enum\UserRole;
@@ -71,6 +73,42 @@ abstract class AppWebTestCase extends WebTestCase
         $this->em()->flush();
 
         return $page;
+    }
+
+    protected function createCategory(string $name): Category
+    {
+        $category = (new Category())->setName($name)->setSlug(strtolower(str_replace(' ', '-', $name)));
+
+        $this->em()->persist($category);
+        $this->em()->flush();
+
+        return $category;
+    }
+
+    /**
+     * Creates a post that is published since yesterday unless told otherwise.
+     */
+    protected function createPost(
+        string $title,
+        ?User $author = null,
+        ?Category $category = null,
+        ContentStatus $status = ContentStatus::Published,
+        ?\DateTimeImmutable $publishedAt = new \DateTimeImmutable('-1 day'),
+        ?string $excerpt = null,
+    ): Post {
+        $post = (new Post())
+            ->setTitle($title)
+            ->setSlug(trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($title)), '-'))
+            ->setStatus($status)
+            ->setPublishedAt($publishedAt)
+            ->setAuthor($author)
+            ->setCategory($category)
+            ->setExcerpt($excerpt);
+
+        $this->em()->persist($post);
+        $this->em()->flush();
+
+        return $post;
     }
 
     protected function loginAs(UserRole $role): User

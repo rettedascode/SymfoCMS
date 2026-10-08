@@ -8,4 +8,15 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
+
+    public function boot(): void
+    {
+        // Publish dates are entered and shown in this time zone (see APP_TIMEZONE in .env).
+        $timezone = $_SERVER['APP_TIMEZONE'] ?? $_ENV['APP_TIMEZONE'] ?? '';
+        if (\is_string($timezone) && '' !== $timezone && \in_array($timezone, \DateTimeZone::listIdentifiers(), true)) {
+            date_default_timezone_set($timezone);
+        }
+
+        parent::boot();
+    }
 }
