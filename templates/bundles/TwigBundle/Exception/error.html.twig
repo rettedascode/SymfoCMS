@@ -1,0 +1,32 @@
+{#
+    Generic error page (403, 500, ...). It deliberately does not extend the site
+    layout: when the database is unavailable, loading the menus would fail too.
+    Preview it in dev at /_error/500.
+#}
+<!DOCTYPE html>
+<html lang="{{ app.locale|default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{{ status_code == 403 ? 'error.forbidden_title'|trans : 'error.generic_title'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('styles/site.css') }}">
+</head>
+<body>
+<main class="site-main">
+    <div class="container container--narrow">
+        <div class="error-page">
+            <p class="error-page__code" aria-hidden="true">{{ status_code }}</p>
+            {% if status_code == 403 %}
+                <h1>{{ 'error.forbidden_title'|trans }}</h1>
+                <p>{{ 'error.forbidden_text'|trans }}</p>
+            {% else %}
+                <h1>{{ 'error.generic_title'|trans }}</h1>
+                <p>{{ 'error.generic_text'|trans }}</p>
+            {% endif %}
+            <p><a class="button button--primary" href="/">{{ 'error.to_homepage'|trans }}</a></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -263,6 +263,14 @@ menu.js.type_page: 'Page: %title%'
 menu.js.type_post: 'Post: %title%'
 menu.js.blog_label: Blog
 
+error.not_found_title: Page not found
+error.not_found_text: Sorry, the page you are looking for does not exist or has been moved.
+error.forbidden_title: No access
+error.forbidden_text: You do not have permission to open this page.
+error.generic_title: Something went wrong
+error.generic_text: An unexpected error occurred. Please try again in a moment.
+error.to_homepage: Go to the homepage
+
 site.main_navigation: Main navigation
 site.footer_navigation: Footer navigation
 site.menu: Menu

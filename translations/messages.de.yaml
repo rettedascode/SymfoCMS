@@ -262,6 +262,14 @@ menu.js.type_page: 'Seite: %title%'
 menu.js.type_post: 'Beitrag: %title%'
 menu.js.blog_label: Blog
 
+error.not_found_title: Seite nicht gefunden
+error.not_found_text: Die gesuchte Seite gibt es leider nicht oder sie wurde verschoben.
+error.forbidden_title: Kein Zugriff
+error.forbidden_text: Du hast keine Berechtigung, diese Seite zu öffnen.
+error.generic_title: Etwas ist schiefgelaufen
+error.generic_text: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es gleich noch einmal.
+error.to_homepage: Zur Startseite
+
 site.main_navigation: Hauptnavigation
 site.footer_navigation: Fußzeilen-Navigation
 site.menu: Menü
