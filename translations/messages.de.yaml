@@ -1,0 +1,74 @@
+# Deutsche Oberflächentexte. Die Schlüssel entsprechen messages.en.yaml.
+
+admin.title: Verwaltung
+admin.skip_to_content: Zum Inhalt springen
+admin.menu: Menü
+admin.navigation: Navigation der Verwaltung
+
+nav.pages: Seiten
+nav.blog: Blog
+nav.media: Medien
+nav.menus: Menüs
+nav.users: Benutzer
+nav.view_site: Website ansehen
+nav.logout: Abmelden
+
+action.save: Speichern
+action.cancel: Abbrechen
+action.edit: Bearbeiten
+action.delete: Löschen
+action.create: Erstellen
+action.back: Zurück
+action.view: Ansehen
+action.close: Schließen
+
+label.status: Status
+label.actions: Aktionen
+label.title: Titel
+label.updated: Zuletzt geändert
+
+status.draft: Entwurf
+status.published: Veröffentlicht
+status.scheduled: Geplant
+
+role.admin: Admin – darf alles, auch Benutzer und Menüs verwalten
+role.editor: Redakteur – verwaltet alle Seiten, Beiträge und Medien
+role.author: Autor – schreibt und verwaltet eigene Blogbeiträge
+
+flash.saved: Die Änderungen wurden gespeichert.
+flash.user_created: Der Benutzer wurde angelegt.
+flash.user_deleted: Der Benutzer wurde gelöscht.
+flash.user_activated: Der Benutzer kann sich wieder anmelden.
+flash.user_deactivated: Der Benutzer wurde deaktiviert und kann sich nicht mehr anmelden.
+
+login.title: Anmelden
+login.intro: Melde dich an, um diese Website zu bearbeiten.
+login.email: E-Mail-Adresse
+login.password: Passwort
+login.submit: Anmelden
+login.back_to_site: Zurück zur Website
+
+user.add: Benutzer hinzufügen
+user.edit: Benutzer bearbeiten
+user.name: Name
+user.email: E-Mail-Adresse
+user.role: Rolle
+user.language: Sprache
+user.password: Passwort
+user.password_help: Mindestens 8 Zeichen.
+user.new_password: Neues Passwort
+user.new_password_help: Mindestens 8 Zeichen. Leer lassen, um das aktuelle Passwort zu behalten.
+user.current_password: Aktuelles Passwort
+user.active: Dieser Benutzer darf sich anmelden
+user.active_help: Deaktiviere ein Konto, um den Zugang zu sperren, ohne den Benutzer zu löschen.
+user.own_access_help: Du kannst deine eigene Rolle nicht ändern und dich nicht selbst deaktivieren.
+user.status_active: Aktiv
+user.status_inactive: Deaktiviert
+user.activate: Aktivieren
+user.deactivate: Deaktivieren
+user.you: du
+user.delete_confirm: 'Benutzer „%name%“ löschen? Die Blogbeiträge bleiben erhalten.'
+
+account.title: Mein Konto
+account.change_password: Passwort ändern
+account.change_password_help: Nur ausfüllen, wenn du ein neues Passwort möchtest.

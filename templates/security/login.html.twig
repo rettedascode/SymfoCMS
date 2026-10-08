@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ app.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ 'login.title'|trans }} · {{ site_name }}</title>
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+</head>
+<body class="admin login">
+<main class="login__card">
+    <h1>{{ site_name }}</h1>
+    <p class="muted">{{ 'login.intro'|trans }}</p>
+
+    {% if error %}
+        <div class="flash flash--error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form method="post" action="{{ path('app_login') }}">
+        <div class="field">
+            <label for="username">{{ 'login.email'|trans }}</label>
+            <input type="email" id="username" name="_username" value="{{ last_username }}" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+            <label for="password">{{ 'login.password'|trans }}</label>
+            <input type="password" id="password" name="_password" autocomplete="current-password" required>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <button type="submit" class="button button--primary button--block">{{ 'login.submit'|trans }}</button>
+    </form>
+
+    <p class="login__back"><a href="{{ path('app_home') }}">← {{ 'login.back_to_site'|trans }}</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,48 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    role_hierarchy:
+        ROLE_EDITOR: ROLE_AUTHOR
+        ROLE_ADMIN: ROLE_EDITOR
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt|assets|build)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: admin_dashboard
+            logout:
+                path: app_logout
+                target: app_home
+                enable_csrf: true
+            # Blocks further attempts after 5 failed logins per user + IP within 15 minutes.
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
+
+    # Coarse gate for the admin area. Fine-grained permissions are enforced by the voters in src/Security/Voter.
+    access_control:
+        - { path: ^/admin, roles: ROLE_AUTHOR }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

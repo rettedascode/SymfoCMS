@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+parameters:
+    app.site_name: '%env(APP_SITE_NAME)%'
+    app.site_tagline: '%env(APP_SITE_TAGLINE)%'
+    app.media_dir: '%kernel.project_dir%/public/uploads/media'
+    app.media_public_path: 'uploads/media'
+    app.max_upload_mb: '%env(int:APP_MAX_UPLOAD_MB)%'
+    app.posts_per_page: 6
+    env(APP_SITE_NAME): 'SymfoCMS'
+    env(APP_SITE_TAGLINE): ''
+    env(APP_LOCALE): 'en'
+    env(APP_MAX_UPLOAD_MB): '8'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+
+when@test:
+    parameters:
+        app.media_dir: '%kernel.project_dir%/var/test-uploads'

@@ -1,0 +1,24 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            # Used for every rich text field of the block editor. Anything not listed here is removed.
+            rich_text:
+                allow_elements:
+                    p: []
+                    br: []
+                    strong: []
+                    b: []
+                    em: []
+                    i: []
+                    ul: []
+                    ol: []
+                    li: []
+                    a: ['href']
+                # Keep the text of wrapper elements that browsers insert while editing.
+                block_elements: ['div', 'span', 'font', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote']
+                allowed_link_schemes: ['http', 'https', 'mailto', 'tel']
+                allow_relative_links: true
+                force_attributes:
+                    a:
+                        rel: 'noopener'
+                max_input_length: 200000

@@ -1,0 +1,7 @@
+framework:
+    default_locale: '%env(APP_LOCALE)%'
+    # Add a locale here (and a translations/messages.<locale>.yaml file) to offer another language.
+    enabled_locales: ['en', 'de']
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks: ['en']

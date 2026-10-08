@@ -1,0 +1,6 @@
+user.email_taken: There is already a user with this email address.
+user.password_too_short: The password must be at least 8 characters long.
+user.current_password_wrong: The current password is not correct.
+content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
+content.slug_taken: This address is already in use. Please choose another one.
+content.slug_reserved: This address is reserved by the system. Please choose another one.

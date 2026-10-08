@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes: ['admin/form_theme.html.twig']
+    globals:
+        site_name: '%app.site_name%'
+        site_tagline: '%app.site_tagline%'
+
+when@test:
+    twig:
+        strict_variables: true

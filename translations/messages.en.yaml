@@ -1,0 +1,75 @@
+# English interface texts. Keys are flat on purpose: copy this file to
+# messages.<locale>.yaml and translate the values to add a language.
+
+admin.title: Admin
+admin.skip_to_content: Skip to content
+admin.menu: Menu
+admin.navigation: Admin navigation
+
+nav.pages: Pages
+nav.blog: Blog
+nav.media: Media
+nav.menus: Menus
+nav.users: Users
+nav.view_site: View website
+nav.logout: Log out
+
+action.save: Save
+action.cancel: Cancel
+action.edit: Edit
+action.delete: Delete
+action.create: Create
+action.back: Back
+action.view: View
+action.close: Close
+
+label.status: Status
+label.actions: Actions
+label.title: Title
+label.updated: Last changed
+
+status.draft: Draft
+status.published: Published
+status.scheduled: Scheduled
+
+role.admin: Admin – can do everything, including users and menus
+role.editor: Editor – manages all pages, posts and media
+role.author: Author – writes and manages their own blog posts
+
+flash.saved: Your changes have been saved.
+flash.user_created: The user has been created.
+flash.user_deleted: The user has been deleted.
+flash.user_activated: The user can log in again.
+flash.user_deactivated: The user has been deactivated and can no longer log in.
+
+login.title: Log in
+login.intro: Log in to edit this website.
+login.email: Email address
+login.password: Password
+login.submit: Log in
+login.back_to_site: Back to the website
+
+user.add: Add user
+user.edit: Edit user
+user.name: Name
+user.email: Email address
+user.role: Role
+user.language: Language
+user.password: Password
+user.password_help: At least 8 characters.
+user.new_password: New password
+user.new_password_help: At least 8 characters. Leave empty to keep the current password.
+user.current_password: Current password
+user.active: This user may log in
+user.active_help: Deactivate an account to block access without deleting the user.
+user.own_access_help: You cannot change your own role or deactivate yourself.
+user.status_active: Active
+user.status_inactive: Deactivated
+user.activate: Activate
+user.deactivate: Deactivate
+user.you: you
+user.delete_confirm: 'Delete the user "%name%"? Their blog posts will be kept.'
+
+account.title: My account
+account.change_password: Change password
+account.change_password_help: Only fill this in if you want a new password.

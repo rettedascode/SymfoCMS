@@ -1,0 +1,49 @@
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_row -%}
+    {%- set widget_attr = help is not empty ? {attr: {'aria-describedby': id ~ '_help'}} : {} -%}
+    <div class="field{% if errors|length > 0 %} field--error{% endif %}{% if row_attr.class is defined %} {{ row_attr.class }}{% endif %}">
+        {{- form_label(form) -}}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row -%}
+
+{%- block checkbox_row -%}
+    <div class="field field--check{% if errors|length > 0 %} field--error{% endif %}">
+        <label class="check">
+            {{- form_widget(form) -}}
+            <span>{{ label is same as(false) ? '' : (translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain)) }}</span>
+        </label>
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }} class="choices">
+        {%- for child in form %}
+            <label class="check">
+                {{- form_widget(child) -}}
+                <span>{{ choice_translation_domain is same as(false) ? child.vars.label : child.vars.label|trans({}, choice_translation_domain) }}</span>
+            </label>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{%- block form_help -%}
+    {%- if help is not empty -%}
+        <p id="{{ id }}_help" class="field__help">{{ translation_domain is same as(false) ? help : help|trans(help_translation_parameters, translation_domain) }}</p>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="field__errors" role="alert">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}

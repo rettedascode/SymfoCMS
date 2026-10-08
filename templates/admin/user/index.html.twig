@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.users'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.users'|trans }}</h1>
+        <a class="button button--primary" href="{{ path('admin_user_new') }}">+ {{ 'user.add'|trans }}</a>
+    </div>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">{{ 'user.name'|trans }}</th>
+                <th scope="col">{{ 'user.email'|trans }}</th>
+                <th scope="col">{{ 'user.role'|trans }}</th>
+                <th scope="col">{{ 'label.status'|trans }}</th>
+                <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <th scope="row"><a href="{{ path('admin_user_edit', {id: user.id}) }}">{{ user.name }}</a>{% if user == app.user %} <span class="muted">({{ 'user.you'|trans }})</span>{% endif %}</th>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role.label|trans }}</td>
+                    <td><span class="badge badge--{{ user.active ? 'published' : 'draft' }}">{{ (user.active ? 'user.status_active' : 'user.status_inactive')|trans }}</span></td>
+                    <td class="table__actions">
+                        <a class="button button--small" href="{{ path('admin_user_edit', {id: user.id}) }}">{{ 'action.edit'|trans }}</a>
+                        {% if is_granted('USER_CHANGE_ACCESS', user) %}
+                            <form method="post" action="{{ path('admin_user_toggle', {id: user.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small">{{ (user.active ? 'user.deactivate' : 'user.activate')|trans }}</button>
+                            </form>
+                        {% endif %}
+                        {% if is_granted('USER_DELETE', user) %}
+                            <form method="post" action="{{ path('admin_user_delete', {id: user.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'user.delete_confirm'|trans({'%name%': user.name}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
