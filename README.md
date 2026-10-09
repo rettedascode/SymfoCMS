@@ -26,6 +26,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Live preview that uses the real public theme
 - Automatic backup while you type, restored when you come back, and a warning before leaving with unsaved changes
+- Page templates: new pages start blank or from a template (landing page, about, contact); admins can save any page as a new template
 - Shared blocks: write a block once, show it on many pages, edit it in one place – with a list of where it is used
 - Revision history: every save keeps the previous version, which can be previewed and restored with one click
 - All content is validated and sanitized on the server ([symfony/html-sanitizer](https://symfony.com/doc/current/html_sanitizer.html))
@@ -159,6 +160,7 @@ php bin/console doctrine:migrations:migrate -n
 | Blog categories | ✔ | ✔ | – |
 | Media library | ✔ | ✔ | upload, and manage own uploads |
 | Shared blocks | ✔ | ✔ | use only |
+| Page templates | use, save, delete | use | – |
 | Menus | ✔ | – | – |
 | Settings (languages) | ✔ | – | – |
 | Users | ✔ | – | – |

@@ -102,6 +102,7 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                        {% block settings_end %}{% endblock %}
                     </div>
                 </div>
                 {% if revisions|length > 1 %}

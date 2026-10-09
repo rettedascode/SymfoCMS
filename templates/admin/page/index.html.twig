@@ -5,7 +5,10 @@
 {% block main %}
     <div class="page-header">
         <h1>{{ 'nav.pages'|trans }}</h1>
-        <a class="button button--primary" href="{{ path('admin_page_new', {locale: locale}) }}">+ {{ 'page.new'|trans }}</a>
+        <div class="page-header__actions">
+            {% if is_granted('TEMPLATE_MANAGE') %}<a class="button" href="{{ path('admin_page_template_index') }}">{{ 'template.manage'|trans }}</a>{% endif %}
+            <a class="button button--primary" href="{{ path('admin_page_new', {locale: locale}) }}">+ {{ 'page.new'|trans }}</a>
+        </div>
     </div>
 
     {{ include('admin/_locale_tabs.html.twig', {route: 'admin_page_index', current: locale}) }}

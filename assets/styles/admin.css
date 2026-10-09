@@ -121,6 +121,15 @@ img { max-width: 100%; }
 
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
 .card--narrow { max-width: 560px; }
+.card--medium { max-width: 760px; }
+.template-choice { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .6rem; }
+.template-choice__option { display: flex; gap: .6rem; align-items: flex-start; padding: .8rem; border: 1px solid var(--border-strong); border-radius: var(--radius); cursor: pointer; background: var(--surface); }
+.template-choice__option:hover { border-color: var(--accent); }
+.template-choice__option:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent); }
+.template-choice__option input { margin-top: .2rem; accent-color: var(--accent); }
+.template-choice__text { display: grid; gap: .15rem; font-size: .92rem; }
+.template-choice__help { margin: .1rem 0 .8rem; }
+fieldset.field { border: 0; padding: 0; margin-left: 0; margin-right: 0; min-width: 0; }
 .card__heading { margin: 1.75rem 0 .35rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
 
 .button {

@@ -81,7 +81,7 @@ export default class extends Controller {
 
     /** Any change to a regular form field (title, address, status, ...). */
     fieldChanged(event) {
-        if (!this.listTarget.contains(event.target)) {
+        if (!this.listTarget.contains(event.target) && !event.target.hasAttribute('data-editor-ignore')) {
             this.changed();
         }
     }
@@ -160,7 +160,8 @@ export default class extends Controller {
     formFields() {
         const fields = {};
         for (const [name, value] of new FormData(this.formTarget).entries()) {
-            if (typeof value === 'string' && !name.includes('_token') && name !== this.inputTarget.name) {
+            const ignored = this.formTarget.elements[name]?.hasAttribute?.('data-editor-ignore');
+            if (typeof value === 'string' && !name.includes('_token') && name !== this.inputTarget.name && !ignored) {
                 fields[name] = value;
             }
         }

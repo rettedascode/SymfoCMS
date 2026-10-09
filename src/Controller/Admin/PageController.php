@@ -11,6 +11,7 @@ use App\Service\ContentEditor;
 use App\Service\ContentLocales;
 use App\Service\ContentManager;
 use App\Service\ContentTranslator;
+use App\Service\PageTemplates;
 use App\Service\RevisionManager;
 use App\Service\SlugGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,10 +46,10 @@ final class PageController extends AdminController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, SlugGenerator $slugGenerator): Response
+    public function new(Request $request, SlugGenerator $slugGenerator, PageTemplates $templates): Response
     {
         $locale = $this->locales->fromRequest($request);
-        $form = $this->createForm(NewContentType::class);
+        $form = $this->createForm(NewContentType::class, null, ['templates' => $templates->choices()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -58,7 +59,8 @@ final class PageController extends AdminController
                 ->setTitle($title)
                 ->setSlug($slugGenerator->unique($title, Page::class, $locale));
 
-            $this->contentManager->save($page, []);
+            // The template only provides the first blocks; from here on the page is edited freely.
+            $this->contentManager->save($page, $templates->blocks((string) $form->get('template')->getData(), $locale));
 
             return $this->redirectToRoute('admin_page_edit', ['id' => $page->getId()]);
         }

@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Media;
 use App\Entity\MenuItem;
 use App\Entity\Page;
+use App\Entity\PageTemplate;
 use App\Entity\Post;
 use App\Entity\Revision;
 use App\Entity\SharedBlock;
@@ -69,6 +70,14 @@ final class AppFixtures extends Fixture
                 ['type' => 'text', 'data' => ['content' => '<p>This box is a <strong>shared block</strong>. Edit it once under "Shared blocks" and it changes on every page that shows it.</p>']],
             ]);
         $manager->persist($callToAction);
+
+        // A saved page template, offered next to the built-in ones when a new page is created.
+        $manager->persist(new PageTemplate('Event announcement', [
+            ['type' => 'text', 'data' => ['content' => '<p>What is happening, and why should people come?</p>']],
+            ['type' => 'heading', 'data' => ['text' => 'When and where', 'level' => '2']],
+            ['type' => 'text', 'data' => ['content' => '<ul><li>Date and time</li><li>Place</li><li>Admission</li></ul>']],
+            ['type' => 'button', 'data' => ['label' => 'Register now', 'url' => '#', 'style' => 'primary']],
+        ]));
         $manager->flush();
         $shared = ['type' => 'shared', 'data' => ['block' => $callToAction->getId()]];
 

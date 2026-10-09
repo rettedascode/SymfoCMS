@@ -273,6 +273,48 @@ menu.js.type_post: 'Post: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Settings
+
+template.choose: Start with
+template.choose_help: A template fills the new page with example blocks that you then change, move or delete as you like.
+template.blank.name: Blank page
+template.blank.description: Start from scratch.
+template.landing.name: Landing page
+template.landing.description: Introduction, button, benefits in two columns and a quote.
+template.about.name: About
+template.about.description: Who you are, your story and your team.
+template.contact.name: Contact
+template.contact.description: How to reach you, address and opening hours.
+template.saved_description: Saved template
+template.manage: Page templates
+template.manage_intro: These templates were saved from existing pages. They are offered next to the built-in ones whenever somebody creates a new page.
+template.empty_title: No saved templates yet
+template.empty_text: Open a page, switch to the "Settings" tab and choose "Save as template".
+template.name: Name of the template
+template.created: Saved on
+template.save_heading: Template
+template.save_intro: Save this page as a template to offer it as a starting point for new pages. The template is a copy of the page as it was last saved.
+template.save_button: Save as template
+template.delete_confirm: 'Delete the template "%name%"? Pages that were created from it are not affected.'
+flash.template_saved: The page has been saved as a template. It is now offered when a new page is created.
+flash.template_deleted: The template has been deleted.
+template.landing.intro: Say in one or two sentences what you offer and who it is for.
+template.landing.button: Get started
+template.landing.benefits: Why choose us
+template.landing.benefit_one: First benefit
+template.landing.benefit_two: Second benefit
+template.landing.benefit_text: Describe this benefit in a sentence or two.
+template.landing.quote: A short sentence from a happy customer.
+template.landing.quote_author: Name of the customer
+template.about.intro: Introduce yourself or your organisation in a few sentences.
+template.about.story: Our story
+template.about.story_text: How did it all begin? What drives you?
+template.about.team: The team
+template.about.team_text: Introduce the people behind the website.
+template.contact.intro: We are happy to hear from you. Here is how to reach us.
+template.contact.address: Address
+template.contact.address_text: Street and number, postal code and town
+template.contact.hours: Opening hours
+template.contact.hours_text: Monday to Friday, 9 am to 5 pm
 nav.shared_blocks: Shared blocks
 
 shared_block.intro: A shared block is content you write once and show on many pages, such as opening hours or a call to action. Change it here and every page that uses it is updated.

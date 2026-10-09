@@ -272,6 +272,48 @@ menu.js.type_post: 'Beitrag: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Einstellungen
+
+template.choose: Beginnen mit
+template.choose_help: Eine Vorlage füllt die neue Seite mit Beispielblöcken, die du anschließend beliebig änderst, verschiebst oder löschst.
+template.blank.name: Leere Seite
+template.blank.description: Ganz von vorn beginnen.
+template.landing.name: Landingpage
+template.landing.description: Einleitung, Button, Vorteile in zwei Spalten und ein Zitat.
+template.about.name: Über uns
+template.about.description: Wer ihr seid, eure Geschichte und euer Team.
+template.contact.name: Kontakt
+template.contact.description: Wie man euch erreicht, Adresse und Öffnungszeiten.
+template.saved_description: Gespeicherte Vorlage
+template.manage: Seitenvorlagen
+template.manage_intro: Diese Vorlagen wurden aus bestehenden Seiten gespeichert. Sie werden neben den mitgelieferten angeboten, sobald jemand eine neue Seite anlegt.
+template.empty_title: Noch keine gespeicherten Vorlagen
+template.empty_text: Öffne eine Seite, wechsle zum Reiter „Einstellungen“ und wähle „Als Vorlage speichern“.
+template.name: Name der Vorlage
+template.created: Gespeichert am
+template.save_heading: Vorlage
+template.save_intro: Speichere diese Seite als Vorlage, um sie als Ausgangspunkt für neue Seiten anzubieten. Die Vorlage ist eine Kopie der Seite im zuletzt gespeicherten Stand.
+template.save_button: Als Vorlage speichern
+template.delete_confirm: 'Vorlage „%name%“ löschen? Seiten, die daraus entstanden sind, bleiben unverändert.'
+flash.template_saved: Die Seite wurde als Vorlage gespeichert. Sie wird nun beim Anlegen einer neuen Seite angeboten.
+flash.template_deleted: Die Vorlage wurde gelöscht.
+template.landing.intro: Beschreibe in ein oder zwei Sätzen, was du anbietest und für wen.
+template.landing.button: Jetzt starten
+template.landing.benefits: Was uns ausmacht
+template.landing.benefit_one: Erster Vorteil
+template.landing.benefit_two: Zweiter Vorteil
+template.landing.benefit_text: Beschreibe diesen Vorteil in ein oder zwei Sätzen.
+template.landing.quote: Ein kurzer Satz eines zufriedenen Kunden.
+template.landing.quote_author: Name des Kunden
+template.about.intro: Stelle dich oder deine Organisation in ein paar Sätzen vor.
+template.about.story: Unsere Geschichte
+template.about.story_text: Wie hat alles angefangen? Was treibt euch an?
+template.about.team: Das Team
+template.about.team_text: Stelle die Menschen hinter der Website vor.
+template.contact.intro: Wir freuen uns, von dir zu hören. So erreichst du uns.
+template.contact.address: Adresse
+template.contact.address_text: Straße und Hausnummer, Postleitzahl und Ort
+template.contact.hours: Öffnungszeiten
+template.contact.hours_text: Montag bis Freitag, 9 bis 17 Uhr
 nav.shared_blocks: Geteilte Blöcke
 
 shared_block.intro: Ein geteilter Block ist Inhalt, den du einmal schreibst und auf vielen Seiten zeigst, etwa Öffnungszeiten oder ein Aufruf zum Handeln. Änderst du ihn hier, ändert er sich auf jeder Seite, die ihn verwendet.

@@ -7,13 +7,32 @@
         <h1>{{ heading|trans }}</h1>
     </div>
 
-    <div class="card card--narrow">
+    <div class="card card--medium">
         <p class="muted">{{ intro|trans }}</p>
         {% if is_multilingual() %}
             <p><span class="locale-chip" lang="{{ locale }}">{{ locale_name(locale) }}</span> <span class="muted">{{ 'language.new_content_hint'|trans }}</span></p>
         {% endif %}
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_row(form.title) }}
+
+        {% if form.template is defined %}
+            <fieldset class="field">
+                <legend>{{ 'template.choose'|trans }}</legend>
+                <p class="field__help template-choice__help">{{ 'template.choose_help'|trans }}</p>
+                <div class="template-choice">
+                    {% for choice in form.template %}
+                        <label class="template-choice__option">
+                            {{ form_widget(choice) }}
+                            <span class="template-choice__text">
+                                <strong>{{ choice.vars.label }}</strong>
+                                <span class="muted">{{ choice.vars.attr['data-description'] }}</span>
+                            </span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        {% endif %}
+
         <div class="form-actions">
             <button type="submit" class="button button--primary">{{ 'action.continue'|trans }}</button>
             <a class="button" href="{{ back }}">{{ 'action.cancel'|trans }}</a>
