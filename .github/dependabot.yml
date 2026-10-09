@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      symfony:
+        patterns:
+          - 'symfony/*'
+      doctrine:
+        patterns:
+          - 'doctrine/*'
+      dev-tools:
+        patterns:
+          - 'phpunit/*'
+          - 'phpstan/*'
+          - 'friendsofphp/php-cs-fixer'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

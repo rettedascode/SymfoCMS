@@ -198,9 +198,9 @@ final class AppFixtures extends Fixture
             $ratio = $y / $height;
             $color = imagecolorallocate(
                 $image,
-                (int) ($top[0] + ($bottom[0] - $top[0]) * $ratio),
-                (int) ($top[1] + ($bottom[1] - $top[1]) * $ratio),
-                (int) ($top[2] + ($bottom[2] - $top[2]) * $ratio),
+                $this->channel($top[0] + ($bottom[0] - $top[0]) * $ratio),
+                $this->channel($top[1] + ($bottom[1] - $top[1]) * $ratio),
+                $this->channel($top[2] + ($bottom[2] - $top[2]) * $ratio),
             );
             imageline($image, 0, $y, $width, $y, (int) $color);
         }
@@ -215,7 +215,7 @@ final class AppFixtures extends Fixture
             }
             $points[] = $width;
             $points[] = $height;
-            imagefilledpolygon($image, $points, (int) imagecolorallocate($image, (int) ($top[0] * $brightness), (int) ($top[1] * $brightness), (int) ($top[2] * $brightness)));
+            imagefilledpolygon($image, $points, (int) imagecolorallocate($image, $this->channel($top[0] * $brightness), $this->channel($top[1] * $brightness), $this->channel($top[2] * $brightness)));
         }
 
         $path = (string) tempnam(sys_get_temp_dir(), 'cms');
@@ -225,6 +225,14 @@ final class AppFixtures extends Fixture
         $media->setAlt($alt);
 
         return $media;
+    }
+
+    /**
+     * @return int<0, 255>
+     */
+    private function channel(float $value): int
+    {
+        return max(0, min(255, (int) round($value)));
     }
 
     /**

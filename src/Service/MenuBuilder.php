@@ -139,7 +139,7 @@ final class MenuBuilder
                 if (!$page instanceof Page) {
                     return null;
                 }
-                $item->setType($type)->setPage($page)->setLabel('' !== $label ? $label : $page->getTitle());
+                $item->setType(MenuItemType::Page)->setPage($page)->setLabel('' !== $label ? $label : $page->getTitle());
                 break;
 
             case MenuItemType::Post:
@@ -147,7 +147,7 @@ final class MenuBuilder
                 if (!$post instanceof Post) {
                     return null;
                 }
-                $item->setType($type)->setPost($post)->setLabel('' !== $label ? $label : $post->getTitle());
+                $item->setType(MenuItemType::Post)->setPost($post)->setLabel('' !== $label ? $label : $post->getTitle());
                 break;
 
             case MenuItemType::Url:
@@ -155,7 +155,7 @@ final class MenuBuilder
                 if ('' === $url || '' === $label) {
                     return null;
                 }
-                $item->setType($type)->setUrl($url)->setLabel($label);
+                $item->setType(MenuItemType::Url)->setUrl($url)->setLabel($label);
                 break;
 
             default:

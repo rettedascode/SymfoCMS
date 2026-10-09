@@ -46,6 +46,28 @@ abstract class AppWebTestCase extends WebTestCase
         return static::getContainer()->get(EntityManagerInterface::class);
     }
 
+    /**
+     * Loads an entity that must exist, e.g. to check what a request changed.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     *
+     * @return T
+     */
+    protected function entity(string $class, ?int $id): object
+    {
+        $entity = $this->em()->find($class, $id);
+        self::assertInstanceOf($class, $entity);
+
+        return $entity;
+    }
+
+    protected function json(mixed $data): string
+    {
+        return json_encode($data, \JSON_THROW_ON_ERROR);
+    }
+
     protected function createUser(UserRole $role, ?string $email = null, bool $active = true): User
     {
         $user = (new User())

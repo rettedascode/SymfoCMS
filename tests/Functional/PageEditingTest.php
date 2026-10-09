@@ -45,7 +45,7 @@ final class PageEditingTest extends AppWebTestCase
         self::assertResponseRedirects('/admin/pages/'.$page->getId().'/edit');
 
         $this->em()->clear();
-        $page = $this->em()->find(Page::class, $page->getId());
+        $page = $this->entity(Page::class, $page->getId());
         self::assertSame(ContentStatus::Published, $page->getStatus());
         self::assertCount(3, $page->getBlocks());
 
@@ -76,7 +76,7 @@ final class PageEditingTest extends AppWebTestCase
         ]);
 
         $this->em()->clear();
-        $blocks = $this->em()->find(Page::class, $page->getId())->getBlocks();
+        $blocks = $this->entity(Page::class, $page->getId())->getBlocks();
 
         self::assertCount(4, $blocks, 'The unknown block type must be dropped.');
         self::assertStringNotContainsString('script', $blocks[0]['data']['content']);
@@ -117,8 +117,8 @@ final class PageEditingTest extends AppWebTestCase
         $this->client->submitForm('Save changes', ['page[homepage]' => '1', 'page[blocks]' => '[]']);
 
         $this->em()->clear();
-        self::assertFalse($this->em()->find(Page::class, $first->getId())->isHomepage());
-        self::assertTrue($this->em()->find(Page::class, $second->getId())->isHomepage());
+        self::assertFalse($this->entity(Page::class, $first->getId())->isHomepage());
+        self::assertTrue($this->entity(Page::class, $second->getId())->isHomepage());
 
         $this->client->request('GET', '/');
         self::assertSelectorTextSame('h1', 'Second Home');
@@ -137,7 +137,7 @@ final class PageEditingTest extends AppWebTestCase
         $this->client->request('GET', '/admin/pages/'.$page->getId().'/edit');
         $this->client->submitForm('Save changes', ['page[slug]' => 'Über Uns!', 'page[blocks]' => '[]']);
         $this->em()->clear();
-        self::assertSame('uber-uns', $this->em()->find(Page::class, $page->getId())->getSlug());
+        self::assertSame('uber-uns', $this->entity(Page::class, $page->getId())->getSlug());
 
         $this->client->request('GET', '/admin/pages/'.$page->getId().'/edit');
         $this->client->submitForm('Save changes', ['page[slug]' => 'contact', 'page[blocks]' => '[]']);
@@ -159,7 +159,7 @@ final class PageEditingTest extends AppWebTestCase
         $this->client->request('POST', '/admin/pages/'.$page->getId().'/autosave', server: [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_X_CSRF_TOKEN' => $token,
-        ], content: json_encode([
+        ], content: $this->json([
             'fields' => ['page[title]' => 'Work in progress', 'page[_token]' => 'must-not-be-stored'],
             'blocks' => [['type' => 'text', 'data' => ['content' => '<p>Draft text<script>x</script></p>']]],
         ]));
@@ -200,7 +200,7 @@ final class PageEditingTest extends AppWebTestCase
         $this->client->request('POST', '/admin/preview', server: [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_X_CSRF_TOKEN' => $token,
-        ], content: json_encode([
+        ], content: $this->json([
             'title' => 'Preview title',
             'blocks' => [['type' => 'heading', 'data' => ['text' => 'Fresh heading', 'level' => '3']]],
         ]));

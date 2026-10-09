@@ -33,7 +33,7 @@ final class BlogTest extends AppWebTestCase
         self::assertResponseRedirects();
 
         $this->em()->clear();
-        $post = $this->em()->find(Post::class, $post->getId());
+        $post = $this->entity(Post::class, $post->getId());
         self::assertSame(ContentStatus::Published, $post->getStatus());
         self::assertNotNull($post->getPublishedAt(), 'Publishing without a date uses the current time.');
 
@@ -73,7 +73,7 @@ final class BlogTest extends AppWebTestCase
         self::assertResponseStatusCodeSame(403);
 
         $this->em()->clear();
-        self::assertSame('Editors Post', $this->em()->find(Post::class, $foreignId)->getTitle());
+        self::assertSame('Editors Post', $this->entity(Post::class, $foreignId)->getTitle());
     }
 
     public function testEditorManagesAllPostsAndCanReassignTheAuthor(): void
@@ -87,7 +87,7 @@ final class BlogTest extends AppWebTestCase
         $this->client->submitForm('Save changes', ['post[author]' => (string) $editor->getId(), 'post[blocks]' => '[]']);
 
         $this->em()->clear();
-        self::assertSame($editor->getId(), $this->em()->find(Post::class, $post->getId())->getAuthor()?->getId());
+        self::assertSame($editor->getId(), $this->entity(Post::class, $post->getId())->getAuthor()?->getId());
     }
 
     public function testFutureDateSchedulesThePost(): void
@@ -120,7 +120,7 @@ final class BlogTest extends AppWebTestCase
         self::assertStringNotContainsString('Coming Soon', (string) $this->client->getResponse()->getContent());
 
         // Once the date has passed it appears on its own.
-        $post = $this->em()->find(Post::class, $post->getId());
+        $post = $this->entity(Post::class, $post->getId());
         $post->setPublishedAt(new \DateTimeImmutable('-1 minute'));
         $this->em()->flush();
         $this->client->request('GET', '/blog/coming-soon');

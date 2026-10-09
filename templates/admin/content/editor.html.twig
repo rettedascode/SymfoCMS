@@ -51,16 +51,16 @@
                 {{ form_row(form.title) }}
 
                 <div class="tabs" role="tablist">
-                    <button type="button" role="tab" data-editor-target="tab" data-tab="content" data-action="editor#showTab" aria-selected="true">{{ 'editor.tab_content'|trans }}</button>
-                    <button type="button" role="tab" data-editor-target="tab" data-tab="settings" data-action="editor#showTab" aria-selected="false">{{ 'editor.tab_settings'|trans }}</button>
+                    <button type="button" role="tab" id="editor-tab-content" aria-controls="editor-panel-content" data-editor-target="tab" data-tab="content" data-action="editor#showTab" aria-selected="true">{{ 'editor.tab_content'|trans }}</button>
+                    <button type="button" role="tab" id="editor-tab-settings" aria-controls="editor-panel-settings" data-editor-target="tab" data-tab="settings" data-action="editor#showTab" aria-selected="false">{{ 'editor.tab_settings'|trans }}</button>
                 </div>
 
-                <div data-editor-target="panel" data-panel="content">
+                <div role="tabpanel" id="editor-panel-content" aria-labelledby="editor-tab-content" data-editor-target="panel" data-panel="content">
                     <div class="blocks" data-editor-target="list"></div>
                     <noscript><p class="flash flash--error">{{ 'editor.needs_javascript'|trans }}</p></noscript>
                 </div>
 
-                <div data-editor-target="panel" data-panel="settings" hidden>
+                <div role="tabpanel" id="editor-panel-settings" aria-labelledby="editor-tab-settings" data-editor-target="panel" data-panel="settings" hidden>
                     <div class="card">
                         {% block settings_main %}{% endblock %}
                         {{ form_row(form.slug) }}

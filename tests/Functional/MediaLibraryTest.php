@@ -85,7 +85,7 @@ final class MediaLibraryTest extends AppWebTestCase
 
         self::assertResponseRedirects('/admin/media');
         $this->em()->clear();
-        self::assertSame('A red square', $this->em()->find(Media::class, $media->getId())->getAlt());
+        self::assertSame('A red square', $this->entity(Media::class, $media->getId())->getAlt());
     }
 
     public function testPickerListReturnsLibraryAsJson(): void
@@ -176,13 +176,18 @@ final class MediaLibraryTest extends AppWebTestCase
 
         $id = json_decode((string) $this->client->getResponse()->getContent(), true)['media']['id'];
 
-        return $this->em()->find(Media::class, $id);
+        return $this->entity(Media::class, $id);
     }
 
+    /**
+     * @param positive-int $width
+     * @param positive-int $height
+     */
     private function image(int $width, int $height, string $name = 'test.png'): UploadedFile
     {
-        $path = tempnam(sys_get_temp_dir(), 'cms');
+        $path = (string) tempnam(sys_get_temp_dir(), 'cms');
         $image = imagecreatetruecolor($width, $height);
+        self::assertNotFalse($image);
         imagefill($image, 0, 0, (int) imagecolorallocate($image, 200, 30, 30));
         imagepng($image, $path);
 

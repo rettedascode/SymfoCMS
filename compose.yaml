@@ -1,25 +1,25 @@
+# Starts SymfoCMS for development with one command:
+#
+#     docker compose up
+#
+# Then open http://localhost:8000 (log in with admin@example.com / demo-password).
+# The source code is mounted into the container, so changes show up immediately.
 
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-8000}:8000"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+      APP_ENV: dev
+      # SQLite database inside the "var" volume. Override to use MySQL or PostgreSQL.
+      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/data.db"
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      - .:/app
+      # Keep dependencies, cache and database in volumes: much faster than the mounted folder on Windows and macOS.
+      - vendor:/app/vendor
+      - var:/app/var
 
 volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+  vendor:
+  var:

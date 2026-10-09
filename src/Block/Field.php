@@ -22,7 +22,7 @@ final class Field
     public ?string $placeholder = null;
 
     /**
-     * @param array<string, string> $options value => label, for select fields
+     * @param array<int|string, string> $options value => label, for select fields
      */
     private function __construct(
         public readonly string $name,
@@ -49,7 +49,7 @@ final class Field
     }
 
     /**
-     * @param array<string, string> $options value => label
+     * @param array<int|string, string> $options value => label (PHP turns numeric keys such as "2" into integers)
      */
     public static function select(string $name, string $label, array $options, string $default): self
     {

@@ -120,7 +120,7 @@ final class MenuTest extends AppWebTestCase
         $this->client->request('POST', '/admin/menus/'.$location, server: [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_X_CSRF_TOKEN' => $config['csrf'],
-        ], content: json_encode(['items' => $items]));
+        ], content: $this->json(['items' => $items]));
         self::assertResponseIsSuccessful();
     }
 }

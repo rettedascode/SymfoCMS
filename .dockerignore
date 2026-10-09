@@ -1,0 +1,7 @@
+.git
+vendor
+var
+node_modules
+public/uploads/media
+.env.local
+.env.*.local

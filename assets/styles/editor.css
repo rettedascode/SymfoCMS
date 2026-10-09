@@ -42,7 +42,6 @@
 
 .blocks__items { display: grid; gap: .9rem; }
 .blocks__items:empty { min-height: 12px; }
-.blocks__empty { text-align: center; color: var(--muted); padding: 1.5rem 1rem; margin: 0 0 .9rem; border: 1px dashed var(--border-strong); border-radius: var(--radius); background: var(--surface); }
 
 .blocks__add-row { margin-top: .9rem; }
 .blocks__add {

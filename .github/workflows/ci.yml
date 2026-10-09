@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Validate, PHPStan and coding standards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: ctype, iconv, intl, gd, exif, fileinfo, pdo_sqlite
+          coverage: none
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Lint container, templates and translations
+        run: |
+          php bin/console lint:container
+          php bin/console lint:twig templates
+          php bin/console lint:yaml config translations
+
+      - name: PHP-CS-Fixer (check only)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: PHPStan
+        run: |
+          php bin/console cache:warmup --env=dev
+          vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+  tests:
+    name: PHPUnit (PHP ${{ matrix.php }}, ${{ matrix.database }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.3'
+            database: sqlite
+          - php: '8.4'
+            database: sqlite
+          - php: '8.3'
+            database: postgresql
+          - php: '8.3'
+            database: mysql
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: app
+          POSTGRES_PASSWORD: test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: app
+          MYSQL_ROOT_PASSWORD: test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd "mysqladmin ping -uroot -ptest --silent"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ctype, iconv, intl, gd, exif, fileinfo, pdo_sqlite, pdo_pgsql, pdo_mysql
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      # SQLite is the default from .env.test; the other databases override it.
+      - name: Select database
+        if: matrix.database != 'sqlite'
+        run: |
+          if [ "${{ matrix.database }}" = "postgresql" ]; then
+            echo 'DATABASE_URL=postgresql://postgres:test@127.0.0.1:5432/app?serverVersion=16&charset=utf8' >> "$GITHUB_ENV"
+          else
+            echo 'DATABASE_URL=mysql://root:test@127.0.0.1:3306/app?serverVersion=8.4.0&charset=utf8mb4' >> "$GITHUB_ENV"
+          fi
+
+      - name: Run migrations and check the schema
+        run: |
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+          php bin/console doctrine:schema:validate --env=test
+
+      - name: PHPUnit
+        run: php bin/phpunit

@@ -1,0 +1,76 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug.
+        **Security problems must not be reported here** - please follow the [security policy](../blob/main/SECURITY.md) instead.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the problem. Screenshots help a lot.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Log in as an editor
+        2. Open "Pages" and create a new page
+        3. Add an image block
+        4. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: SymfoCMS version or commit
+      placeholder: e.g. 0.1.0 or the first characters of the commit hash
+    validations:
+      required: true
+
+  - type: input
+    id: php
+    attributes:
+      label: PHP version
+      placeholder: e.g. 8.3.12
+    validations:
+      required: true
+
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - SQLite
+        - MySQL / MariaDB
+        - PostgreSQL
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device (for problems in the editor or the public website)
+      placeholder: e.g. Firefox 130 on Windows, Safari on iPad
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or log output
+      description: For example from var/log/ or the browser console. Remove passwords and other private data first.
+      render: text
