@@ -20,7 +20,7 @@ final class RevisionTest extends AppWebTestCase
         $crawler = $this->client->followRedirect();
         $page = $this->em()->getRepository(Page::class)->findOneBy([]);
         self::assertInstanceOf(Page::class, $page);
-        $id = $page->getId();
+        $id = (int) $page->getId();
         self::assertCount(0, $crawler->filter('[data-tab="history"]'), 'With a single version there is nothing to go back to, so no history tab.');
 
         $this->save($id, 'Opening Hours', 'Monday to Friday');
