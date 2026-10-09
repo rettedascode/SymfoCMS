@@ -97,7 +97,8 @@ final class MultilingualTest extends AppWebTestCase
         self::assertSame(ContentStatus::Draft, $translation->getStatus(), 'A translation starts as a draft.');
         self::assertSame('About Us', $translation->getTitle());
         self::assertSame('about-us', $translation->getSlug(), 'The same address may be used once per language.');
-        self::assertSame($page->getBlocks(), $translation->getBlocks());
+        // assertEquals: MySQL stores JSON objects with their keys in a different order.
+        self::assertEquals($page->getBlocks(), $translation->getBlocks());
         self::assertSame('Who we are.', $translation->getMetaDescription());
 
         // Both versions now link to each other, and asking again does not create a second copy.
