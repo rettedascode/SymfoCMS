@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Slash command: typing "/" in an empty text block opens the list of block types and turns the block into the chosen one.
+- The "Add block" list can be searched by typing; Enter picks the first match.
 - Page templates: a new page can start from a built-in template (landing page, about, contact) or from a template an admin saved from an existing page.
 - Shared blocks: any block can be saved under a name, inserted on many pages and edited in one place. The admin section shows where each shared block is used before it is changed or deleted.
 - `Field::sharedBlock()` and the `render_shared_block()` Twig function for block types that show a shared block.

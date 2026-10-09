@@ -154,6 +154,9 @@ editor.status_saving: Backing up…
 editor.status_autosaved: 'Backed up automatically at %time%. Press "Save" to keep your changes.'
 editor.status_error: Automatic backup failed. Please save your changes.
 editor.add_block: Add block
+editor.menu_search: Search blocks …
+editor.menu_no_match: No block matches your search.
+editor.rt_slash_placeholder: Write something, or type / to choose another block
 editor.add_block_below: Add a block below
 editor.empty: Nothing here yet. Add your first block to start writing.
 editor.empty_column: This column is empty.

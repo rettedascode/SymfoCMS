@@ -51,7 +51,7 @@ function serialize(area) {
     return output.textContent.trim() === '' ? '' : output.innerHTML;
 }
 
-export function createRichText({ value, labelledBy, i18n, onChange }) {
+export function createRichText({ value, labelledBy, i18n, onChange, onSlash = null }) {
     const area = el('div', {
         class: 'richtext__area',
         contenteditable: 'true',
@@ -60,6 +60,10 @@ export function createRichText({ value, labelledBy, i18n, onChange }) {
         'aria-labelledby': labelledBy,
     });
     area.innerHTML = value || '';
+    if (onSlash) {
+        // Shown by CSS while the field is empty; this is how people discover the slash command.
+        area.dataset.placeholder = i18n.rt_slash_placeholder;
+    }
 
     let savedRange = null;
     const emit = () => onChange(serialize(area));
@@ -212,6 +216,10 @@ export function createRichText({ value, labelledBy, i18n, onChange }) {
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
             event.preventDefault();
             openLinkBar();
+        } else if (event.key === '/' && onSlash && area.textContent.trim() === '') {
+            // Slash command: only in an empty field, so a "/" inside a sentence stays a "/".
+            event.preventDefault();
+            onSlash();
         }
     });
 

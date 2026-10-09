@@ -76,6 +76,8 @@
     padding: .6rem; margin-top: .6rem; background: var(--surface);
     border: 1px solid var(--accent); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(20, 30, 50, .14);
 }
+.block-menu__search { grid-column: 1 / -1; min-height: 38px !important; }
+.block-menu__empty { grid-column: 1 / -1; margin: .3rem .2rem; }
 .block-menu__item {
     display: flex; align-items: center; gap: .6rem; min-height: 46px; padding: .4rem .6rem;
     border: 1px solid transparent; border-radius: 6px; background: none; font: inherit; font-weight: 500; text-align: left; cursor: pointer;
@@ -102,6 +104,7 @@
 .richtext__linkbar[hidden] { display: none; }
 .richtext__link-input { flex: 1 1 180px; min-height: 34px !important; }
 .richtext__area { min-height: 110px; padding: .7rem .8rem; outline: none; overflow-wrap: anywhere; }
+.richtext__area[data-placeholder]:empty::before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
 .richtext__area p { margin: 0 0 .7rem; }
 .richtext__area ul, .richtext__area ol { margin: 0 0 .7rem; padding-left: 1.4rem; }
 .richtext__area > *:last-child { margin-bottom: 0; }

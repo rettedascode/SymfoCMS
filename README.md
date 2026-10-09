@@ -24,6 +24,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Seven block types: heading, rich text (bold, italic, links, lists), image, button, quote, divider and two columns
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
+- Slash command: type `/` in an empty text block to pick another block type; the block list is searchable
 - Live preview that uses the real public theme
 - Automatic backup while you type, restored when you come back, and a warning before leaving with unsaved changes
 - Page templates: new pages start blank or from a template (landing page, about, contact); admins can save any page as a new template

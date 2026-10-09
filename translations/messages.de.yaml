@@ -153,6 +153,9 @@ editor.status_saving: Wird gesichert …
 editor.status_autosaved: 'Automatisch gesichert um %time%. Klicke auf „Speichern“, um die Änderungen zu übernehmen.'
 editor.status_error: Die automatische Sicherung ist fehlgeschlagen. Bitte speichere deine Änderungen.
 editor.add_block: Block hinzufügen
+editor.menu_search: Blöcke durchsuchen …
+editor.menu_no_match: Kein Block passt zu deiner Suche.
+editor.rt_slash_placeholder: Schreibe etwas oder tippe / für einen anderen Block
 editor.add_block_below: Block darunter hinzufügen
 editor.empty: Hier ist noch nichts. Füge deinen ersten Block hinzu, um loszuschreiben.
 editor.empty_column: Diese Spalte ist leer.

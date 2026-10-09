@@ -59,8 +59,10 @@ export default class extends Controller {
             }
         };
         this.onKeydown = (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' && this.menu) {
+                const cancel = this.menuCancel;
                 this.closeMenu();
+                cancel?.();
             }
         };
         window.addEventListener('beforeunload', this.onBeforeUnload);
@@ -429,6 +431,13 @@ export default class extends Controller {
         this.errors = {};
         const block = this.newBlock(typeName);
         list.splice(index, 0, block);
+        this.focusNewBlock(block);
+        this.render();
+        this.changed();
+    }
+
+    /** After the next render, scroll to the given block and put the cursor into its first field. */
+    focusNewBlock(block) {
         this.focusRequest = () => {
             const node = [...this.listTarget.querySelectorAll('.block')].find((candidate) => candidate.block === block);
             node?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -438,8 +447,6 @@ export default class extends Controller {
                 ?? node?.querySelector('button');
             target?.focus({ preventScroll: true });
         };
-        this.render();
-        this.changed();
     }
 
     // ----- Shared blocks --------------------------------------------------
@@ -504,26 +511,122 @@ export default class extends Controller {
 
             return;
         }
+
+        this.showMenu(anchor, nested, (typeName) => this.insert(list, index, typeName));
+    }
+
+    /**
+     * Shows the list of block types below the anchor. Typing filters the list,
+     * Enter picks the first match, Escape closes it.
+     */
+    showMenu(anchor, nested, onChoose, onCancel = () => {}) {
         this.closeMenu();
 
         const choices = this.config.types.filter((type) => !nested || !type.layout);
-        this.menu = el('div', { class: 'block-menu', role: 'menu', 'aria-label': this.i18n.add_block },
-            ...choices.map((type) => el('button', {
+        const items = choices.map((type) => {
+            const item = el('button', {
                 type: 'button',
                 class: 'block-menu__item',
                 role: 'menuitem',
-                onclick: () => this.insert(list, index, type.type),
-            }, el('span', { class: 'block-menu__icon', 'aria-hidden': 'true', text: type.icon }), type.label)),
-        );
+                onclick: () => onChoose(type.type),
+            }, el('span', { class: 'block-menu__icon', 'aria-hidden': 'true', text: type.icon }), type.label);
+            item.typeName = type.type;
+            item.searchText = type.label.toLowerCase();
+
+            return item;
+        });
+        const noMatch = el('p', { class: 'block-menu__empty muted', text: this.i18n.menu_no_match, hidden: true });
+        const search = el('input', {
+            type: 'search',
+            class: 'block-menu__search',
+            placeholder: this.i18n.menu_search,
+            'aria-label': this.i18n.menu_search,
+            autocomplete: 'off',
+        });
+        const visible = () => items.filter((item) => !item.hidden);
+
+        search.addEventListener('input', () => {
+            const query = search.value.trim().toLowerCase();
+            items.forEach((item) => { item.hidden = query !== '' && !item.searchText.includes(query); });
+            noMatch.hidden = visible().length > 0;
+        });
+        search.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                // Always handled here, so Enter never submits the page form.
+                event.preventDefault();
+                event.stopPropagation();
+                const [first] = visible();
+                if (first) {
+                    onChoose(first.typeName);
+                }
+            } else if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                visible()[0]?.focus();
+            }
+        });
+
+        this.menu = el('div', { class: 'block-menu', role: 'menu', 'aria-label': this.i18n.add_block }, search, ...items, noMatch);
         this.menuAnchor = anchor;
+        this.menuCancel = onCancel;
         anchor.after(this.menu);
-        this.menu.querySelector('button').focus();
+        search.focus();
+    }
+
+    /**
+     * Slash command: "/" typed into an empty text block offers to turn that
+     * block into another type.
+     */
+    openSlashMenu(block) {
+        const place = this.locate(block, this.blocks, false);
+        const node = [...this.listTarget.querySelectorAll('.block')].find((candidate) => candidate.block === block);
+        if (!place || !node) {
+            return;
+        }
+
+        const backToText = () => node.querySelector('[contenteditable]')?.focus();
+        this.showMenu(node, place.nested, (typeName) => {
+            if (typeName === block.type) {
+                this.closeMenu();
+                backToText();
+
+                return;
+            }
+
+            this.errors = {};
+            const replacement = this.newBlock(typeName);
+            place.list[place.index] = replacement;
+            this.focusNewBlock(replacement);
+            this.render();
+            this.changed();
+        }, backToText);
+    }
+
+    /** Finds the list a block lives in, looking into nested lists too. */
+    locate(block, list, nested) {
+        const index = list.indexOf(block);
+        if (index !== -1) {
+            return { list, index, nested };
+        }
+
+        for (const candidate of list) {
+            for (const field of this.types.get(candidate.type)?.fields ?? []) {
+                if (field.type === 'blocks' && Array.isArray(candidate.data[field.name])) {
+                    const found = this.locate(block, candidate.data[field.name], true);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     closeMenu() {
         this.menu?.remove();
         this.menu = null;
         this.menuAnchor = null;
+        this.menuCancel = null;
     }
 
     // ----- Undo after deleting -------------------------------------------

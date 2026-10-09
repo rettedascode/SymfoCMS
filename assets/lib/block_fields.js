@@ -29,8 +29,17 @@ function textarea({ id, field, value, update }) {
     return input;
 }
 
-function richtext({ editor, labelId, value, update }) {
-    return createRichText({ value, labelledBy: labelId, i18n: editor.i18n, onChange: update });
+function richtext({ editor, block, labelId, value, update }) {
+    // The slash command belongs to plain text blocks: blocks whose only field is this text.
+    const isTextBlock = editor.types.get(block.type)?.fields.length === 1;
+
+    return createRichText({
+        value,
+        labelledBy: labelId,
+        i18n: editor.i18n,
+        onChange: update,
+        onSlash: isTextBlock ? () => editor.openSlashMenu(block) : null,
+    });
 }
 
 function select({ id, field, value, update }) {
