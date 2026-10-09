@@ -16,6 +16,7 @@ Pages and blog posts are built from **blocks**. This page describes what the edi
 | Divider | A horizontal line |
 | Two columns | Two columns that each hold their own blocks |
 | Questions and answers | Questions that open to reveal their answers (an FAQ) |
+| Form | A form from the [form builder](forms.md) |
 | Map | A place on OpenStreetMap, found by typing its address |
 | Code | Source code, shown exactly as typed and with syntax highlighting |
 | Shared block | Content that is maintained in one place and shown on many pages |

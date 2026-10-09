@@ -1,0 +1,58 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'form.inbox'|trans }} · {{ form.name }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'form.inbox_of'|trans({'%name%': form.name}) }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('admin_form_index') }}">← {{ 'nav.forms'|trans }}</a>
+            {% if total > 0 %}<a class="button" href="{{ path('admin_form_export', {id: form.id}) }}">{{ 'form.export'|trans }}</a>{% endif %}
+        </div>
+    </div>
+
+    {% if submissions is empty %}
+        <div class="empty">
+            <h2>{{ 'form.inbox_empty_title'|trans }}</h2>
+            <p>{{ 'form.inbox_empty_text'|trans }}</p>
+        </div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'form.submitted_at'|trans }}</th>
+                    <th scope="col">{{ 'form.message'|trans }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for submission in submissions %}
+                    <tr class="{{ submission.read ? '' : 'is-unread' }}">
+                        <th scope="row">
+                            <a href="{{ path('admin_form_submission', {id: submission.id}) }}">{{ submission.createdAt|local_date(true) }}</a>
+                            {% if not submission.read %}<span class="badge badge--scheduled">{{ 'form.unread'|trans }}</span>{% endif %}
+                        </th>
+                        <td class="muted">{{ submission.summary }}</td>
+                        <td class="table__actions">
+                            <a class="button button--small" href="{{ path('admin_form_submission', {id: submission.id}) }}">{{ 'action.view'|trans }}</a>
+                            <form method="post" action="{{ path('admin_form_submission_delete', {id: submission.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'form.submission_delete_confirm'|trans }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pages > 1 %}
+            <nav class="pager" aria-label="{{ 'label.pagination'|trans }}">
+                {% if page > 1 %}<a class="button" href="{{ path('admin_form_submissions', {id: form.id, page: page - 1}) }}">← {{ 'action.previous'|trans }}</a>{% endif %}
+                <span class="muted">{{ 'label.page_of'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                {% if page < pages %}<a class="button" href="{{ path('admin_form_submissions', {id: form.id, page: page + 1}) }}">{{ 'action.next'|trans }} →</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

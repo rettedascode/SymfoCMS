@@ -1,0 +1,44 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ entity.id ? entity.name : 'form.new'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ (entity.id ? 'form.edit' : 'form.new')|trans }}</h1>
+        {% if entity.id %}
+            <a class="button" href="{{ path('admin_form_submissions', {id: entity.id}) }}">{{ 'form.open_inbox'|trans }}</a>
+        {% endif %}
+    </div>
+
+    <div data-controller="form-builder" data-form-builder-config-value="{{ builder_config|json_encode }}">
+        {{ form_start(form, {attr: {'data-action': 'submit->form-builder#submit input->form-builder#changed'}}) }}
+        <div class="form-builder">
+            <div class="form-builder__fields">
+                {{ form_errors(form) }}
+                <div class="card">
+                    {{ form_row(form.name) }}
+                </div>
+
+                <h2 class="form-builder__heading">{{ 'form.fields_heading'|trans }}</h2>
+                <div class="form-builder__list" data-form-builder-target="list"></div>
+                <div class="card form-builder__add">
+                    <p class="muted">{{ 'form.add_field'|trans }}</p>
+                    <div class="form-builder__buttons" data-form-builder-target="add"></div>
+                </div>
+            </div>
+
+            <aside class="card">
+                <h2>{{ 'form.settings_heading'|trans }}</h2>
+                {{ form_row(form.submitLabel) }}
+                {{ form_row(form.successMessage) }}
+                {{ form_row(form.notifyEmail) }}
+                <p class="field__help">{{ 'form.usage_hint'|trans }}</p>
+                <div class="form-actions">
+                    <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
+                    <a class="button" href="{{ path('admin_form_index') }}">{{ 'action.back'|trans }}</a>
+                </div>
+            </aside>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

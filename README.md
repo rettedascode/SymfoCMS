@@ -22,7 +22,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 **Block editor**
 
-- Thirteen block types: heading, rich text, image, gallery, video, button, quote, divider, two columns, questions and answers, map, code and shared block ([overview](docs/editor.md))
+- Fourteen block types: heading, rich text, image, gallery, video, button, quote, divider, two columns, questions and answers, form, map, code and shared block ([overview](docs/editor.md))
 - Privacy by default: videos (YouTube, Vimeo) and maps (OpenStreetMap, no API key) load nothing from third parties until the visitor clicks
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Slash command: type `/` in an empty text block to pick another block type; the block list is searchable
@@ -42,6 +42,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Blog overview with pagination, category pages and an RSS feed
 - Drafts and scheduled posts can be previewed by logged-in users only
 - Menu editor for the main and the footer navigation: link pages, posts or any URL, reorder by drag and drop, one level of dropdowns
+- [Form builder](docs/forms.md): contact and sign-up forms with an inbox, email notification, CSV export and spam protection that needs no third-party service
 - Media library: upload several images by drag and drop, automatic resized versions, alt text per image
 
 **Users and security**
@@ -121,6 +122,8 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `APP_LOCALE` | `en` | Language of the website until languages are chosen under *Settings* in the admin area, and default admin language |
 | `APP_TIMEZONE` | `UTC` | Time zone for publish dates, e.g. `Europe/Berlin`. Choose it before creating content. |
 | `APP_MAX_REVISIONS` | `50` | Number of earlier versions kept for every page and post |
+| `MAILER_DSN` | `null://null` | How emails are sent ([forms guide](docs/forms.md#email-notifications)); the default sends nothing |
+| `APP_MAIL_FROM` | `noreply@example.com` | Sender address of emails the website sends |
 | `APP_MAX_UPLOAD_MB` | `8` | Largest accepted image. PHP's `upload_max_filesize` and `post_max_size` must allow it too. |
 
 ### Using MySQL or PostgreSQL
@@ -162,9 +165,10 @@ php bin/console doctrine:migrations:migrate -n
 | Blog categories | ✔ | ✔ | – |
 | Media library | ✔ | ✔ | upload, and manage own uploads |
 | Shared blocks | ✔ | ✔ | use only |
+| Forms and their inbox | ✔ | ✔ | use only |
 | Page templates | use, save, delete | use | – |
 | Menus | ✔ | – | – |
-| Settings (languages) | ✔ | – | – |
+| Settings (languages, retention of form messages) | ✔ | – | – |
 | Users | ✔ | – | – |
 
 Every user can change their own name, language and password under their name at the bottom of the sidebar.
@@ -274,7 +278,7 @@ templates/site/     Public theme
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: the editor, extensions, multilingual websites
+docs/               Guides: the editor, forms, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

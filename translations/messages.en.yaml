@@ -319,6 +319,76 @@ menu.js.type_post: 'Post: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Settings
+nav.forms: Forms
+
+form.new: New form
+form.edit: Edit form
+form.name: Name of the form
+form.name_help: Only you and your colleagues see this name, for example "Contact form".
+form.fields_heading: Fields
+form.add_field: Add a field
+form.settings_heading: Settings
+form.submit_label: Text on the send button
+form.success_message: Message after sending
+form.success_message_help: Shown to the visitor in place of the form once it was sent.
+form.notify_email: Send a notification to
+form.notify_email_help: Optional. This address gets an email for every submission. Submissions are stored in the inbox either way.
+form.usage_hint: To show the form on a page, open the page and add the block "Form".
+form.default_submit_label: Send
+form.default_success_message: Thank you! Your message has been sent.
+form.inbox: Inbox
+form.inbox_of: 'Inbox: %name%'
+form.open_inbox: Open inbox
+form.unread: New
+form.unread_count: '{1}1 new|]1,Inf[%count% new'
+form.empty_title: No forms yet
+form.empty_text: Build a contact form or a sign-up form and place it on any page.
+form.inbox_empty_title: Nothing here yet
+form.inbox_empty_text: As soon as a visitor sends this form, the message appears here.
+form.submitted_at: Sent on
+form.sent_from: from
+form.message: Message
+form.export: Download as CSV file
+form.mark_unread: Mark as new
+form.delete_confirm: 'Delete the form "%name%" and everything visitors sent through it?'
+form.submission_delete_confirm: Delete this message permanently?
+form.js.empty: This form has no fields yet. Add the first one below.
+form.js.type_text: Short text
+form.js.type_email: Email address
+form.js.type_textarea: Long text
+form.js.type_select: Selection
+form.js.type_checkbox: Checkbox
+form.js.type_consent: Consent
+form.js.label: Question or label
+form.js.label_checkbox: Text next to the checkbox
+form.js.placeholder_text: e.g. Your name
+form.js.placeholder_email: e.g. Your email address
+form.js.placeholder_textarea: e.g. Your message
+form.js.placeholder_select: e.g. What is your request about?
+form.js.placeholder_checkbox: e.g. Please send me the newsletter
+form.js.placeholder_consent: e.g. I agree that my details are stored to answer my request.
+form.js.required: Visitors must fill this in
+form.js.options: Choices
+form.js.options_placeholder: One choice per line
+form.js.options_help: Write each choice on its own line.
+form.js.drag: Drag to reorder
+form.js.move_up: Move up
+form.js.move_down: Move down
+form.js.delete: Remove field
+flash.form_created: The form has been created. Add the block "Form" to a page to show it.
+flash.form_deleted: The form has been deleted.
+flash.submission_deleted: The message has been deleted.
+settings.forms_heading: Forms
+settings.retention_days: Delete messages from forms after (days)
+settings.retention_days_help: Messages older than this are removed automatically. Leave empty to keep them until you delete them yourself.
+block.form.label: Form
+block.form.form: Form
+editor.forms_none: There are no forms yet. Build one under "Forms" first.
+editor.forms_choose: Choose a form …
+editor.forms_manage: Manage forms
+site.form.choose: Please choose …
+site.form.leave_empty: Please leave this field empty
+site.form.required_hint: Required field
 
 template.choose: Start with
 template.choose_help: A template fills the new page with example blocks that you then change, move or delete as you like.

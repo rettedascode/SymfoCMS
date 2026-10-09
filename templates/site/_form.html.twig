@@ -1,0 +1,64 @@
+{#
+    A form built in the admin area. Variables: form, result (outcome of a
+    submission that was just made, or null), started, honeypot, timestamp_field.
+#}
+{% set errors = result and result.status == 'error' ? result.errors : {} %}
+{% set values = result and result.status == 'error' ? result.values : {} %}
+<div class="block block-form" id="form-{{ form.id }}">
+    {% if result and result.status == 'success' %}
+        <p class="form-message form-message--success" id="form-{{ form.id }}-message" role="status" tabindex="-1" data-focus>{{ form.successMessage }}</p>
+    {% else %}
+        <form method="post" action="{{ path('app_form_submit', {id: form.id}) }}" class="site-form" novalidate>
+            {% if errors is not empty %}
+                <p class="form-message form-message--error" id="form-{{ form.id }}-message" role="alert" tabindex="-1" data-focus>
+                    {{ (errors._form ?? 'form.has_errors')|trans({}, 'validators') }}
+                </p>
+            {% endif %}
+
+            {% for field in form.fields %}
+                {% set name = 'fields[' ~ field.id ~ ']' %}
+                {% set input_id = 'form-' ~ form.id ~ '-' ~ field.id %}
+                {% set error = errors[field.id] ?? null %}
+                {% set value = values[field.id] ?? '' %}
+                {% set described = error ? ' aria-describedby="' ~ input_id ~ '-error" aria-invalid="true"' : '' %}
+
+                <div class="site-form__field{{ error ? ' site-form__field--error' }}">
+                    {% if field.type in ['checkbox', 'consent'] %}
+                        <label class="site-form__check">
+                            <input type="checkbox" id="{{ input_id }}" name="{{ name }}" value="1"{{ value == '1' ? ' checked' }}{{ field.required ? ' required' }}{{ described|raw }}>
+                            <span>{{ field.label }}{% if field.required %} <span class="site-form__required" aria-hidden="true">*</span>{% endif %}</span>
+                        </label>
+                    {% else %}
+                        <label for="{{ input_id }}">{{ field.label }}{% if field.required %} <span class="site-form__required" aria-hidden="true">*</span>{% endif %}</label>
+                        {% if field.type == 'textarea' %}
+                            <textarea id="{{ input_id }}" name="{{ name }}" rows="5"{{ field.required ? ' required' }}{{ described|raw }}>{{ value }}</textarea>
+                        {% elseif field.type == 'select' %}
+                            <select id="{{ input_id }}" name="{{ name }}"{{ field.required ? ' required' }}{{ described|raw }}>
+                                <option value="">{{ 'site.form.choose'|trans }}</option>
+                                {% for option in field.options %}
+                                    <option value="{{ option }}"{{ option == value ? ' selected' }}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="{{ field.type == 'email' ? 'email' : 'text' }}" id="{{ input_id }}" name="{{ name }}" value="{{ value }}"
+                                   {{ field.type == 'email' ? 'autocomplete="email"' }}{{ field.required ? ' required' }}{{ described|raw }}>
+                        {% endif %}
+                    {% endif %}
+                    {% if error %}<p class="site-form__error" id="{{ input_id }}-error">{{ error|trans({}, 'validators') }}</p>{% endif %}
+                </div>
+            {% endfor %}
+
+            {# Spam protection: people never see or fill this field, bots do. #}
+            <div class="site-form__trap" aria-hidden="true">
+                <label for="form-{{ form.id }}-{{ honeypot }}">{{ 'site.form.leave_empty'|trans }}</label>
+                <input type="text" id="form-{{ form.id }}-{{ honeypot }}" name="{{ honeypot }}" tabindex="-1" autocomplete="off">
+            </div>
+            <input type="hidden" name="{{ timestamp_field }}" value="{{ started }}">
+
+            {% if form.fields|filter(field => field.required)|length > 0 %}
+                <p class="site-form__hint"><span aria-hidden="true">*</span> {{ 'site.form.required_hint'|trans }}</p>
+            {% endif %}
+            <button type="submit" class="button button--primary">{{ form.submitLabel }}</button>
+        </form>
+    {% endif %}
+</div>

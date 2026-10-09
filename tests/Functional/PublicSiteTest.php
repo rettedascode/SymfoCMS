@@ -103,7 +103,7 @@ final class PublicSiteTest extends AppWebTestCase
         $crawler = $this->client->request('GET', '/');
         self::assertResponseIsSuccessful();
         self::assertSelectorTextSame('h1', 'Welcome to SymfoCMS');
-        self::assertSame(['Home', 'About', 'Blog'], $crawler->filter('.site-nav__list > li > a')->each(static fn ($a) => $a->text()));
+        self::assertSame(['Home', 'About', 'Blog', 'Contact'], $crawler->filter('.site-nav__list > li > a')->each(static fn ($a) => $a->text()));
         self::assertCount(2, $crawler->filter('.site-nav__sub a'));
         self::assertSelectorExists('.block-image img[srcset]');
         self::assertSelectorExists('.block-columns');
@@ -119,6 +119,16 @@ final class PublicSiteTest extends AppWebTestCase
         $this->client->request('GET', '/blog/hello-world');
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.post-cover img');
+
+        // Every block type used by the demo content renders.
+        $this->client->request('GET', '/contact');
+        self::assertSelectorExists('form.site-form');
+        $this->client->request('GET', '/blog/five-tips-for-writing-good-web-pages');
+        self::assertSelectorExists('.block-gallery');
+        self::assertSelectorExists('.block-video [data-embed-src]');
+        self::assertSelectorExists('.block-code');
+        $this->client->request('GET', '/de');
+        self::assertSelectorTextSame('h1', 'Willkommen bei SymfoCMS');
 
         $this->client->request('GET', '/login');
         $this->client->submitForm('Log in', ['_username' => 'admin@example.com', '_password' => AppFixtures::DEMO_PASSWORD]);

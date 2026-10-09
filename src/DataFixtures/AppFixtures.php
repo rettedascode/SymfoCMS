@@ -3,6 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Form;
+use App\Entity\FormSubmission;
 use App\Entity\Media;
 use App\Entity\MenuItem;
 use App\Entity\Page;
@@ -160,6 +162,47 @@ final class AppFixtures extends Fixture
                 ['type' => 'text', 'data' => ['content' => '<p>While you are logged in, you can open drafts and scheduled posts to see how they will look.</p>']],
             ]);
 
+        // A contact form built with the form builder, shown on its own page, with two messages in the inbox.
+        $contactForm = (new Form())
+            ->setName('Contact form')
+            ->setSubmitLabel('Send message')
+            ->setSuccessMessage('Thank you! Your message has arrived and we will get back to you soon.')
+            ->setFields([
+                ['id' => 'fname0001', 'type' => 'text', 'label' => 'Your name', 'required' => true, 'options' => []],
+                ['id' => 'femail001', 'type' => 'email', 'label' => 'Your email address', 'required' => true, 'options' => []],
+                ['id' => 'ftopic001', 'type' => 'select', 'label' => 'What is it about?', 'required' => false, 'options' => ['A question', 'Feedback', 'Something else']],
+                ['id' => 'fmessage1', 'type' => 'textarea', 'label' => 'Your message', 'required' => true, 'options' => []],
+                ['id' => 'fconsent1', 'type' => 'consent', 'label' => 'I agree that my details are stored to answer my request.', 'required' => true, 'options' => []],
+            ]);
+        $manager->persist($contactForm);
+        $manager->persist(new FormSubmission($contactForm, [
+            ['label' => 'Your name', 'value' => 'Grace Hopper'],
+            ['label' => 'Your email address', 'value' => 'grace@example.com'],
+            ['label' => 'What is it about?', 'value' => 'Feedback'],
+            ['label' => 'Your message', 'value' => "Hello,\nI really like how simple the editor is. Keep it up!"],
+            ['label' => 'I agree that my details are stored to answer my request.', 'value' => '✓'],
+        ], 'http://localhost:8000/contact'));
+        $read = new FormSubmission($contactForm, [
+            ['label' => 'Your name', 'value' => 'Alan Turing'],
+            ['label' => 'Your email address', 'value' => 'alan@example.com'],
+            ['label' => 'What is it about?', 'value' => 'A question'],
+            ['label' => 'Your message', 'value' => 'Can I use my own domain with this website?'],
+            ['label' => 'I agree that my details are stored to answer my request.', 'value' => '✓'],
+        ], 'http://localhost:8000/contact');
+        $manager->persist($read->setRead(true));
+        $manager->flush();
+
+        $contact = (new Page())
+            ->setTitle('Contact')
+            ->setSlug('contact')
+            ->setStatus(ContentStatus::Published)
+            ->setMetaDescription('Get in touch with us.')
+            ->setBlocks([
+                ['type' => 'text', 'data' => ['content' => '<p>We are happy to hear from you. Fill in the form and we will get back to you.</p>']],
+                ['type' => 'form', 'data' => ['form' => $contactForm->getId()]],
+            ]);
+        $manager->persist($contact);
+
         // German versions. Sharing the translation group is what links them to the English originals.
         $startseite = (new Page())
             ->setLocale('de')
@@ -220,6 +263,7 @@ final class AppFixtures extends Fixture
         // Main navigation: Home, About and a "Blog" dropdown with the two categories.
         $this->createMenuItem($manager, MenuLocation::Main, 0, 'Home', page: $home);
         $this->createMenuItem($manager, MenuLocation::Main, 1, 'About', page: $about);
+        $this->createMenuItem($manager, MenuLocation::Main, 3, 'Contact', page: $contact);
         $blog = $this->createMenuItem($manager, MenuLocation::Main, 2, 'Blog', url: '/blog');
         $this->createMenuItem($manager, MenuLocation::Main, 0, 'News', url: '/blog/category/news', parent: $blog);
         $this->createMenuItem($manager, MenuLocation::Main, 1, 'Guides', url: '/blog/category/guides', parent: $blog);

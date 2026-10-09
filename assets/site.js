@@ -2,6 +2,12 @@
 (function () {
     'use strict';
 
+    // After sending a form the page reloads: move the focus to the confirmation or error message.
+    const formMessage = document.querySelector('[data-focus]');
+    if (formMessage) {
+        formMessage.focus();
+    }
+
     const toggle = document.querySelector('.site-nav__toggle');
     const list = document.querySelector('.site-nav__list');
 

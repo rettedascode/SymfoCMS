@@ -1,0 +1,35 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ submission.form.name }} · {{ submission.createdAt|local_date(true) }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ submission.form.name }}</h1>
+        <a class="button" href="{{ path('admin_form_submissions', {id: submission.form.id}) }}">← {{ 'form.inbox'|trans }}</a>
+    </div>
+
+    <div class="card card--medium">
+        <p class="muted">
+            {{ 'form.submitted_at'|trans }}: {{ submission.createdAt|local_date(true) }}
+            {% if submission.pageUrl %} · {{ 'form.sent_from'|trans }} <a href="{{ submission.pageUrl }}" target="_blank" rel="noopener noreferrer">{{ submission.pageUrl }}</a>{% endif %}
+        </p>
+
+        <dl class="answers">
+            {% for answer in submission.answers %}
+                <dt>{{ answer.label }}</dt>
+                <dd>{{ answer.value ? answer.value|nl2br : '–' }}</dd>
+            {% endfor %}
+        </dl>
+
+        <div class="form-actions">
+            <form method="post" action="{{ path('admin_form_submission_unread', {id: submission.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                <button class="button">{{ 'form.mark_unread'|trans }}</button>
+            </form>
+            <form method="post" action="{{ path('admin_form_submission_delete', {id: submission.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'form.submission_delete_confirm'|trans }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                <button class="button button--danger">{{ 'action.delete'|trans }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

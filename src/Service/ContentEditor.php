@@ -8,8 +8,10 @@ use App\Block\BlockValidator;
 use App\Block\Field;
 use App\Controller\Admin\AdminController;
 use App\Entity\Content;
+use App\Entity\Form;
 use App\Entity\Media;
 use App\Entity\SharedBlock;
+use App\Repository\FormRepository;
 use App\Repository\MediaRepository;
 use App\Repository\SharedBlockRepository;
 use App\Security\Voter\AdminAreaVoter;
@@ -44,6 +46,7 @@ final class ContentEditor
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly SharedBlockRepository $sharedBlocks,
+        private readonly FormRepository $forms,
         private readonly Security $security,
     ) {
     }
@@ -59,6 +62,8 @@ final class ContentEditor
     private function baseConfig(array $blocksWithMedia, array $errors): array
     {
         return [
+            'forms' => array_map(static fn (Form $form): array => ['id' => $form->getId(), 'name' => $form->getName()], $this->forms->findBy([], ['name' => 'ASC'])),
+            'formsUrl' => $this->security->isGranted(AdminAreaVoter::MANAGE_FORMS) ? $this->urlGenerator->generate('admin_form_index') : null,
             'errors' => $errors,
             'types' => $this->typeDefinitions(),
             'media' => $this->mediaMap($blocksWithMedia),

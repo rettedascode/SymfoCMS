@@ -28,12 +28,23 @@ final class Settings implements ResetInterface
         return $this->all()[$name] ?? $default;
     }
 
+    /**
+     * Stores a setting. Passing null removes it, so its default applies again.
+     */
     public function set(string $name, mixed $value): void
     {
-        $setting = $this->repository->find($name) ?? new Setting($name);
-        $setting->setValue($value);
+        $setting = $this->repository->find($name);
 
-        $this->entityManager->persist($setting);
+        if (null === $value) {
+            if (null !== $setting) {
+                $this->entityManager->remove($setting);
+            }
+        } else {
+            $setting ??= new Setting($name);
+            $setting->setValue($value);
+            $this->entityManager->persist($setting);
+        }
+
         $this->entityManager->flush();
 
         $this->values = null;

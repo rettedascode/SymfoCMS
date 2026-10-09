@@ -31,6 +31,9 @@
                 {% endif %}
                 <li><a href="{{ path('admin_post_index') }}" {% if route starts with 'admin_post_' or route starts with 'admin_category_' %}aria-current="page"{% endif %}><span aria-hidden="true">✎</span> {{ 'nav.blog'|trans }}</a></li>
                 <li><a href="{{ path('admin_media_index') }}" {% if route starts with 'admin_media_' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span> {{ 'nav.media'|trans }}</a></li>
+                {% if is_granted('FORM_MANAGE') %}
+                    <li><a href="{{ path('admin_form_index') }}" {% if route starts with 'admin_form_' %}aria-current="page"{% endif %}><span aria-hidden="true">✉</span> {{ 'nav.forms'|trans }}</a></li>
+                {% endif %}
                 {% if is_granted('MENU_MANAGE') %}
                     <li><a href="{{ path('admin_menu_index') }}" {% if route starts with 'admin_menu_' %}aria-current="page"{% endif %}><span aria-hidden="true">☰</span> {{ 'nav.menus'|trans }}</a></li>
                 {% endif %}

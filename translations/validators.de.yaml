@@ -10,6 +10,15 @@ settings.too_many_locales: Bitte verwende höchstens %limit% Sprachen.
 settings.locale_in_use: '%name% kann nicht entfernt werden, weil es in dieser Sprache noch Seiten, Beiträge, Kategorien oder Menüs gibt. Lösche diese zuerst.'
 settings.locale_conflicts_with_page: 'Eine Seite verwendet bereits die Adresse „%code%“. Ändere zuerst die Adresse dieser Seite, bevor du diese Sprache hinzufügst.'
 shared_block.invalid: Bitte gib einen Namen für den geteilten Block ein.
+form.no_fields: Ein Formular braucht mindestens ein Feld mit Beschriftung.
+form.has_errors: Bitte prüfe die markierten Felder.
+form.required: Bitte fülle dieses Feld aus.
+form.consent_required: Bitte setze hier ein Häkchen, um fortzufahren.
+form.email_invalid: Bitte gib eine gültige E-Mail-Adresse ein.
+form.choice_invalid: Bitte wähle eine der Möglichkeiten.
+form.too_long: Dieser Text ist zu lang.
+form.too_fast: Das ging sehr schnell. Bitte prüfe deine Angaben und sende das Formular noch einmal.
+form.rate_limited: Du hast dieses Formular mehrfach gesendet. Bitte warte ein paar Minuten und versuche es dann erneut.
 content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte prüfe die unten markierten Felder.
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.

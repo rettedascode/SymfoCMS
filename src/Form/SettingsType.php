@@ -9,13 +9,14 @@ use App\Entity\Post;
 use App\Service\ContentLocales;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @extends AbstractType<array{locales: string}>
+ * @extends AbstractType<array{locales: string, retentionDays: int|null}>
  */
 final class SettingsType extends AbstractType
 {
@@ -32,6 +33,14 @@ final class SettingsType extends AbstractType
             'help' => 'settings.locales_help',
             'constraints' => [new Assert\NotBlank(), new Assert\Callback($this->validateLocales(...))],
             'attr' => ['autocomplete' => 'off', 'spellcheck' => 'false'],
+        ]);
+
+        $builder->add('retentionDays', IntegerType::class, [
+            'label' => 'settings.retention_days',
+            'help' => 'settings.retention_days_help',
+            'required' => false,
+            'constraints' => [new Assert\Range(min: 1, max: 3650)],
+            'attr' => ['min' => 1, 'max' => 3650, 'inputmode' => 'numeric'],
         ]);
     }
 

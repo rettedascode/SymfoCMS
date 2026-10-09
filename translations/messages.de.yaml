@@ -318,6 +318,76 @@ menu.js.type_post: 'Beitrag: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Einstellungen
+nav.forms: Formulare
+
+form.new: Neues Formular
+form.edit: Formular bearbeiten
+form.name: Name des Formulars
+form.name_help: Diesen Namen sehen nur du und deine Kollegen, zum Beispiel „Kontaktformular“.
+form.fields_heading: Felder
+form.add_field: Feld hinzufügen
+form.settings_heading: Einstellungen
+form.submit_label: Text auf dem Senden-Button
+form.success_message: Meldung nach dem Absenden
+form.success_message_help: Wird dem Besucher nach dem Absenden anstelle des Formulars angezeigt.
+form.notify_email: Benachrichtigung senden an
+form.notify_email_help: Optional. Diese Adresse erhält bei jeder Einsendung eine E-Mail. Im Posteingang werden Einsendungen in jedem Fall gespeichert.
+form.usage_hint: Um das Formular auf einer Seite zu zeigen, öffne die Seite und füge den Block „Formular“ hinzu.
+form.default_submit_label: Absenden
+form.default_success_message: Vielen Dank! Deine Nachricht wurde gesendet.
+form.inbox: Posteingang
+form.inbox_of: 'Posteingang: %name%'
+form.open_inbox: Posteingang öffnen
+form.unread: Neu
+form.unread_count: '{1}1 neue|]1,Inf[%count% neue'
+form.empty_title: Noch keine Formulare
+form.empty_text: Baue ein Kontakt- oder Anmeldeformular und setze es auf eine beliebige Seite.
+form.inbox_empty_title: Noch nichts da
+form.inbox_empty_text: Sobald ein Besucher dieses Formular absendet, erscheint die Nachricht hier.
+form.submitted_at: Gesendet am
+form.sent_from: von
+form.message: Nachricht
+form.export: Als CSV-Datei herunterladen
+form.mark_unread: Als neu markieren
+form.delete_confirm: 'Formular „%name%“ und alles, was Besucher darüber gesendet haben, löschen?'
+form.submission_delete_confirm: Diese Nachricht endgültig löschen?
+form.js.empty: Dieses Formular hat noch keine Felder. Füge unten das erste hinzu.
+form.js.type_text: Kurzer Text
+form.js.type_email: E-Mail-Adresse
+form.js.type_textarea: Langer Text
+form.js.type_select: Auswahl
+form.js.type_checkbox: Kontrollkästchen
+form.js.type_consent: Einwilligung
+form.js.label: Frage oder Beschriftung
+form.js.label_checkbox: Text neben dem Kästchen
+form.js.placeholder_text: z. B. Dein Name
+form.js.placeholder_email: z. B. Deine E-Mail-Adresse
+form.js.placeholder_textarea: z. B. Deine Nachricht
+form.js.placeholder_select: z. B. Worum geht es?
+form.js.placeholder_checkbox: z. B. Bitte sendet mir den Newsletter
+form.js.placeholder_consent: z. B. Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage gespeichert werden.
+form.js.required: Besucher müssen dieses Feld ausfüllen
+form.js.options: Auswahlmöglichkeiten
+form.js.options_placeholder: Eine Möglichkeit pro Zeile
+form.js.options_help: Schreibe jede Möglichkeit in eine eigene Zeile.
+form.js.drag: Zum Verschieben ziehen
+form.js.move_up: Nach oben
+form.js.move_down: Nach unten
+form.js.delete: Feld entfernen
+flash.form_created: Das Formular wurde angelegt. Füge einer Seite den Block „Formular“ hinzu, um es zu zeigen.
+flash.form_deleted: Das Formular wurde gelöscht.
+flash.submission_deleted: Die Nachricht wurde gelöscht.
+settings.forms_heading: Formulare
+settings.retention_days: Nachrichten aus Formularen löschen nach (Tagen)
+settings.retention_days_help: Ältere Nachrichten werden automatisch entfernt. Leer lassen, um sie zu behalten, bis du sie selbst löschst.
+block.form.label: Formular
+block.form.form: Formular
+editor.forms_none: Es gibt noch keine Formulare. Baue zuerst eines unter „Formulare“.
+editor.forms_choose: Formular auswählen …
+editor.forms_manage: Formulare verwalten
+site.form.choose: Bitte auswählen …
+site.form.leave_empty: Bitte dieses Feld leer lassen
+site.form.required_hint: Pflichtfeld
 
 template.choose: Beginnen mit
 template.choose_help: Eine Vorlage füllt die neue Seite mit Beispielblöcken, die du anschließend beliebig änderst, verschiebst oder löschst.

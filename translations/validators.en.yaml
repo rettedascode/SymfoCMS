@@ -10,6 +10,15 @@ settings.too_many_locales: Please use no more than %limit% languages.
 settings.locale_in_use: '%name% cannot be removed because pages, posts, categories or menus still exist in this language. Delete them first.'
 settings.locale_conflicts_with_page: 'A page already uses the address "%code%". Change the address of that page before adding this language.'
 shared_block.invalid: Please enter a name for the shared block.
+form.no_fields: A form needs at least one field with a label.
+form.has_errors: Please check the marked fields.
+form.required: Please fill in this field.
+form.consent_required: Please tick this box to continue.
+form.email_invalid: Please enter a valid email address.
+form.choice_invalid: Please choose one of the options.
+form.too_long: This text is too long.
+form.too_fast: That was very quick. Please check your details and send the form again.
+form.rate_limited: You have sent this form several times. Please wait a few minutes and try again.
 content.blocks_invalid: Some blocks need your attention. Please check the fields marked below.
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.

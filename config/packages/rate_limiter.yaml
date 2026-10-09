@@ -1,0 +1,7 @@
+framework:
+    rate_limiter:
+        # Public forms: at most 5 accepted submissions per form and visitor within 10 minutes.
+        form_submission:
+            policy: sliding_window
+            limit: 5
+            interval: '10 minutes'

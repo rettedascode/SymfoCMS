@@ -315,8 +315,28 @@ function location({ editor, block, field, id, value, update }) {
     );
 }
 
+/** Chooses which form to show. Forms are built in the "Forms" section. */
+function form({ editor, id, value, update }) {
+    const available = editor.config.forms ?? [];
+    const manage = editor.config.formsUrl
+        ? el('a', { class: 'button button--small', href: editor.config.formsUrl, target: '_blank', rel: 'noopener' }, `${editor.i18n.forms_manage} ↗`)
+        : null;
+
+    if (available.length === 0) {
+        return el('div', { class: 'shared-field' }, el('p', { class: 'field__help', text: editor.i18n.forms_none }), manage);
+    }
+
+    return el('div', { class: 'shared-field' },
+        el('select', { id, onchange: (event) => update(event.target.value === '' ? null : Number(event.target.value)) },
+            el('option', { value: '', text: editor.i18n.forms_choose }),
+            ...available.map((candidate) => el('option', { value: String(candidate.id), text: candidate.name, selected: candidate.id === value })),
+        ),
+        manage,
+    );
+}
+
 const RENDERERS = {
-    text, textarea, richtext, select, checkbox, image, images, items, code, location, blocks,
+    form,    text, textarea, richtext, select, checkbox, image, images, items, code, location, blocks,
     url: text,
     shared_block: sharedBlock,
 };

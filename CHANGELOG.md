@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Form builder: forms made of text, email, long text, selection, checkbox and consent fields, placed on pages with the new form block (see `docs/forms.md`).
+- Inbox for form submissions with read/unread state, CSV export and deletion; optional email notification per form through Symfony Mailer (`MAILER_DSN`, `APP_MAIL_FROM`).
+- Spam protection without third-party services: honeypot, minimum fill time and rate limiting.
+- Setting to delete form submissions automatically after a number of days, and the `app:forms:purge` command.
 - New block types: gallery, video (YouTube and Vimeo), questions and answers, map (OpenStreetMap) and code with server-side syntax highlighting.
 - Videos and maps are click-to-load: nothing is requested from third parties before the visitor clicks.
 - New field types for block authors: `Field::images()`, `Field::items()`, `Field::code()` and `Field::location()`; the image picker can select several images at once.

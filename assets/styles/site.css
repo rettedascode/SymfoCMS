@@ -180,6 +180,26 @@ p, ul, ol { margin: 0 0 1.25rem; }
 .code-keyword { color: #9ab8ff; }
 .code-tag { color: #f2a7c3; }
 
+.site-form { display: grid; gap: 1.1rem; }
+.site-form label { display: block; font-weight: 600; margin-bottom: .3rem; }
+.site-form input[type="text"], .site-form input[type="email"], .site-form select, .site-form textarea {
+    display: block; width: 100%; padding: .6rem .75rem; font: inherit; color: var(--color-text);
+    background: var(--color-bg); border: 1px solid #8a94a3; border-radius: var(--radius);
+}
+.site-form textarea { resize: vertical; }
+.site-form__check { display: flex !important; gap: .6rem; align-items: flex-start; font-weight: 400 !important; cursor: pointer; }
+.site-form__check input { width: 1.15rem; height: 1.15rem; margin-top: .3rem; flex: none; accent-color: var(--color-accent); }
+.site-form__required { color: #b42318; }
+.site-form__field--error input, .site-form__field--error select, .site-form__field--error textarea { border-color: #b42318; }
+.site-form__error { margin: .3rem 0 0; color: #b42318; font-size: .95rem; font-weight: 600; }
+.site-form__hint { margin: 0; font-size: .9rem; color: var(--color-muted); }
+.site-form .button { justify-self: start; cursor: pointer; font: inherit; font-weight: 600; }
+/* The spam trap must be invisible to people but look like a normal field to bots. */
+.site-form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.form-message { padding: 1rem 1.2rem; border-radius: var(--radius); margin: 0 0 1rem; font-weight: 600; }
+.form-message--success { background: #ecfdf3; border: 1px solid #a6e3bf; color: #1e6b3a; }
+.form-message--error { background: #fef3f2; border: 1px solid #f5b5ae; color: #b42318; }
+
 /* ---------- Blog ---------- */
 
 .blog-header { margin-bottom: 2rem; }

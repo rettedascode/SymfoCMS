@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.forms'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.forms'|trans }}</h1>
+        <a class="button button--primary" href="{{ path('admin_form_new') }}">+ {{ 'form.new'|trans }}</a>
+    </div>
+
+    {% if forms is empty %}
+        <div class="empty">
+            <h2>{{ 'form.empty_title'|trans }}</h2>
+            <p>{{ 'form.empty_text'|trans }}</p>
+            <a class="button button--primary" href="{{ path('admin_form_new') }}">+ {{ 'form.new'|trans }}</a>
+        </div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'form.name'|trans }}</th>
+                    <th scope="col">{{ 'form.inbox'|trans }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for form in forms %}
+                    {% set unread_count = unread[form.id] ?? 0 %}
+                    <tr>
+                        <th scope="row"><a href="{{ path('admin_form_edit', {id: form.id}) }}">{{ form.name }}</a></th>
+                        <td>
+                            <a href="{{ path('admin_form_submissions', {id: form.id}) }}">{{ 'form.open_inbox'|trans }}</a>
+                            {% if unread_count > 0 %}<span class="badge badge--scheduled">{{ 'form.unread_count'|trans({'%count%': unread_count}) }}</span>{% endif %}
+                        </td>
+                        <td class="table__actions">
+                            <a class="button button--small" href="{{ path('admin_form_edit', {id: form.id}) }}">{{ 'action.edit'|trans }}</a>
+                            <form method="post" action="{{ path('admin_form_delete', {id: form.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'form.delete_confirm'|trans({'%name%': form.name}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

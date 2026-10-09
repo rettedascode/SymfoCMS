@@ -41,6 +41,7 @@ Extend `App\Block\AbstractBlockType` to get sensible defaults for everything exc
 | `Field::items()` | a list of entries, each with its own fields | list of arrays keyed by field name |
 | `Field::code()` | fixed-width text area | string with spaces and line breaks kept – use `highlight_code()` or escape it |
 | `Field::location()` | address search | `{lat, lon}` or null – use `osm_map(data.name, zoom)` |
+| `Field::form()` | choice of a form | id – use `render_form(data.name)` |
 | `Field::sharedBlock()` | choice of a shared block | id – use `render_shared_block(data.name)` |
 
 Every field accepts `->help('…')`, `->placeholder('…')` and `->required()`.

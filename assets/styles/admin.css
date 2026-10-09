@@ -305,6 +305,26 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
     .menu-item__target { display: none; }
 }
 
+/* ---------- Form builder and inbox ---------- */
+
+.form-builder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 1.5rem; align-items: start; }
+.form-builder__heading { margin: 1.5rem 0 .75rem; }
+.form-builder__list { display: grid; gap: .75rem; margin-bottom: .75rem; }
+.form-builder__buttons { display: flex; flex-wrap: wrap; gap: .4rem; }
+.form-builder__add p { margin-bottom: .6rem; }
+.form-field { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: .5rem 1rem 1rem; }
+.form-field__header { display: flex; align-items: center; gap: .25rem; margin: 0 -.5rem .4rem; }
+.form-field__handle { cursor: grab; color: var(--muted); padding: .5rem .3rem; touch-action: none; }
+.form-field__type { flex: 1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
+.answers { margin: 1rem 0 0; }
+.answers dt { font-weight: 600; margin-top: 1rem; }
+.answers dd { margin: .2rem 0 0; overflow-wrap: anywhere; }
+.table tr.is-unread th a { font-weight: 700; }
+
+@media (max-width: 1000px) {
+    .form-builder { grid-template-columns: 1fr; }
+}
+
 /* ---------- Tablet and smaller ---------- */
 
 @media (max-width: 900px) {
