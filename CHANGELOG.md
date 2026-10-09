@@ -23,3 +23,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Admin interface in English and German.
 - Console command `app:create-admin`, demo fixtures and a Docker Compose setup for development.
 - Database migration that runs on SQLite, MySQL and PostgreSQL.
+
+[Unreleased]: https://github.com/rettedascode/SymfoCMS/commits/main

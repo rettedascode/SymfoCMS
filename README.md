@@ -1,5 +1,8 @@
 # SymfoCMS
 
+[![CI](https://github.com/rettedascode/SymfoCMS/actions/workflows/ci.yml/badge.svg)](https://github.com/rettedascode/SymfoCMS/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A small, production-ready content management system built on [Symfony](https://symfony.com).
 Its one goal is an editing experience so simple that somebody who has never used a CMS can create and edit a page without any training.
 
@@ -60,7 +63,7 @@ No Node.js is required: the frontend uses Symfony AssetMapper and Stimulus.
 This gets a site with demo content running locally in a few minutes.
 
 ```bash
-git clone <URL of this repository> symfocms
+git clone https://github.com/rettedascode/SymfoCMS.git symfocms
 cd symfocms
 
 composer install                                    # PHP dependencies and frontend libraries

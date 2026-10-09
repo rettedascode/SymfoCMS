@@ -1,5 +1,6 @@
 {
-    "name": "symfocms/symfocms",
+    "name": "rettedascode/symfocms",
+    "homepage": "https://github.com/rettedascode/SymfoCMS",
     "description": "A small, production-ready CMS built on Symfony with a simple block editor.",
     "type": "project",
     "license": "MIT",
