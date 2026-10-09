@@ -10,4 +10,6 @@ return [
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    // Example extension, loaded in tests only to prove that third-party block types work (see examples/).
+    Acme\CalloutBlock\AcmeCalloutBlockBundle::class => ['test' => true],
 ];

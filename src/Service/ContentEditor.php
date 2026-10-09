@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Block\BlockNormalizer;
 use App\Block\BlockRegistry;
+use App\Block\BlockValidator;
 use App\Block\Field;
 use App\Controller\Admin\AdminController;
 use App\Entity\Content;
@@ -11,6 +12,8 @@ use App\Entity\Media;
 use App\Repository\MediaRepository;
 use App\Twig\CmsExtension;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -29,6 +32,7 @@ final class ContentEditor
     public function __construct(
         private readonly BlockRegistry $registry,
         private readonly BlockNormalizer $normalizer,
+        private readonly BlockValidator $validator,
         private readonly EntityManagerInterface $entityManager,
         private readonly MediaRepository $mediaRepository,
         private readonly CmsExtension $cms,
@@ -43,16 +47,18 @@ final class ContentEditor
      *
      * @param list<array{type: string, data: array<string, mixed>}> $blocks blocks to show (the saved ones, or the submitted ones after a validation error)
      * @param array{autosave: string, discard: string}              $urls
+     * @param array<string, string>                                 $errors problems found by BlockValidator, keyed by "<block path>:<field>"
      *
      * @return array<string, mixed>
      */
-    public function config(Content $content, array $blocks, array $urls, string $kind): array
+    public function config(Content $content, array $blocks, array $urls, string $kind, array $errors = []): array
     {
         $autosave = $content->getAutosave();
 
         return [
             'kind' => $kind,
             'blocks' => $blocks,
+            'errors' => $errors,
             'autosave' => $autosave,
             'types' => $this->typeDefinitions(),
             'media' => $this->mediaMap([...$blocks, ...($autosave['blocks'] ?? [])]),
@@ -65,6 +71,27 @@ final class ContentEditor
                 'mediaUpload' => $this->urlGenerator->generate('admin_media_upload'),
             ],
         ];
+    }
+
+    /**
+     * Reads the blocks sent by the editor form, cleans them up and checks them.
+     * Problems are added to the form (which makes it invalid) and returned for the editor.
+     *
+     * @param FormInterface<mixed> $form a submitted form with the unmapped "blocks" field
+     *
+     * @return array{list<array{type: string, data: array<string, mixed>}>, array<string, string>} blocks and errors
+     */
+    public function submittedBlocks(FormInterface $form): array
+    {
+        $json = $form->get('blocks')->getData();
+        $blocks = $this->normalizer->normalizeJson(\is_string($json) ? $json : null);
+        $errors = $this->validator->validate($blocks);
+
+        if ([] !== $errors) {
+            $form->addError(new FormError($this->translator->trans('content.blocks_invalid', [], 'validators')));
+        }
+
+        return [$blocks, $errors];
     }
 
     /**
@@ -123,6 +150,7 @@ final class ContentEditor
                     'help' => null !== $field->help ? $this->translator->trans($field->help) : null,
                     'placeholder' => null !== $field->placeholder ? $this->translator->trans($field->placeholder) : null,
                     'default' => $field->default,
+                    'required' => $field->required,
                     'options' => $options,
                 ];
             }

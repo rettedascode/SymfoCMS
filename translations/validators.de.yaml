@@ -5,6 +5,7 @@ media.invalid_type: Diese Datei ist kein unterstütztes Bild. Bitte lade eine JP
 media.too_large: Diese Datei ist zu groß. Die maximale Größe beträgt %limit% MB.
 media.too_many_pixels: Dieses Bild hat zu viele Pixel. Bitte verkleinere es und versuche es erneut.
 media.upload_failed: Das Hochladen hat nicht funktioniert. Bitte versuche es erneut.
+content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte prüfe die unten markierten Felder.
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.
 content.slug_reserved: Diese Adresse ist vom System reserviert. Bitte wähle eine andere.

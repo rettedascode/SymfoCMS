@@ -24,6 +24,23 @@ abstract class AbstractBlockType implements BlockTypeInterface
         return [];
     }
 
+    /**
+     * Reports required fields that were left empty. Override to add your own rules
+     * and merge them with parent::validate($data).
+     */
+    public function validate(array $data): array
+    {
+        $errors = [];
+        foreach ($this->getFields() as $field) {
+            $value = $data[$field->name] ?? null;
+            if ($field->required && (null === $value || '' === $value || [] === $value || false === $value)) {
+                $errors[$field->name] = 'block.error.required';
+            }
+        }
+
+        return $errors;
+    }
+
     public function getTemplate(): string
     {
         return 'blocks/'.static::getType().'.html.twig';

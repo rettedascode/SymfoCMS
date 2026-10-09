@@ -5,14 +5,17 @@ namespace App\Controller\Site;
 use App\Entity\Page;
 use App\Repository\PageRepository;
 use App\Security\Voter\PageVoter;
+use App\Service\ContentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class PageController extends AbstractController
 {
-    public function __construct(private readonly PageRepository $pages)
-    {
+    public function __construct(
+        private readonly PageRepository $pages,
+        private readonly ContentManager $contentManager,
+    ) {
     }
 
     #[Route('/', name: 'app_home', methods: ['GET'])]
@@ -50,7 +53,8 @@ final class PageController extends AbstractController
 
     private function renderPage(Page $page): Response
     {
-        $response = $this->render('site/page.html.twig', ['page' => $page]);
+        $rendering = $this->contentManager->prepareRendering($page);
+        $response = $this->render('site/page.html.twig', ['page' => $page, 'blocks' => $rendering->getBlocks()] + $rendering->getTemplateVariables());
 
         if (!$page->isPublic()) {
             $response->headers->set('X-Robots-Tag', 'noindex');

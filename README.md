@@ -28,6 +28,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Automatic backup while you type, restored when you come back, and a warning before leaving with unsaved changes
 - All content is validated and sanitized on the server ([symfony/html-sanitizer](https://symfony.com/doc/current/html_sanitizer.html))
 - A block type is one PHP class plus one Twig template – [adding your own](#adding-a-custom-block-type) needs no JavaScript
+- Third-party packages can add block types and listen to content events ([extension guide](docs/extensions.md))
 
 **Content**
 
@@ -224,7 +225,9 @@ Available field types:
 | `Field::checkbox()` | checkbox | `true` / `false` |
 | `Field::blocks()` | nested list of blocks | list – use `render_blocks(data.name)` |
 
-Every field accepts `->help('...')` and `->placeholder('...')`. Values are validated against these definitions when content is saved, so a template can trust its `data`. To translate labels, use translation keys (for example `block.notice.label`) and add them to the files in `translations/`.
+Every field accepts `->help('...')`, `->placeholder('...')` and `->required()`. Values are validated against these definitions when content is saved, so a template can trust its `data`. To translate labels, use translation keys (for example `block.notice.label`) and add them to the files in `translations/`.
+
+To ship block types as a reusable Composer package, to validate block data, or to react to events such as "content was published", see [docs/extensions.md](docs/extensions.md).
 
 ## Adding a language
 

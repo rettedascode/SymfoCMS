@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use App\Security\Voter\PostVoter;
+use App\Service\ContentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ final class BlogController extends AbstractController
     public function __construct(
         private readonly PostRepository $posts,
         private readonly CategoryRepository $categories,
+        private readonly ContentManager $contentManager,
         #[Autowire(param: 'app.posts_per_page')]
         private readonly int $postsPerPage,
     ) {
@@ -47,7 +49,8 @@ final class BlogController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $response = $this->render('site/blog/post.html.twig', ['post' => $post]);
+        $rendering = $this->contentManager->prepareRendering($post);
+        $response = $this->render('site/blog/post.html.twig', ['post' => $post, 'blocks' => $rendering->getBlocks()] + $rendering->getTemplateVariables());
         if (!$post->isPublic()) {
             $response->headers->set('X-Robots-Tag', 'noindex');
         }

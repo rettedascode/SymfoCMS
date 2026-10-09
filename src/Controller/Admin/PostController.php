@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Block\BlockNormalizer;
 use App\Entity\Post;
 use App\Enum\ContentStatus;
 use App\Form\NewContentType;
@@ -69,16 +68,17 @@ final class PostController extends AdminController
 
     #[Route('/{id<\d+>}/edit', name: 'edit', methods: ['GET', 'POST'])]
     #[IsGranted(PostVoter::EDIT, subject: 'post')]
-    public function edit(Request $request, Post $post, BlockNormalizer $normalizer): Response
+    public function edit(Request $request, Post $post): Response
     {
         $form = $this->createForm(PostType::class, $post, [
             'can_change_author' => $this->isGranted(PostVoter::MANAGE_ALL),
         ]);
         $form->handleRequest($request);
         $blocks = $post->getBlocks();
+        $errors = [];
 
         if ($form->isSubmitted()) {
-            $blocks = $normalizer->normalizeJson($form->get('blocks')->getData());
+            [$blocks, $errors] = $this->editor->submittedBlocks($form);
 
             if ($form->isValid()) {
                 if ($request->request->has('publish')) {
@@ -106,7 +106,7 @@ final class PostController extends AdminController
             'editor_config' => $this->editor->config($post, $blocks, [
                 'autosave' => $this->generateUrl('admin_post_autosave', ['id' => $post->getId()]),
                 'discard' => $this->generateUrl('admin_post_discard_autosave', ['id' => $post->getId()]),
-            ], 'post'),
+            ], 'post', $errors),
         ]);
     }
 

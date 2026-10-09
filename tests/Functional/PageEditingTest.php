@@ -28,7 +28,7 @@ final class PageEditingTest extends AppWebTestCase
         $config = json_decode((string) $crawler->filter('[data-controller="editor"]')->attr('data-editor-config-value'), true);
         self::assertSame(
             ['heading', 'text', 'image', 'button', 'quote', 'divider', 'columns'],
-            array_column($config['types'], 'type'),
+            \array_slice(array_column($config['types'], 'type'), 0, 7),
         );
 
         $this->client->submitForm('Publish', [

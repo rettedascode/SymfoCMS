@@ -96,6 +96,7 @@ flash.page_published: The page has been saved and is published.
 flash.draft_saved: The draft has been saved. It is not visible to visitors yet.
 flash.page_deleted: The page has been deleted.
 
+block.error.required: This field is required.
 block.heading.label: Heading
 block.heading.text: Heading text
 block.heading.level: Size

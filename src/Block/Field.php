@@ -19,6 +19,7 @@ final class Field
     public const BLOCKS = 'blocks';
 
     public ?string $help = null;
+    public bool $required = false;
     public ?string $placeholder = null;
 
     /**
@@ -85,6 +86,16 @@ final class Field
     public function help(string $help): self
     {
         $this->help = $help;
+
+        return $this;
+    }
+
+    /**
+     * Marks the field as mandatory: content with an empty value cannot be saved.
+     */
+    public function required(bool $required = true): self
+    {
+        $this->required = $required;
 
         return $this;
     }

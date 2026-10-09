@@ -95,6 +95,7 @@ flash.page_published: Die Seite wurde gespeichert und ist veröffentlicht.
 flash.draft_saved: Der Entwurf wurde gespeichert. Er ist für Besucher noch nicht sichtbar.
 flash.page_deleted: Die Seite wurde gelöscht.
 
+block.error.required: Dieses Feld muss ausgefüllt werden.
 block.heading.label: Überschrift
 block.heading.text: Text der Überschrift
 block.heading.level: Größe

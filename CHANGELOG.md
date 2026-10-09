@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Extension API: block types can be added by third-party Composer packages, with required fields and custom validation per block type (see `docs/extensions.md` and the example in `examples/callout-block-bundle`).
+- Events for extensions: `ContentSavingEvent`, `ContentSavedEvent`, `ContentPublishedEvent`, `ContentDeletedEvent` and `ContentRenderEvent`.
 - Block editor for pages and blog posts with the block types heading, rich text, image, button, quote, divider and two columns.
 - Adding, duplicating, deleting (with undo) and reordering blocks by drag and drop or with buttons.
 - Live preview of unsaved content in the public theme.

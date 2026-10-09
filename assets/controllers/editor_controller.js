@@ -30,6 +30,8 @@ export default class extends Controller {
         // PHP encodes an empty map as [], so normalize to an object.
         this.media = Array.isArray(this.config.media) ? {} : { ...this.config.media };
         this.blocks = structuredClone(this.config.blocks);
+        // Problems reported by the server, keyed by "<block path>:<field>". PHP encodes an empty map as [].
+        this.errors = Array.isArray(this.config.errors) ? {} : { ...this.config.errors };
         this.lists = new WeakMap();
         this.sortables = [];
         this.dirty = false;
@@ -264,7 +266,7 @@ export default class extends Controller {
     render() {
         this.closeMenu();
         this.destroySortables();
-        this.renderList(this.listTarget, this.blocks, false);
+        this.renderList(this.listTarget, this.blocks, false, '');
 
         if (this.focusRequest) {
             this.focusRequest();
@@ -277,10 +279,10 @@ export default class extends Controller {
         this.sortables = [];
     }
 
-    renderList(container, blocks, nested) {
+    renderList(container, blocks, nested, pathPrefix) {
         const items = el('div', { class: 'blocks__items' });
         this.lists.set(items, blocks);
-        blocks.forEach((block, index) => items.append(this.renderBlock(block, blocks, index, nested)));
+        blocks.forEach((block, index) => items.append(this.renderBlock(block, blocks, index, nested, `${pathPrefix}${index}`)));
 
         const addButton = el('button', {
             type: 'button',
@@ -310,6 +312,7 @@ export default class extends Controller {
                 if (!from || !to || (from === to && event.oldDraggableIndex === event.newDraggableIndex)) {
                     return;
                 }
+                this.errors = {};
                 const [moved] = from.splice(event.oldDraggableIndex, 1);
                 to.splice(event.newDraggableIndex, 0, moved);
                 // Let Sortable finish its own cleanup before the list is rebuilt.
@@ -321,7 +324,7 @@ export default class extends Controller {
         }));
     }
 
-    renderBlock(block, list, index, nested) {
+    renderBlock(block, list, index, nested, path) {
         const type = this.types.get(block.type);
         const actionButton = (action, label, symbol, onClick, disabled = false) => el('button', {
             type: 'button',
@@ -358,7 +361,7 @@ export default class extends Controller {
 
         const body = el('div', { class: type.layout ? 'block__body block__body--layout' : 'block__body' });
         for (const field of type.fields) {
-            body.append(this.renderField(block, field));
+            body.append(this.renderField(block, field, path));
         }
         if (type.fields.length === 0) {
             body.hidden = true;
@@ -370,10 +373,12 @@ export default class extends Controller {
         return node;
     }
 
-    renderField(block, field) {
+    renderField(block, field, path) {
         const id = uid('block-field');
         const labelId = `${id}-label`;
         const value = block.data[field.name];
+        const error = this.errors[`${path}:${field.name}`];
+        const errorNode = () => (error ? el('ul', { class: 'field__errors', role: 'alert' }, el('li', { text: error })) : null);
         const update = (newValue) => {
             block.data[field.name] = newValue;
             this.changed();
@@ -402,6 +407,7 @@ export default class extends Controller {
                 return el('div', { class: 'field field--check' },
                     el('label', { class: 'check' }, control, el('span', { text: field.label })),
                     field.help ? el('p', { class: 'field__help', text: field.help }) : null,
+                    errorNode(),
                 );
 
             case 'image':
@@ -413,9 +419,9 @@ export default class extends Controller {
                     block.data[field.name] = [];
                 }
                 control = el('div', { class: 'blocks blocks--nested' });
-                this.renderList(control, block.data[field.name], true);
+                this.renderList(control, block.data[field.name], true, `${path}.${field.name}.`);
 
-                return el('div', { class: 'field field--blocks' }, el('span', { class: 'field__label', text: field.label }), control);
+                return el('div', { class: 'field field--blocks' }, el('span', { class: 'field__label', text: field.label }), control, errorNode());
             }
 
             default:
@@ -423,10 +429,11 @@ export default class extends Controller {
                 control.value = value ?? '';
         }
 
-        return el('div', { class: 'field' },
-            el('label', { id: labelId, for: id, text: field.label }),
+        return el('div', { class: error ? 'field field--error' : 'field' },
+            el('label', { id: labelId, for: id, text: field.required ? `${field.label} *` : field.label }),
             control,
             field.help ? el('p', { class: 'field__help', text: field.help }) : null,
+            errorNode(),
         );
     }
 
@@ -490,6 +497,7 @@ export default class extends Controller {
         if (target < 0 || target >= list.length) {
             return;
         }
+        this.errors = {};
 
         const [block] = list.splice(index, 1);
         list.splice(target, 0, block);
@@ -499,6 +507,7 @@ export default class extends Controller {
     }
 
     duplicate(list, index) {
+        this.errors = {};
         const copy = structuredClone(list[index]);
         list.splice(index + 1, 0, copy);
         this.keepFocusOn(copy, 'duplicate');
@@ -507,6 +516,7 @@ export default class extends Controller {
     }
 
     remove(list, index) {
+        this.errors = {};
         const [block] = list.splice(index, 1);
         this.render();
         this.changed();
@@ -518,6 +528,7 @@ export default class extends Controller {
     }
 
     insert(list, index, typeName) {
+        this.errors = {};
         const block = this.newBlock(typeName);
         list.splice(index, 0, block);
         this.focusRequest = () => {

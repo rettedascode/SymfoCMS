@@ -34,6 +34,18 @@ interface BlockTypeInterface
     public function getFields(): array;
 
     /**
+     * Checks the data of one block before content is saved.
+     *
+     * The data has already been cleaned up: every field declared in getFields()
+     * is present and has the right type. Return an empty array when everything is fine.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, string> field name => message for the editor (translation key or plain text)
+     */
+    public function validate(array $data): array;
+
+    /**
      * Twig template that renders the block on the public website. It receives the variable "data".
      */
     public function getTemplate(): string;

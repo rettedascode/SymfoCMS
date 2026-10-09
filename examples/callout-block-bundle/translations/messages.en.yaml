@@ -1,0 +1,7 @@
+acme_callout.label: Callout
+acme_callout.title: Title
+acme_callout.text: Text
+acme_callout.tone: Colour
+acme_callout.tone_info: Blue
+acme_callout.tone_warning: Yellow
+acme_callout.title_too_long: Please keep the title shorter than 80 characters.

@@ -1,0 +1,7 @@
+acme_callout.label: Hinweisbox
+acme_callout.title: Titel
+acme_callout.text: Text
+acme_callout.tone: Farbe
+acme_callout.tone_info: Blau
+acme_callout.tone_warning: Gelb
+acme_callout.title_too_long: Bitte halte den Titel kürzer als 80 Zeichen.

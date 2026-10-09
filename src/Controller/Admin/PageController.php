@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Block\BlockNormalizer;
 use App\Entity\Page;
 use App\Form\NewContentType;
 use App\Form\PageType;
@@ -62,14 +61,15 @@ final class PageController extends AdminController
     }
 
     #[Route('/{id<\d+>}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Page $page, BlockNormalizer $normalizer): Response
+    public function edit(Request $request, Page $page): Response
     {
         $form = $this->createForm(PageType::class, $page);
         $form->handleRequest($request);
         $blocks = $page->getBlocks();
+        $errors = [];
 
         if ($form->isSubmitted()) {
-            $blocks = $normalizer->normalizeJson($form->get('blocks')->getData());
+            [$blocks, $errors] = $this->editor->submittedBlocks($form);
 
             if ($form->isValid()) {
                 if ($page->isHomepage()) {
@@ -89,7 +89,7 @@ final class PageController extends AdminController
             'editor_config' => $this->editor->config($page, $blocks, [
                 'autosave' => $this->generateUrl('admin_page_autosave', ['id' => $page->getId()]),
                 'discard' => $this->generateUrl('admin_page_discard_autosave', ['id' => $page->getId()]),
-            ], 'page'),
+            ], 'page', $errors),
         ]);
     }
 
