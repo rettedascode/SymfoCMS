@@ -133,6 +133,14 @@ editor.save_changes: Änderungen speichern
 editor.publish: Veröffentlichen
 editor.tab_content: Inhalt
 editor.tab_settings: Einstellungen
+editor.tab_history: Verlauf
+revision.intro: Bei jedem Speichern wird der vorherige Stand hier aufbewahrt. Du kannst dir eine frühere Version ansehen und sie mit einem Klick zurückholen. Die letzten %count% Versionen bleiben erhalten.
+revision.current: Aktuelle Version
+revision.preview: Ansehen
+revision.restore: Wiederherstellen
+revision.unknown_author: Unbekannt
+revision.preview_notice: Frühere Version
+flash.revision_restored: Die frühere Version wurde wiederhergestellt. Die Version davor findest du weiterhin im Verlauf.
 editor.seo_heading: Suchmaschinen
 editor.seo_intro: Optional. Diese Texte helfen dabei, dass der Inhalt bei Google und anderen Suchmaschinen gefunden wird.
 editor.preview_label: Live-Vorschau

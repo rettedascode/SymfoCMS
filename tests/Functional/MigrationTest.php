@@ -47,6 +47,9 @@ final class MigrationTest extends AppWebTestCase
         self::assertCount(2, array_unique($groups));
         self::assertSame([32, 32], array_map(\strlen(...), $groups));
 
+        // Tables added by later migrations exist and start empty.
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM revisions'));
+
         // The result is exactly the schema the application expects (the command fails otherwise) ...
         $this->runCommand(['command' => 'doctrine:schema:validate']);
 

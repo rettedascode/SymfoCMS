@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Revision history: every save of a page or post keeps a revision with author and time; earlier versions can be previewed and restored from the new "History" tab of the editor. The number of revisions kept is set with `APP_MAX_REVISIONS` (default 50).
 - Multilingual content: pages, posts, categories and menus belong to a language; pages and posts can be linked to their versions in other languages (see `docs/multilingual.md`).
 - "Translate into …" in the editor creates the version in another language as a draft copy.
 - Settings screen for admins to choose the languages of the website. With a single language, nothing about languages is shown.

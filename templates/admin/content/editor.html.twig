@@ -58,6 +58,10 @@
                 <div class="tabs" role="tablist">
                     <button type="button" role="tab" id="editor-tab-content" aria-controls="editor-panel-content" data-editor-target="tab" data-tab="content" data-action="editor#showTab" aria-selected="true">{{ 'editor.tab_content'|trans }}</button>
                     <button type="button" role="tab" id="editor-tab-settings" aria-controls="editor-panel-settings" data-editor-target="tab" data-tab="settings" data-action="editor#showTab" aria-selected="false">{{ 'editor.tab_settings'|trans }}</button>
+                    {# The history only becomes interesting once there is something to go back to. #}
+                    {% if revisions|length > 1 %}
+                        <button type="button" role="tab" id="editor-tab-history" aria-controls="editor-panel-history" data-editor-target="tab" data-tab="history" data-action="editor#showTab" aria-selected="false">{{ 'editor.tab_history'|trans }}</button>
+                    {% endif %}
                 </div>
 
                 <div role="tabpanel" id="editor-panel-content" aria-labelledby="editor-tab-content" data-editor-target="panel" data-panel="content">
@@ -100,6 +104,32 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if revisions|length > 1 %}
+                    <div role="tabpanel" id="editor-panel-history" aria-labelledby="editor-tab-history" data-editor-target="panel" data-panel="history" hidden>
+                        <div class="card">
+                            <p class="muted">{{ 'revision.intro'|trans({'%count%': max_revisions}) }}</p>
+                            <ol class="revision-list">
+                                {% for revision in revisions %}
+                                    <li>
+                                        <div class="revision-list__info">
+                                            <strong>{{ revision.createdAt|local_date(true) }}</strong>
+                                            <span class="muted">{{ revision.author ? revision.author.name : 'revision.unknown_author'|trans }}{% if revision.title != content.title %} · {{ revision.title }}{% endif %}</span>
+                                        </div>
+                                        {% if loop.first %}
+                                            <span class="badge badge--published">{{ 'revision.current'|trans }}</span>
+                                        {% else %}
+                                            <a class="button button--small" href="{{ path(revision_route, {id: content.id, revision: revision.id}) }}" target="_blank" rel="noopener">{{ 'revision.preview'|trans }}</a>
+                                            {# Sends the editor form to the restore action; only the token below is read there. #}
+                                            <button type="submit" class="button button--small" formnovalidate
+                                                    formaction="{{ path(revision_route ~ '_restore', {id: content.id, revision: revision.id}) }}"
+                                                    name="_token" value="{{ csrf_token('admin') }}">{{ 'revision.restore'|trans }}</button>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
             <aside class="editor__preview" aria-label="{{ 'editor.preview_label'|trans }}">

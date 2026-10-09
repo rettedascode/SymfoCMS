@@ -134,6 +134,14 @@ editor.save_changes: Save changes
 editor.publish: Publish
 editor.tab_content: Content
 editor.tab_settings: Settings
+editor.tab_history: History
+revision.intro: Every time you save, the previous state is kept here. You can look at an earlier version and bring it back with one click. The last %count% versions are kept.
+revision.current: Current version
+revision.preview: Preview
+revision.restore: Restore
+revision.unknown_author: Unknown
+revision.preview_notice: Earlier version
+flash.revision_restored: The earlier version has been restored. The version before that is still in the history.
 editor.seo_heading: Search engines
 editor.seo_intro: Optional. These texts help people find this content on Google and other search engines.
 editor.preview_label: Live preview

@@ -6,6 +6,7 @@
 {% set public_url = content_path(post) %}
 {% set edit_route = 'admin_post_edit' %}
 {% set translate_route = 'admin_post_translate' %}
+{% set revision_route = 'admin_post_revision' %}
 
 {% block settings_main %}
     {{ form_row(form.excerpt) }}

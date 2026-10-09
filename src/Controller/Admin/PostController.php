@@ -12,6 +12,7 @@ use App\Service\ContentEditor;
 use App\Service\ContentLocales;
 use App\Service\ContentManager;
 use App\Service\ContentTranslator;
+use App\Service\RevisionManager;
 use App\Service\SlugGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ final class PostController extends AdminController
         private readonly ContentEditor $editor,
         private readonly ContentLocales $locales,
         private readonly ContentTranslator $translator,
+        private readonly RevisionManager $revisions,
     ) {
     }
 
@@ -113,6 +115,7 @@ final class PostController extends AdminController
             'form' => $form,
             'post' => $post,
             'translations' => $this->translator->overview($post),
+            'revisions' => $this->revisions->history($post),
             'editor_config' => $this->editor->config($post, $blocks, [
                 'autosave' => $this->generateUrl('admin_post_autosave', ['id' => $post->getId()]),
                 'discard' => $this->generateUrl('admin_post_discard_autosave', ['id' => $post->getId()]),
@@ -145,6 +148,40 @@ final class PostController extends AdminController
         $this->addFlash('success', 'flash.translation_created');
 
         return $this->redirectToRoute('admin_post_edit', ['id' => $translation->getId()]);
+    }
+
+    /**
+     * Shows an earlier version of the post in the public theme.
+     */
+    #[Route('/{id<\d+>}/revisions/{revision<\d+>}', name: 'revision', methods: ['GET'])]
+    #[IsGranted(PostVoter::EDIT, subject: 'post')]
+    public function revision(Post $post, int $revision): Response
+    {
+        $snapshot = $this->revisions->find($post, $revision) ?? throw $this->createNotFoundException();
+
+        return $this->render('site/preview.html.twig', [
+            'title' => $snapshot->getTitle(),
+            'blocks' => $snapshot->getBlocks(),
+            'kind' => 'post',
+            'revision' => $snapshot,
+        ]);
+    }
+
+    /**
+     * Brings an earlier version back. Saving it records the restored state as the newest version.
+     */
+    #[Route('/{id<\d+>}/revisions/{revision<\d+>}/restore', name: 'revision_restore', methods: ['POST'])]
+    #[IsGranted(PostVoter::EDIT, subject: 'post')]
+    public function restoreRevision(Request $request, Post $post, int $revision): Response
+    {
+        $this->requireCsrfToken($request);
+        $snapshot = $this->revisions->find($post, $revision) ?? throw $this->createNotFoundException();
+
+        $this->revisions->apply($snapshot, $post);
+        $this->contentManager->save($post, $snapshot->getBlocks());
+        $this->addFlash('success', 'flash.revision_restored');
+
+        return $this->redirectToRoute('admin_post_edit', ['id' => $post->getId()]);
     }
 
     #[Route('/{id<\d+>}/autosave', name: 'autosave', methods: ['POST'])]

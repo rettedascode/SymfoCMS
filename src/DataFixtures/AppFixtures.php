@@ -7,6 +7,7 @@ use App\Entity\Media;
 use App\Entity\MenuItem;
 use App\Entity\Page;
 use App\Entity\Post;
+use App\Entity\Revision;
 use App\Entity\User;
 use App\Enum\ContentStatus;
 use App\Enum\MenuItemType;
@@ -164,6 +165,13 @@ final class AppFixtures extends Fixture
         $hallo->setLocale('de')->setTranslationGroup($firstPost->getTranslationGroup());
 
         $manager->flush();
+
+        // A little history for the homepage, so the "History" tab of the editor has something to show.
+        $manager->persist(new Revision(Revision::TYPE_PAGE, (int) $home->getId(), 'Welcome', [
+            ['type' => 'text', 'data' => ['content' => '<p>This is the very first draft of the homepage.</p>']],
+        ], [], $admin, new \DateTimeImmutable('-3 days')));
+        $manager->persist(new Revision(Revision::TYPE_PAGE, (int) $home->getId(), 'Welcome to SymfoCMS', \array_slice($home->getBlocks(), 0, 3), [], $editor, new \DateTimeImmutable('-1 day')));
+        $manager->persist(new Revision(Revision::TYPE_PAGE, (int) $home->getId(), $home->getTitle(), $home->getBlocks(), ['metaDescription' => $home->getMetaDescription()], $admin));
 
         // German menus: every language has its own navigation.
         $this->createMenuItem($manager, MenuLocation::Main, 0, 'Startseite', page: $startseite)->setLocale('de');

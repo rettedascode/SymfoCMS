@@ -26,6 +26,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Live preview that uses the real public theme
 - Automatic backup while you type, restored when you come back, and a warning before leaving with unsaved changes
+- Revision history: every save keeps the previous version, which can be previewed and restored with one click
 - All content is validated and sanitized on the server ([symfony/html-sanitizer](https://symfony.com/doc/current/html_sanitizer.html))
 - A block type is one PHP class plus one Twig template – [adding your own](#adding-a-custom-block-type) needs no JavaScript
 - Third-party packages can add block types and listen to content events ([extension guide](docs/extensions.md))
@@ -115,6 +116,7 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `APP_SITE_TAGLINE` | `A small, friendly CMS` | Default meta description |
 | `APP_LOCALE` | `en` | Language of the website until languages are chosen under *Settings* in the admin area, and default admin language |
 | `APP_TIMEZONE` | `UTC` | Time zone for publish dates, e.g. `Europe/Berlin`. Choose it before creating content. |
+| `APP_MAX_REVISIONS` | `50` | Number of earlier versions kept for every page and post |
 | `APP_MAX_UPLOAD_MB` | `8` | Largest accepted image. PHP's `upload_max_filesize` and `post_max_size` must allow it too. |
 
 ### Using MySQL or PostgreSQL

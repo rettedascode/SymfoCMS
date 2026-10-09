@@ -11,6 +11,7 @@ use App\Service\ContentEditor;
 use App\Service\ContentLocales;
 use App\Service\ContentManager;
 use App\Service\ContentTranslator;
+use App\Service\RevisionManager;
 use App\Service\SlugGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ final class PageController extends AdminController
         private readonly ContentEditor $editor,
         private readonly ContentLocales $locales,
         private readonly ContentTranslator $translator,
+        private readonly RevisionManager $revisions,
     ) {
     }
 
@@ -97,6 +99,7 @@ final class PageController extends AdminController
             'form' => $form,
             'page' => $page,
             'translations' => $this->translator->overview($page),
+            'revisions' => $this->revisions->history($page),
             'editor_config' => $this->editor->config($page, $blocks, [
                 'autosave' => $this->generateUrl('admin_page_autosave', ['id' => $page->getId()]),
                 'discard' => $this->generateUrl('admin_page_discard_autosave', ['id' => $page->getId()]),
@@ -123,6 +126,38 @@ final class PageController extends AdminController
         }
 
         return $this->redirectToRoute('admin_page_edit', ['id' => $translation->getId()]);
+    }
+
+    /**
+     * Shows an earlier version of the page in the public theme.
+     */
+    #[Route('/{id<\d+>}/revisions/{revision<\d+>}', name: 'revision', methods: ['GET'])]
+    public function revision(Page $page, int $revision): Response
+    {
+        $snapshot = $this->revisions->find($page, $revision) ?? throw $this->createNotFoundException();
+
+        return $this->render('site/preview.html.twig', [
+            'title' => $snapshot->getTitle(),
+            'blocks' => $snapshot->getBlocks(),
+            'kind' => 'page',
+            'revision' => $snapshot,
+        ]);
+    }
+
+    /**
+     * Brings an earlier version back. Saving it records the restored state as the newest version.
+     */
+    #[Route('/{id<\d+>}/revisions/{revision<\d+>}/restore', name: 'revision_restore', methods: ['POST'])]
+    public function restoreRevision(Request $request, Page $page, int $revision): Response
+    {
+        $this->requireCsrfToken($request);
+        $snapshot = $this->revisions->find($page, $revision) ?? throw $this->createNotFoundException();
+
+        $this->revisions->apply($snapshot, $page);
+        $this->contentManager->save($page, $snapshot->getBlocks());
+        $this->addFlash('success', 'flash.revision_restored');
+
+        return $this->redirectToRoute('admin_page_edit', ['id' => $page->getId()]);
     }
 
     #[Route('/{id<\d+>}/autosave', name: 'autosave', methods: ['POST'])]

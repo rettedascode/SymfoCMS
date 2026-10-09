@@ -10,7 +10,11 @@
     <style>a { pointer-events: none; }</style>
 {% endblock %}
 
-{% block edit_bar %}{% endblock %}
+{% block edit_bar %}
+    {% if revision|default(null) %}
+        <div class="edit-bar"><div class="container"><span><span class="edit-bar__draft">{{ 'revision.preview_notice'|trans }}</span> {{ revision.createdAt|local_date(true) }}{% if revision.author %} · {{ revision.author.name }}{% endif %}</span></div></div>
+    {% endif %}
+{% endblock %}
 {% block javascripts %}{% endblock %}
 
 {% block content %}

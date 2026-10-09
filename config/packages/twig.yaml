@@ -4,6 +4,7 @@ twig:
     globals:
         site_name: '%app.site_name%'
         site_tagline: '%app.site_tagline%'
+        max_revisions: '%app.max_revisions%'
 
 when@test:
     twig:
