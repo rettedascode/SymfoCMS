@@ -1,9 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import Sortable from 'sortablejs';
-import { el, format, uid } from '../lib/dom.js';
+import { renderField } from '../lib/block_fields.js';
+import { el, format } from '../lib/dom.js';
 import { icon } from '../lib/icons.js';
-import { openMediaPicker } from '../lib/media_picker.js';
-import { createRichText } from '../lib/richtext.js';
 
 const PREVIEW_DELAY = 350;
 const AUTOSAVE_DELAY = 2500;
@@ -14,7 +13,8 @@ const UNDO_DURATION = 8000;
  *
  * The content is a plain array of blocks ({ type, data }) kept in this.blocks.
  * Forms are generated from the field definitions the server sends for every
- * block type (see App\Block\Field), so new block types need no JavaScript.
+ * block type (see App\Block\Field and lib/block_fields.js), so new block
+ * types need no JavaScript.
  *
  * Structural changes (add, move, duplicate, delete) re-render the list.
  * Typing into a field only updates the data, which keeps the focus in place.
@@ -361,7 +361,7 @@ export default class extends Controller {
 
         const body = el('div', { class: type.layout ? 'block__body block__body--layout' : 'block__body' });
         for (const field of type.fields) {
-            body.append(this.renderField(block, field, path));
+            body.append(renderField(this, block, field, path));
         }
         if (type.fields.length === 0) {
             body.hidden = true;
@@ -371,114 +371,6 @@ export default class extends Controller {
         node.block = block;
 
         return node;
-    }
-
-    renderField(block, field, path) {
-        const id = uid('block-field');
-        const labelId = `${id}-label`;
-        const value = block.data[field.name];
-        const error = this.errors[`${path}:${field.name}`];
-        const errorNode = () => (error ? el('ul', { class: 'field__errors', role: 'alert' }, el('li', { text: error })) : null);
-        const update = (newValue) => {
-            block.data[field.name] = newValue;
-            this.changed();
-        };
-        let control;
-
-        switch (field.type) {
-            case 'textarea':
-                control = el('textarea', { id, rows: 3, placeholder: field.placeholder, oninput: (event) => update(event.target.value) });
-                control.value = value ?? '';
-                break;
-
-            case 'richtext':
-                control = createRichText({ value, labelledBy: labelId, i18n: this.i18n, onChange: update });
-                break;
-
-            case 'select':
-                control = el('select', { id, onchange: (event) => update(event.target.value) },
-                    ...field.options.map((option) => el('option', { value: option.value, text: option.label, selected: option.value === value })),
-                );
-                break;
-
-            case 'checkbox':
-                control = el('input', { id, type: 'checkbox', checked: Boolean(value), onchange: (event) => update(event.target.checked) });
-
-                return el('div', { class: 'field field--check' },
-                    el('label', { class: 'check' }, control, el('span', { text: field.label })),
-                    field.help ? el('p', { class: 'field__help', text: field.help }) : null,
-                    errorNode(),
-                );
-
-            case 'image':
-                control = this.renderImageField(block, field);
-                break;
-
-            case 'blocks': {
-                if (!Array.isArray(block.data[field.name])) {
-                    block.data[field.name] = [];
-                }
-                control = el('div', { class: 'blocks blocks--nested' });
-                this.renderList(control, block.data[field.name], true, `${path}.${field.name}.`);
-
-                return el('div', { class: 'field field--blocks' }, el('span', { class: 'field__label', text: field.label }), control, errorNode());
-            }
-
-            default:
-                control = el('input', { id, type: 'text', placeholder: field.placeholder, oninput: (event) => update(event.target.value) });
-                control.value = value ?? '';
-        }
-
-        return el('div', { class: error ? 'field field--error' : 'field' },
-            el('label', { id: labelId, for: id, text: field.required ? `${field.label} *` : field.label }),
-            control,
-            field.help ? el('p', { class: 'field__help', text: field.help }) : null,
-            errorNode(),
-        );
-    }
-
-    renderImageField(block, field) {
-        const media = this.media[block.data[field.name]];
-        const choose = async () => {
-            const picked = await openMediaPicker({
-                listUrl: this.config.urls.mediaList,
-                uploadUrl: this.config.urls.mediaUpload,
-                csrf: this.config.csrf,
-                i18n: this.i18n,
-            });
-            if (!picked) {
-                return;
-            }
-
-            this.media[picked.id] = picked;
-            block.data[field.name] = picked.id;
-            // Start with the description from the media library; it can be adjusted per block.
-            if ('alt' in block.data && !block.data.alt) {
-                block.data.alt = picked.alt;
-            }
-            this.render();
-            this.changed();
-        };
-        const remove = () => {
-            block.data[field.name] = null;
-            this.render();
-            this.changed();
-        };
-
-        if (!media) {
-            return el('div', { class: 'image-field image-field--empty' },
-                block.data[field.name] ? el('p', { class: 'field__help', text: this.i18n.image_missing }) : null,
-                el('button', { type: 'button', class: 'button', onclick: choose }, this.i18n.choose_image),
-            );
-        }
-
-        return el('div', { class: 'image-field' },
-            el('img', { src: media.thumb, alt: media.alt || media.name }),
-            el('div', { class: 'image-field__actions' },
-                el('button', { type: 'button', class: 'button button--small', onclick: choose }, this.i18n.change_image),
-                el('button', { type: 'button', class: 'button button--small', onclick: remove }, this.i18n.remove_image),
-            ),
-        );
     }
 
     // ----- Block operations ----------------------------------------------
