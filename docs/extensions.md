@@ -37,6 +37,10 @@ Extend `App\Block\AbstractBlockType` to get sensible defaults for everything exc
 | `Field::image()` | image picker | media id – use `cms_media(data.image)` |
 | `Field::checkbox()` | checkbox | `true` / `false` |
 | `Field::blocks()` | nested list of blocks | list – use `render_blocks(data.name)` |
+| `Field::images()` | several images in a chosen order | list of media ids – use `cms_media(id)` for each |
+| `Field::items()` | a list of entries, each with its own fields | list of arrays keyed by field name |
+| `Field::code()` | fixed-width text area | string with spaces and line breaks kept – use `highlight_code()` or escape it |
+| `Field::location()` | address search | `{lat, lon}` or null – use `osm_map(data.name, zoom)` |
 | `Field::sharedBlock()` | choice of a shared block | id – use `render_shared_block(data.name)` |
 
 Every field accepts `->help('…')`, `->placeholder('…')` and `->required()`.

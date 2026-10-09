@@ -22,7 +22,8 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 **Block editor**
 
-- Seven block types: heading, rich text (bold, italic, links, lists), image, button, quote, divider and two columns
+- Thirteen block types: heading, rich text, image, gallery, video, button, quote, divider, two columns, questions and answers, map, code and shared block ([overview](docs/editor.md))
+- Privacy by default: videos (YouTube, Vimeo) and maps (OpenStreetMap, no API key) load nothing from third parties until the visitor clicks
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Slash command: type `/` in an empty text block to pick another block type; the block list is searchable
 - Live preview that uses the real public theme
@@ -234,7 +235,7 @@ Available field types:
 | `Field::checkbox()` | checkbox | `true` / `false` |
 | `Field::blocks()` | nested list of blocks | list – use `render_blocks(data.name)` |
 
-Every field accepts `->help('...')`, `->placeholder('...')` and `->required()`. Values are validated against these definitions when content is saved, so a template can trust its `data`. To translate labels, use translation keys (for example `block.notice.label`) and add them to the files in `translations/`.
+More field types (image lists, repeatable items, code, map location, shared block) are listed in [docs/extensions.md](docs/extensions.md). Every field accepts `->help('...')`, `->placeholder('...')` and `->required()`. Values are validated against these definitions when content is saved, so a template can trust its `data`. To translate labels, use translation keys (for example `block.notice.label`) and add them to the files in `translations/`.
 
 To ship block types as a reusable Composer package, to validate block data, or to react to events such as "content was published", see [docs/extensions.md](docs/extensions.md).
 
@@ -273,7 +274,7 @@ templates/site/     Public theme
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: extensions, multilingual websites
+docs/               Guides: the editor, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

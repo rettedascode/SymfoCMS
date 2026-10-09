@@ -121,6 +121,49 @@ block.quote.text: Quote
 block.quote.author: Who said it? (optional)
 block.divider.label: Divider
 block.columns.label: Two columns
+block.gallery.label: Gallery
+block.gallery.images: Images
+block.gallery.images_help: Choose several images at once. Use the arrows to change their order.
+block.gallery.columns: Images per row
+block.gallery.columns_2: Two
+block.gallery.columns_3: Three
+block.gallery.columns_4: Four
+block.video.label: Video
+block.video.url: Link to the video
+block.video.url_help: Copy the address of a video on YouTube or Vimeo and paste it here.
+block.video.url_invalid: This does not look like a link to a YouTube or Vimeo video.
+block.video.title: Title (optional)
+block.video.title_help: Says what the video is about, before it is played.
+block.video.poster: Preview image (optional)
+block.video.poster_help: Shown until the visitor starts the video. Without it, a plain dark area is shown.
+block.accordion.label: Questions and answers
+block.accordion.items: Question
+block.accordion.question: Question
+block.accordion.answer: Answer
+block.map.label: Map
+block.map.location: Place
+block.map.zoom: Show
+block.map.zoom_street: The street
+block.map.zoom_town: The town
+block.map.zoom_region: The region
+block.map.label_help: Shown with the map, for example the address.
+block.code.label: Code
+block.code.code: Code
+block.code.language: Language
+block.code.language_plain: Plain text
+editor.add_images: Add images
+editor.add_item: Add another
+editor.move_left: Move left
+editor.move_right: Move right
+editor.picker_use: Use selected images
+editor.map_search_placeholder: Address, e.g. Market Square 1, Springfield
+editor.map_find: Find on the map
+editor.map_searching: Searching …
+editor.map_found: 'Place found:'
+editor.map_none: No place chosen yet. Type an address and press "Find on the map".
+editor.map_not_found: This address was not found. Try adding the town or the country.
+editor.map_error: The search is not available right now. Please try again later.
+editor.map_privacy: The search is answered by OpenStreetMap, to which the typed address is sent.
 block.columns.left: Left column
 block.columns.right: Right column
 
@@ -369,6 +412,13 @@ error.generic_title: Something went wrong
 error.generic_text: An unexpected error occurred. Please try again in a moment.
 error.to_homepage: Go to the homepage
 
+site.embed.play: Play video
+site.embed.video_title: Video from %provider%
+site.embed.video_notice: The video is only loaded from %provider% when you click. %provider% then receives data such as your IP address.
+site.embed.show_map: Show map
+site.embed.map_title: Map
+site.embed.map_notice: The map is only loaded from OpenStreetMap when you click. OpenStreetMap then receives data such as your IP address.
+site.embed.open_on: Open on %provider% instead
 site.main_navigation: Main navigation
 site.footer_navigation: Footer navigation
 site.menu: Menu

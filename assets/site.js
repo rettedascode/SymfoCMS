@@ -36,6 +36,29 @@
         }
     });
 
+    // Videos and maps: nothing is requested from the other website before this click.
+    document.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-embed-src]');
+        if (!button) {
+            return;
+        }
+
+        const frame = document.createElement('iframe');
+        frame.src = button.dataset.embedSrc;
+        frame.title = button.dataset.embedTitle || '';
+        frame.loading = 'lazy';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.setAttribute('allowfullscreen', '');
+        if (button.dataset.embedAllow) {
+            frame.allow = button.dataset.embedAllow;
+        }
+
+        const container = button.closest('[data-embed]');
+        container.classList.add('is-loaded');
+        container.replaceChildren(frame);
+        frame.focus();
+    });
+
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             const open = document.querySelector('.has-children.is-open .site-nav__sub-toggle');

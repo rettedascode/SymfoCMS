@@ -1,0 +1,23 @@
+{#
+    Privacy: this template must not load anything from OpenStreetMap.
+    The map is only inserted by assets/site.js after the visitor clicked.
+#}
+{% set map = osm_map(data.location, data.zoom) %}
+{% if map %}
+<figure class="block block-map">
+    <div class="embed embed--map" data-embed>
+        <div class="embed__consent">
+            {% if data.label %}<p class="embed__label">{{ data.label }}</p>{% endif %}
+            <button type="button" class="button button--primary embed__button"
+                    data-embed-src="{{ map.embedUrl }}"
+                    data-embed-title="{{ data.label ?: 'site.embed.map_title'|trans }}">
+                {{ 'site.embed.show_map'|trans }}
+            </button>
+            <p class="embed__notice">
+                {{ 'site.embed.map_notice'|trans }}
+                <a href="{{ map.linkUrl }}" rel="noopener noreferrer">{{ 'site.embed.open_on'|trans({'%provider%': 'OpenStreetMap'}) }}</a>
+            </p>
+        </div>
+    </div>
+</figure>
+{% endif %}

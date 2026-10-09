@@ -1,0 +1,4 @@
+{% if data.code %}
+{# highlight_code() escapes the code and only adds <span> elements around keywords, strings and comments. #}
+<pre class="block block-code" tabindex="0"><code class="language-{{ data.language }}">{{ highlight_code(data.code, data.language) }}</code></pre>
+{% endif %}

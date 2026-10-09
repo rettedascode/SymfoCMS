@@ -1,0 +1,16 @@
+{% set images = data.images|map(id => cms_media(id))|filter(image => image) %}
+{% if images is not empty %}
+<ul class="block block-gallery block-gallery--{{ data.columns }}">
+    {% for image in images %}
+        <li>
+            {# Each thumbnail links to the large version of the image. #}
+            <a href="{{ media_url(image, 'large') }}">
+                <img src="{{ media_url(image, 'medium') }}" srcset="{{ media_srcset(image) }}"
+                     sizes="(min-width: 800px) {{ (760 / data.columns)|round }}px, 50vw"
+                     width="{{ image.width }}" height="{{ image.height }}"
+                     alt="{{ image.alt }}" loading="lazy">
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

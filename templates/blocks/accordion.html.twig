@@ -1,0 +1,12 @@
+{% set items = data.items|filter(item => item.question and item.answer) %}
+{% if items is not empty %}
+<div class="block block-accordion">
+    {% for item in items %}
+        {# <details> opens and closes without JavaScript and is accessible out of the box. #}
+        <details class="block-accordion__item">
+            <summary>{{ item.question }}</summary>
+            <div class="block-accordion__answer">{{ item.answer|raw }}</div>
+        </details>
+    {% endfor %}
+</div>
+{% endif %}

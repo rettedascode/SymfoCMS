@@ -120,6 +120,49 @@ block.quote.text: Zitat
 block.quote.author: Von wem stammt es? (optional)
 block.divider.label: Trennlinie
 block.columns.label: Zwei Spalten
+block.gallery.label: Galerie
+block.gallery.images: Bilder
+block.gallery.images_help: Wähle mehrere Bilder auf einmal aus. Mit den Pfeilen änderst du die Reihenfolge.
+block.gallery.columns: Bilder pro Reihe
+block.gallery.columns_2: Zwei
+block.gallery.columns_3: Drei
+block.gallery.columns_4: Vier
+block.video.label: Video
+block.video.url: Link zum Video
+block.video.url_help: Kopiere die Adresse eines Videos bei YouTube oder Vimeo und füge sie hier ein.
+block.video.url_invalid: Das sieht nicht nach einem Link zu einem YouTube- oder Vimeo-Video aus.
+block.video.title: Titel (optional)
+block.video.title_help: Sagt, worum es im Video geht, bevor es abgespielt wird.
+block.video.poster: Vorschaubild (optional)
+block.video.poster_help: Wird gezeigt, bis der Besucher das Video startet. Ohne Bild erscheint eine dunkle Fläche.
+block.accordion.label: Fragen und Antworten
+block.accordion.items: Frage
+block.accordion.question: Frage
+block.accordion.answer: Antwort
+block.map.label: Karte
+block.map.location: Ort
+block.map.zoom: Anzeigen
+block.map.zoom_street: Die Straße
+block.map.zoom_town: Den Ort
+block.map.zoom_region: Die Region
+block.map.label_help: Wird bei der Karte angezeigt, zum Beispiel die Adresse.
+block.code.label: Code
+block.code.code: Code
+block.code.language: Sprache
+block.code.language_plain: Einfacher Text
+editor.add_images: Bilder hinzufügen
+editor.add_item: Weitere hinzufügen
+editor.move_left: Nach links
+editor.move_right: Nach rechts
+editor.picker_use: Ausgewählte Bilder verwenden
+editor.map_search_placeholder: Adresse, z. B. Marktplatz 1, Musterstadt
+editor.map_find: Auf der Karte suchen
+editor.map_searching: Suche läuft …
+editor.map_found: 'Ort gefunden:'
+editor.map_none: Noch kein Ort gewählt. Gib eine Adresse ein und klicke auf „Auf der Karte suchen“.
+editor.map_not_found: Diese Adresse wurde nicht gefunden. Ergänze den Ort oder das Land.
+editor.map_error: Die Suche ist gerade nicht erreichbar. Bitte versuche es später noch einmal.
+editor.map_privacy: Die Suche wird von OpenStreetMap beantwortet; die eingegebene Adresse wird dorthin gesendet.
 block.columns.left: Linke Spalte
 block.columns.right: Rechte Spalte
 
@@ -368,6 +411,13 @@ error.generic_title: Etwas ist schiefgelaufen
 error.generic_text: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es gleich noch einmal.
 error.to_homepage: Zur Startseite
 
+site.embed.play: Video abspielen
+site.embed.video_title: Video von %provider%
+site.embed.video_notice: Das Video wird erst nach deinem Klick von %provider% geladen. %provider% erhält dann Daten wie deine IP-Adresse.
+site.embed.show_map: Karte anzeigen
+site.embed.map_title: Karte
+site.embed.map_notice: Die Karte wird erst nach deinem Klick von OpenStreetMap geladen. OpenStreetMap erhält dann Daten wie deine IP-Adresse.
+site.embed.open_on: Stattdessen bei %provider% öffnen
 site.main_navigation: Hauptnavigation
 site.footer_navigation: Fußzeilen-Navigation
 site.menu: Menü

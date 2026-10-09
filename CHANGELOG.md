@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New block types: gallery, video (YouTube and Vimeo), questions and answers, map (OpenStreetMap) and code with server-side syntax highlighting.
+- Videos and maps are click-to-load: nothing is requested from third parties before the visitor clicks.
+- New field types for block authors: `Field::images()`, `Field::items()`, `Field::code()` and `Field::location()`; the image picker can select several images at once.
+- Editor guide in `docs/editor.md`.
 - Slash command: typing "/" in an empty text block opens the list of block types and turns the block into the chosen one.
 - The "Add block" list can be searched by typing; Enter picks the first match.
 - Page templates: a new page can start from a built-in template (landing page, about, contact) or from a template an admin saved from an existing page.

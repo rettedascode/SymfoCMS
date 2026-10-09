@@ -92,6 +92,22 @@
 .shared-field { display: grid; gap: .5rem; justify-items: start; }
 .shared-field select { justify-self: stretch; }
 
+/* ---------- List-like fields: galleries and item lists ---------- */
+
+.images-field__list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: .5rem; }
+.images-field__list:empty { display: none; }
+.images-field__list li { position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg); }
+.images-field__list img, .images-field__missing { display: grid; place-items: center; width: 100%; aspect-ratio: 1; object-fit: cover; color: var(--muted); }
+.images-field__actions { display: flex; justify-content: center; background: var(--surface); border-top: 1px solid var(--border); }
+.images-field__actions .icon-button { width: 32px; height: 30px; }
+
+.items-field { display: grid; gap: .7rem; }
+.items-field__entry { border: 1px solid var(--border); border-radius: 6px; padding: .6rem .8rem .8rem; background: #fafbfc; }
+.items-field__header { display: flex; align-items: center; margin-bottom: .3rem; }
+.items-field__number { flex: 1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+
+.code-input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9rem; line-height: 1.5; white-space: pre; overflow-x: auto; tab-size: 4; }
+
 /* ---------- Rich text ---------- */
 
 .richtext { border: 1px solid var(--border-strong); border-radius: 6px; background: #fff; }

@@ -6,12 +6,14 @@ import { imageFiles, uploadFiles } from './upload.js';
  * Opens the image picker dialog.
  *
  * Resolves with the chosen media item ({ id, thumb, url, alt, name }) or null
- * when the dialog is closed without a choice.
+ * when the dialog is closed without a choice. With `multiple`, images are
+ * ticked one by one and the promise resolves with a list (empty when cancelled).
  */
-export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n }) {
+export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n, multiple = false }) {
     return new Promise((resolve) => {
         let page = 1;
-        let chosen = null;
+        let chosen = multiple ? [] : null;
+        const selected = new Map();
 
         const grid = el('div', { class: 'media-grid media-grid--picker' });
         const status = el('p', { class: 'picker__status muted', role: 'status' });
@@ -31,14 +33,38 @@ export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n }) {
             el('div', { class: 'dialog__body' }, dropzone, status, grid, el('p', { class: 'picker__more' }, moreButton)),
         );
 
-        const choose = (media) => {
-            chosen = media;
+        const useButton = el('button', { type: 'button', class: 'button button--primary', hidden: !multiple, disabled: true, onclick: () => {
+            chosen = [...selected.values()];
             dialog.close();
+        } }, i18n.picker_use);
+        dialog.append(el('div', { class: 'dialog__footer', hidden: !multiple }, useButton));
+
+        const choose = (media, button = null) => {
+            if (!multiple) {
+                chosen = media;
+                dialog.close();
+
+                return;
+            }
+
+            // Several images: clicking ticks or unticks, the button at the bottom confirms.
+            if (selected.has(media.id)) {
+                selected.delete(media.id);
+            } else {
+                selected.set(media.id, media);
+            }
+            button?.setAttribute('aria-pressed', String(selected.has(media.id)));
+            useButton.disabled = selected.size === 0;
+            useButton.textContent = selected.size === 0 ? i18n.picker_use : `${i18n.picker_use} (${selected.size})`;
         };
 
-        const tile = (media) => el('button', { type: 'button', class: 'media-tile', title: media.name, onclick: () => choose(media) },
-            el('img', { src: media.thumb, alt: media.alt || media.name, loading: 'lazy' }),
-        );
+        const tile = (media) => {
+            const button = el('button', { type: 'button', class: 'media-tile', title: media.name, 'aria-pressed': multiple ? 'false' : null, onclick: () => choose(media, button) },
+                el('img', { src: media.thumb, alt: media.alt || media.name, loading: 'lazy' }),
+            );
+
+            return button;
+        };
 
         async function load() {
             status.textContent = i18n.picker_loading;
@@ -67,7 +93,12 @@ export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n }) {
                 fallbackError: i18n.picker_error,
                 onResult: ({ file, media, error }) => {
                     if (media) {
-                        grid.prepend(tile(media));
+                        const added = tile(media);
+                        grid.prepend(added);
+                        if (multiple) {
+                            // Freshly uploaded images are what the person wants to use.
+                            choose(media, added);
+                        }
                     } else {
                         errors.push(`${file.name}: ${error}`);
                     }
@@ -76,9 +107,9 @@ export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n }) {
             status.textContent = errors.join(' ');
 
             // Uploading a single image almost always means "use this one".
-            if (files.length === 1 && uploaded.length === 1) {
+            if (!multiple && files.length === 1 && uploaded.length === 1) {
                 choose(uploaded[0]);
-            } else if (uploaded.length > 0 && errors.length === 0) {
+            } else if (!multiple && uploaded.length > 0 && errors.length === 0) {
                 status.textContent = format(i18n.picker_uploaded, { count: String(uploaded.length) });
             }
         }

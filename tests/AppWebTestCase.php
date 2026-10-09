@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Category;
+use App\Entity\Media;
 use App\Entity\Page;
 use App\Entity\Post;
 use App\Entity\User;
@@ -108,6 +109,25 @@ abstract class AppWebTestCase extends WebTestCase
         $this->em()->flush();
 
         return $page;
+    }
+
+    /**
+     * A media library entry without a file on disk - enough for everything that only renders its address.
+     */
+    protected function createMedia(string $filename, string $alt = ''): Media
+    {
+        $media = (new Media())
+            ->setFilename($filename)
+            ->setOriginalName($filename)
+            ->setMimeType('image/png')
+            ->setSize(1000)
+            ->setDimensions(1200, 800)
+            ->setAlt($alt);
+
+        $this->em()->persist($media);
+        $this->em()->flush();
+
+        return $media;
     }
 
     protected function createCategory(string $name, string $locale = 'en'): Category

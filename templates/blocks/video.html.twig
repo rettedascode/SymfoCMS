@@ -1,0 +1,28 @@
+{#
+    Privacy: this template must not load anything from the video platform.
+    The player is only inserted by assets/site.js after the visitor clicked.
+#}
+{% set video = video_embed(data.url) %}
+{% if video %}
+{% set poster = cms_media(data.poster) %}
+<figure class="block block-video">
+    <div class="embed" data-embed>
+        {% if poster %}
+            <img class="embed__poster" src="{{ media_url(poster, 'large') }}" srcset="{{ media_srcset(poster) }}"
+                 sizes="(min-width: 800px) 760px, 100vw" alt="" loading="lazy">
+        {% endif %}
+        <div class="embed__consent">
+            <button type="button" class="button button--primary embed__button"
+                    data-embed-src="{{ video.embedUrl }}"
+                    data-embed-title="{{ data.title ?: 'site.embed.video_title'|trans({'%provider%': video.name}) }}"
+                    data-embed-allow="autoplay; fullscreen; picture-in-picture">
+                <span aria-hidden="true">▶</span> {{ 'site.embed.play'|trans }}{% if data.title %}: {{ data.title }}{% endif %}
+            </button>
+            <p class="embed__notice">
+                {{ 'site.embed.video_notice'|trans({'%provider%': video.name}) }}
+                <a href="{{ video.watchUrl }}" rel="noopener noreferrer">{{ 'site.embed.open_on'|trans({'%provider%': video.name}) }}</a>
+            </p>
+        </div>
+    </div>
+</figure>
+{% endif %}

@@ -116,6 +116,14 @@ final class AppFixtures extends Fixture
                 ['type' => 'text', 'data' => ['content' => '<p>This page is part of the demo content. Log in, open <strong>Pages</strong> and edit it to tell visitors who you are.</p>']],
                 ['type' => 'heading', 'data' => ['text' => 'What you can do next', 'level' => '2']],
                 ['type' => 'text', 'data' => ['content' => '<ul><li>Change the texts and images on this page</li><li>Write your first blog post</li><li>Rearrange the navigation under <em>Menus</em></li></ul>']],
+                ['type' => 'heading', 'data' => ['text' => 'Frequently asked questions', 'level' => '2']],
+                ['type' => 'accordion', 'data' => ['items' => [
+                    ['question' => 'Do I need to know HTML?', 'answer' => '<p>No. Everything is edited in simple forms, and the preview shows the result while you type.</p>'],
+                    ['question' => 'Can I undo a mistake?', 'answer' => '<p>Yes. Every save keeps the previous version. Open the <strong>History</strong> tab of a page to bring an earlier version back.</p>'],
+                    ['question' => 'Does the website track visitors?', 'answer' => '<p>No. Videos and maps are only loaded after a visitor clicks on them.</p>'],
+                ]]],
+                ['type' => 'heading', 'data' => ['text' => 'Where to find us', 'level' => '2']],
+                ['type' => 'map', 'data' => ['location' => ['lat' => 52.516275, 'lon' => 13.377704], 'label' => 'Pariser Platz, 10117 Berlin', 'zoom' => 'street']],
                 ['type' => 'divider', 'data' => []],
                 ['type' => 'button', 'data' => ['label' => 'Log in', 'url' => '/login', 'style' => 'secondary']],
                 $shared,
@@ -137,6 +145,11 @@ final class AppFixtures extends Fixture
             'Short paragraphs, clear headings and helpful images: small habits that make every page easier to read.', [
                 ['type' => 'text', 'data' => ['content' => '<p>People rarely read web pages word for word. They scan. These habits help them find what they need:</p><ol><li>Start with the most important point</li><li>Use a heading for every new topic</li><li>Keep paragraphs short</li><li>Describe every image</li><li>End with a clear next step</li></ol>']],
                 ['type' => 'image', 'data' => ['image' => $forest->getId(), 'alt' => '', 'caption' => 'A calm page is easier to read.']],
+                ['type' => 'heading', 'data' => ['text' => 'For the curious: what a heading looks like in HTML', 'level' => '2']],
+                ['type' => 'code', 'data' => ['code' => "<!-- You never have to write this yourself -->\n<h2 class=\"block-heading\">Keep paragraphs short</h2>\n<p>People scan web pages.</p>", 'language' => 'html']],
+                ['type' => 'heading', 'data' => ['text' => 'Pictures say more', 'level' => '2']],
+                ['type' => 'gallery', 'data' => ['images' => [$harbour->getId(), $forest->getId(), $desk->getId()], 'columns' => '3']],
+                ['type' => 'video', 'data' => ['url' => 'https://www.youtube.com/watch?v=aqz-KE-bpKQ', 'title' => 'Big Buck Bunny', 'poster' => $desk->getId()]],
                 ['type' => 'button', 'data' => ['label' => 'More guides', 'url' => '/blog/category/guides', 'style' => 'secondary']],
             ]);
         $this->createPost($manager, 'How to Schedule a Post', 'how-to-schedule-a-post', $guides, $author, $desk, '-1 day',
