@@ -21,18 +21,24 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * Categories that have at least one publicly visible post.
      *
+     * @param string|null $locale limit to one language, or null for all languages
+     *
      * @return list<Category>
      */
-    public function findWithPublicPosts(): array
+    public function findWithPublicPosts(?string $locale): array
     {
-        /** @var list<Category> $categories */
-        $categories = $this->createQueryBuilder('c')
+        $qb = $this->createQueryBuilder('c')
             ->where('EXISTS (SELECT 1 FROM '.Post::class.' p WHERE p.category = c AND p.status = :status AND p.publishedAt <= :now)')
             ->setParameter('status', ContentStatus::Published)
             ->setParameter('now', new \DateTimeImmutable())
-            ->orderBy('c.name', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('c.name', 'ASC');
+
+        if (null !== $locale) {
+            $qb->andWhere('c.locale = :locale')->setParameter('locale', $locale);
+        }
+
+        /** @var list<Category> $categories */
+        $categories = $qb->getQuery()->getResult();
 
         return $categories;
     }

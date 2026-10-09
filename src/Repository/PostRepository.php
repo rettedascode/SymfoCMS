@@ -22,8 +22,10 @@ class PostRepository extends ServiceEntityRepository
 
     /**
      * Posts visible to the public: published and not scheduled for the future.
+     *
+     * @param string|null $locale limit to one language, or null for all languages
      */
-    public function createPublicQueryBuilder(?Category $category = null): QueryBuilder
+    public function createPublicQueryBuilder(?string $locale, ?Category $category = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->where('p.status = :status')
@@ -32,6 +34,10 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('p.publishedAt', 'DESC')
             ->addOrderBy('p.id', 'DESC');
+
+        if (null !== $locale) {
+            $qb->andWhere('p.locale = :locale')->setParameter('locale', $locale);
+        }
 
         if (null !== $category) {
             $qb->andWhere('p.category = :category')->setParameter('category', $category);
@@ -43,10 +49,10 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return list<Post>
      */
-    public function findPublic(int $page, int $perPage, ?Category $category = null): array
+    public function findPublic(?string $locale, int $page, int $perPage, ?Category $category = null): array
     {
         /** @var list<Post> $posts */
-        $posts = $this->createPublicQueryBuilder($category)
+        $posts = $this->createPublicQueryBuilder($locale, $category)
             ->leftJoin('p.coverImage', 'cover')->addSelect('cover')
             ->leftJoin('p.category', 'cat')->addSelect('cat')
             ->leftJoin('p.author', 'author')->addSelect('author')
@@ -58,9 +64,9 @@ class PostRepository extends ServiceEntityRepository
         return $posts;
     }
 
-    public function countPublic(?Category $category = null): int
+    public function countPublic(?string $locale, ?Category $category = null): int
     {
-        return (int) $this->createPublicQueryBuilder($category)
+        return (int) $this->createPublicQueryBuilder($locale, $category)
             ->select('COUNT(p.id)')
             ->resetDQLPart('orderBy')
             ->getQuery()
@@ -68,19 +74,21 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Posts for the admin list, newest first. Pass an author to limit the list to their posts.
+     * Posts of one language for the admin list, newest first. Pass an author to limit the list to their posts.
      *
      * @return list<Post>
      */
-    public function findForAdmin(?User $author = null): array
+    public function findForAdmin(string $locale, ?User $author = null): array
     {
         $qb = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'cat')->addSelect('cat')
             ->leftJoin('p.author', 'author')->addSelect('author')
+            ->where('p.locale = :locale')
+            ->setParameter('locale', $locale)
             ->orderBy('p.updatedAt', 'DESC');
 
         if (null !== $author) {
-            $qb->where('p.author = :author')->setParameter('author', $author);
+            $qb->andWhere('p.author = :author')->setParameter('author', $author);
         }
 
         /** @var list<Post> $posts */

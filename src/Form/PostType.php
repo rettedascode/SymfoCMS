@@ -21,6 +21,8 @@ final class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $post = $builder->getData();
+
         $builder
             ->add('excerpt', TextareaType::class, [
                 'label' => 'post.excerpt',
@@ -36,7 +38,11 @@ final class PostType extends AbstractType
                 'label' => 'post.category',
                 'class' => Category::class,
                 'choice_label' => 'name',
-                'query_builder' => static fn (EntityRepository $repository): QueryBuilder => $repository->createQueryBuilder('c')->orderBy('c.name', 'ASC'),
+                // Categories belong to one language: offer only those of the post's language.
+                'query_builder' => static fn (EntityRepository $repository): QueryBuilder => $repository->createQueryBuilder('c')
+                    ->where('c.locale = :locale')
+                    ->setParameter('locale', $post instanceof Post ? $post->getLocale() : '')
+                    ->orderBy('c.name', 'ASC'),
                 'required' => false,
                 'placeholder' => 'post.no_category',
             ])

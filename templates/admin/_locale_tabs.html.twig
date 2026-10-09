@@ -1,0 +1,12 @@
+{#
+    Language tabs above lists of content. Rendered only on multilingual sites.
+    Variables: route, parameters (optional), current (language code)
+#}
+{% if is_multilingual() %}
+    <nav class="language-tabs" aria-label="{{ 'language.choose'|trans }}">
+        {% for code in content_locales() %}
+            <a href="{{ path(route, (parameters|default({}))|merge(code == default_content_locale() ? {} : {locale: code})) }}"
+               {% if code == current %}aria-current="page"{% endif %} lang="{{ code }}">{{ locale_name(code) }}</a>
+        {% endfor %}
+    </nav>
+{% endif %}

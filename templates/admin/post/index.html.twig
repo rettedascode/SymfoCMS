@@ -5,16 +5,16 @@
 {% block main %}
     <div class="page-header">
         <h1>{{ 'nav.blog'|trans }}</h1>
-        <a class="button button--primary" href="{{ path('admin_post_new') }}">+ {{ 'post.new'|trans }}</a>
+        <a class="button button--primary" href="{{ path('admin_post_new', {locale: locale}) }}">+ {{ 'post.new'|trans }}</a>
     </div>
 
-    {{ include('admin/post/_tabs.html.twig', {active: 'posts'}) }}
+    {{ include('admin/post/_tabs.html.twig', {active: 'posts', locale: locale}) }}
 
     {% if posts is empty %}
         <div class="empty">
             <h2>{{ 'post.empty_title'|trans }}</h2>
             <p>{{ 'post.empty_text'|trans }}</p>
-            <a class="button button--primary" href="{{ path('admin_post_new') }}">+ {{ 'post.new'|trans }}</a>
+            <a class="button button--primary" href="{{ path('admin_post_new', {locale: locale}) }}">+ {{ 'post.new'|trans }}</a>
         </div>
     {% else %}
         <div class="table-wrap">
@@ -40,7 +40,7 @@
                         <td>{{ post.publishedAt ? post.publishedAt|local_date(true) : '–' }}</td>
                         <td class="table__actions">
                             <a class="button button--small" href="{{ path('admin_post_edit', {id: post.id}) }}">{{ 'action.edit'|trans }}</a>
-                            <a class="button button--small" href="{{ path('app_blog_post', {slug: post.slug}) }}" target="_blank" rel="noopener">{{ 'action.view'|trans }}</a>
+                            <a class="button button--small" href="{{ content_path(post) }}" target="_blank" rel="noopener">{{ 'action.view'|trans }}</a>
                             {% if is_granted('POST_DELETE', post) %}
                                 <form method="post" action="{{ path('admin_post_delete', {id: post.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'post.delete_confirm'|trans({'%title%': post.title}) }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">

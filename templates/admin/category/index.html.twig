@@ -7,7 +7,7 @@
         <h1>{{ 'nav.blog'|trans }}</h1>
     </div>
 
-    {{ include('admin/post/_tabs.html.twig', {active: 'categories'}) }}
+    {{ include('admin/post/_tabs.html.twig', {active: 'categories', locale: locale}) }}
 
     <div class="card card--narrow">
         <h2>{{ 'category.add'|trans }}</h2>
@@ -31,7 +31,7 @@
                 {% for category in categories %}
                     <tr>
                         <th scope="row"><a href="{{ path('admin_category_edit', {id: category.id}) }}">{{ category.name }}</a></th>
-                        <td class="muted">/blog/category/{{ category.slug }}</td>
+                        <td class="muted">{{ site_path('app_blog_category', {slug: category.slug}, category.locale) }}</td>
                         <td class="table__actions">
                             <a class="button button--small" href="{{ path('admin_category_edit', {id: category.id}) }}">{{ 'action.edit'|trans }}</a>
                             <form method="post" action="{{ path('admin_category_delete', {id: category.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'category.delete_confirm'|trans({'%name%': category.name}) }}">

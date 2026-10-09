@@ -12,10 +12,10 @@ use App\Repository\PageRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Reads menus for the public website and stores what the menu editor sends.
+ * A menu is identified by its location (main, footer) and its language.
  */
 final class MenuBuilder
 {
@@ -26,7 +26,7 @@ final class MenuBuilder
         private readonly PageRepository $pages,
         private readonly PostRepository $posts,
         private readonly EntityManagerInterface $entityManager,
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly SiteUrls $siteUrls,
         private readonly RequestStack $requestStack,
         private readonly LinkSanitizer $linkSanitizer,
     ) {
@@ -35,14 +35,17 @@ final class MenuBuilder
     /**
      * Menu ready for rendering. Items pointing to content that is not public are left out.
      *
+     * @param string|null $locale language of the menu; defaults to the language of the page being shown
+     *
      * @return list<array{label: string, url: string, current: bool, children: list<array{label: string, url: string, current: bool, children: array{}}>}>
      */
-    public function build(MenuLocation $location): array
+    public function build(MenuLocation $location, ?string $locale = null): array
     {
-        $currentPath = $this->requestStack->getMainRequest()?->getPathInfo() ?? '';
+        $request = $this->requestStack->getMainRequest();
+        $currentPath = null !== $request ? $request->getBaseUrl().$request->getPathInfo() : '';
         $menu = [];
 
-        foreach ($this->menuItems->findTree($location) as $item) {
+        foreach ($this->menuItems->findTree($location, $locale ?? $this->siteUrls->currentLocale()) as $item) {
             $url = $this->resolveUrl($item);
             if (null === $url) {
                 continue;
@@ -67,7 +70,7 @@ final class MenuBuilder
      *
      * @return list<array<string, mixed>>
      */
-    public function export(MenuLocation $location): array
+    public function export(MenuLocation $location, string $locale): array
     {
         $export = static fn (MenuItem $item): array => [
             'label' => $item->getLabel(),
@@ -78,7 +81,7 @@ final class MenuBuilder
         ];
 
         $items = [];
-        foreach ($this->menuItems->findTree($location) as $item) {
+        foreach ($this->menuItems->findTree($location, $locale) as $item) {
             $items[] = $export($item) + ['children' => array_map($export, $item->getChildren()->toArray())];
         }
 
@@ -90,14 +93,14 @@ final class MenuBuilder
      *
      * @return int number of items stored
      */
-    public function replace(MenuLocation $location, mixed $tree): int
+    public function replace(MenuLocation $location, string $locale, mixed $tree): int
     {
-        $this->menuItems->deleteLocation($location);
+        $this->menuItems->deleteMenu($location, $locale);
 
         $count = 0;
         $position = 0;
         foreach (\is_array($tree) ? $tree : [] as $data) {
-            $item = $this->createItem($location, $data, null, $position);
+            $item = $this->createItem($location, $locale, $data, null, $position);
             if (null === $item || $count >= self::MAX_ITEMS) {
                 continue;
             }
@@ -108,8 +111,8 @@ final class MenuBuilder
             foreach (\is_array($data['children'] ?? null) ? $data['children'] : [] as $childData) {
                 // Menus without dropdowns get their sub-items as regular items instead of losing them.
                 $child = $location->allowsNesting()
-                    ? $this->createItem($location, $childData, $item, $childPosition)
-                    : $this->createItem($location, $childData, null, $position);
+                    ? $this->createItem($location, $locale, $childData, $item, $childPosition)
+                    : $this->createItem($location, $locale, $childData, null, $position);
                 if (null === $child || $count >= self::MAX_ITEMS) {
                     continue;
                 }
@@ -123,7 +126,7 @@ final class MenuBuilder
         return $count;
     }
 
-    private function createItem(MenuLocation $location, mixed $data, ?MenuItem $parent, int $position): ?MenuItem
+    private function createItem(MenuLocation $location, string $locale, mixed $data, ?MenuItem $parent, int $position): ?MenuItem
     {
         if (!\is_array($data)) {
             return null;
@@ -131,12 +134,13 @@ final class MenuBuilder
 
         $type = MenuItemType::tryFrom(\is_string($data['type'] ?? null) ? $data['type'] : '');
         $label = \is_string($data['label'] ?? null) ? trim($data['label']) : '';
-        $item = (new MenuItem())->setLocation($location)->setParent($parent)->setPosition($position);
+        $item = (new MenuItem())->setLocation($location)->setLocale($locale)->setParent($parent)->setPosition($position);
 
         switch ($type) {
             case MenuItemType::Page:
                 $page = is_numeric($data['page'] ?? null) ? $this->pages->find((int) $data['page']) : null;
-                if (!$page instanceof Page) {
+                // A menu only links to content of its own language.
+                if (!$page instanceof Page || $page->getLocale() !== $locale) {
                     return null;
                 }
                 $item->setType(MenuItemType::Page)->setPage($page)->setLabel('' !== $label ? $label : $page->getTitle());
@@ -144,7 +148,7 @@ final class MenuBuilder
 
             case MenuItemType::Post:
                 $post = is_numeric($data['post'] ?? null) ? $this->posts->find((int) $data['post']) : null;
-                if (!$post instanceof Post) {
+                if (!$post instanceof Post || $post->getLocale() !== $locale) {
                     return null;
                 }
                 $item->setType(MenuItemType::Post)->setPost($post)->setLabel('' !== $label ? $label : $post->getTitle());
@@ -169,17 +173,12 @@ final class MenuBuilder
 
     private function resolveUrl(MenuItem $item): ?string
     {
-        $page = $item->getPage();
-        $post = $item->getPost();
+        if (MenuItemType::Url === $item->getType()) {
+            return $item->getUrl();
+        }
 
-        return match ($item->getType()) {
-            MenuItemType::Page => null !== $page && $page->isPublic()
-                ? ($page->isHomepage() ? $this->urlGenerator->generate('app_home') : $this->urlGenerator->generate('app_page', ['slug' => $page->getSlug()]))
-                : null,
-            MenuItemType::Post => null !== $post && $post->isPublic()
-                ? $this->urlGenerator->generate('app_blog_post', ['slug' => $post->getSlug()])
-                : null,
-            MenuItemType::Url => $item->getUrl(),
-        };
+        $content = MenuItemType::Page === $item->getType() ? $item->getPage() : $item->getPost();
+
+        return null !== $content && $content->isPublic() ? $this->siteUrls->content($content) : null;
     }
 }

@@ -9,6 +9,9 @@
 
     <div class="card card--narrow">
         <p class="muted">{{ intro|trans }}</p>
+        {% if is_multilingual() %}
+            <p><span class="locale-chip" lang="{{ locale }}">{{ locale_name(locale) }}</span> <span class="muted">{{ 'language.new_content_hint'|trans }}</span></p>
+        {% endif %}
         {{ form_start(form) }}
         {{ form_widget(form) }}
         <div class="form-actions">

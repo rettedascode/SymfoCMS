@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
 use App\Security\Voter\AdminAreaVoter;
+use App\Service\ContentLocales;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +17,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(AdminAreaVoter::MANAGE_CATEGORIES)]
 final class CategoryController extends AdminController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ContentLocales $locales,
+    ) {
     }
 
     /**
@@ -26,7 +29,8 @@ final class CategoryController extends AdminController
     #[Route('', name: 'index', methods: ['GET', 'POST'])]
     public function index(Request $request, CategoryRepository $categories): Response
     {
-        $category = new Category();
+        $locale = $this->locales->fromRequest($request);
+        $category = (new Category())->setLocale($locale);
         $form = $this->createForm(CategoryType::class, $category, ['with_slug' => false]);
         $form->handleRequest($request);
 
@@ -35,12 +39,13 @@ final class CategoryController extends AdminController
             $this->entityManager->flush();
             $this->addFlash('success', 'flash.category_created');
 
-            return $this->redirectToRoute('admin_category_index');
+            return $this->redirectToRoute('admin_category_index', $this->localeParameters($locale));
         }
 
         return $this->render('admin/category/index.html.twig', [
             'form' => $form,
-            'categories' => $categories->findBy([], ['name' => 'ASC']),
+            'categories' => $categories->findBy(['locale' => $locale], ['name' => 'ASC']),
+            'locale' => $locale,
         ]);
     }
 
@@ -54,7 +59,7 @@ final class CategoryController extends AdminController
             $this->entityManager->flush();
             $this->addFlash('success', 'flash.saved');
 
-            return $this->redirectToRoute('admin_category_index');
+            return $this->redirectToRoute('admin_category_index', $this->localeParameters($category->getLocale()));
         }
 
         return $this->render('admin/category/edit.html.twig', [
@@ -73,6 +78,16 @@ final class CategoryController extends AdminController
         $this->entityManager->flush();
         $this->addFlash('success', 'flash.category_deleted');
 
-        return $this->redirectToRoute('admin_category_index');
+        return $this->redirectToRoute('admin_category_index', $this->localeParameters($category->getLocale()));
+    }
+
+    /**
+     * Keeps the list on the language that was being edited.
+     *
+     * @return array<string, string>
+     */
+    private function localeParameters(string $locale): array
+    {
+        return $this->locales->isDefault($locale) ? [] : ['locale' => $locale];
     }
 }

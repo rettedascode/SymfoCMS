@@ -9,7 +9,9 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Security\Voter\PostVoter;
 use App\Service\ContentEditor;
+use App\Service\ContentLocales;
 use App\Service\ContentManager;
+use App\Service\ContentTranslator;
 use App\Service\SlugGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,18 +26,22 @@ final class PostController extends AdminController
         private readonly ContentManager $contentManager,
         private readonly PostRepository $posts,
         private readonly ContentEditor $editor,
+        private readonly ContentLocales $locales,
+        private readonly ContentTranslator $translator,
     ) {
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
     #[IsGranted(PostVoter::CREATE)]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $locale = $this->locales->fromRequest($request);
         // Authors only see what they wrote themselves.
         $author = $this->isGranted(PostVoter::MANAGE_ALL) ? null : $this->currentUser();
 
         return $this->render('admin/post/index.html.twig', [
-            'posts' => $this->posts->findForAdmin($author),
+            'posts' => $this->posts->findForAdmin($locale, $author),
+            'locale' => $locale,
         ]);
     }
 
@@ -43,14 +49,16 @@ final class PostController extends AdminController
     #[IsGranted(PostVoter::CREATE)]
     public function new(Request $request, SlugGenerator $slugGenerator): Response
     {
+        $locale = $this->locales->fromRequest($request);
         $form = $this->createForm(NewContentType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $title = (string) $form->get('title')->getData();
             $post = (new Post())
+                ->setLocale($locale)
                 ->setTitle($title)
-                ->setSlug($slugGenerator->unique($title, Post::class))
+                ->setSlug($slugGenerator->unique($title, Post::class, $locale))
                 ->setAuthor($this->currentUser());
 
             $this->contentManager->save($post, []);
@@ -62,7 +70,8 @@ final class PostController extends AdminController
             'form' => $form,
             'heading' => 'post.new',
             'intro' => 'post.new_intro',
-            'back' => $this->generateUrl('admin_post_index'),
+            'locale' => $locale,
+            'back' => $this->generateUrl('admin_post_index', ['locale' => $locale]),
         ]);
     }
 
@@ -103,11 +112,39 @@ final class PostController extends AdminController
         return $this->render('admin/post/edit.html.twig', [
             'form' => $form,
             'post' => $post,
+            'translations' => $this->translator->overview($post),
             'editor_config' => $this->editor->config($post, $blocks, [
                 'autosave' => $this->generateUrl('admin_post_autosave', ['id' => $post->getId()]),
                 'discard' => $this->generateUrl('admin_post_discard_autosave', ['id' => $post->getId()]),
             ], 'post', $errors),
         ]);
+    }
+
+    /**
+     * Creates the version of a post in another language, starting as a copy, and opens it.
+     */
+    #[Route('/{id<\d+>}/translate/{locale}', name: 'translate', methods: ['POST'])]
+    #[IsGranted(PostVoter::EDIT, subject: 'post')]
+    public function translate(Request $request, Post $post, string $locale): Response
+    {
+        $this->requireCsrfToken($request);
+
+        if (!$this->locales->isEnabled($locale) || $locale === $post->getLocale()) {
+            throw $this->createNotFoundException();
+        }
+
+        $existing = $this->translator->versions($post)[$locale] ?? null;
+        if (null !== $existing) {
+            // Somebody else may own the existing version: the usual permission check applies.
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $existing);
+
+            return $this->redirectToRoute('admin_post_edit', ['id' => $existing->getId()]);
+        }
+
+        $translation = $this->translator->translate($post, $locale);
+        $this->addFlash('success', 'flash.translation_created');
+
+        return $this->redirectToRoute('admin_post_edit', ['id' => $translation->getId()]);
     }
 
     #[Route('/{id<\d+>}/autosave', name: 'autosave', methods: ['POST'])]
@@ -134,10 +171,11 @@ final class PostController extends AdminController
     public function delete(Request $request, Post $post): Response
     {
         $this->requireCsrfToken($request);
+        $locale = $post->getLocale();
 
         $this->contentManager->delete($post);
         $this->addFlash('success', 'flash.post_deleted');
 
-        return $this->redirectToRoute('admin_post_index');
+        return $this->redirectToRoute('admin_post_index', $this->locales->isDefault($locale) ? [] : ['locale' => $locale]);
     }
 }

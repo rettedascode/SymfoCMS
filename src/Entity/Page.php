@@ -8,7 +8,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[ORM\Table(name: 'pages')]
-#[UniqueEntity('slug', message: 'content.slug_taken')]
+#[ORM\UniqueConstraint(name: 'uniq_pages_locale_slug', columns: ['locale', 'slug'])]
+#[ORM\UniqueConstraint(name: 'uniq_pages_translation', columns: ['translation_group', 'locale'])]
+#[UniqueEntity(['locale', 'slug'], message: 'content.slug_taken', errorPath: 'slug')]
 class Page extends Content
 {
     /**

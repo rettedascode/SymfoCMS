@@ -1,6 +1,9 @@
+{# Variables: active ("posts" or "categories"), locale #}
+{% set locale_parameters = locale == default_content_locale() ? {} : {locale: locale} %}
 {% if is_granted('CATEGORY_MANAGE') %}
     <nav class="tabs" aria-label="{{ 'nav.blog'|trans }}">
-        <a href="{{ path('admin_post_index') }}" {% if active == 'posts' %}aria-current="page"{% endif %}>{{ 'post.tab_posts'|trans }}</a>
-        <a href="{{ path('admin_category_index') }}" {% if active == 'categories' %}aria-current="page"{% endif %}>{{ 'post.tab_categories'|trans }}</a>
+        <a href="{{ path('admin_post_index', locale_parameters) }}" {% if active == 'posts' %}aria-current="page"{% endif %}>{{ 'post.tab_posts'|trans }}</a>
+        <a href="{{ path('admin_category_index', locale_parameters) }}" {% if active == 'categories' %}aria-current="page"{% endif %}>{{ 'post.tab_categories'|trans }}</a>
     </nav>
 {% endif %}
+{{ include('admin/_locale_tabs.html.twig', {route: active == 'posts' ? 'admin_post_index' : 'admin_category_index', current: locale}) }}

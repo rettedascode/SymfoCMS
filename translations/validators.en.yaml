@@ -5,6 +5,10 @@ media.invalid_type: This file is not a supported image. Please upload a JPG, PNG
 media.too_large: This file is too large. The maximum size is %limit% MB.
 media.too_many_pixels: This image has too many pixels. Please reduce its dimensions and try again.
 media.upload_failed: The upload did not work. Please try again.
+settings.locale_invalid: '"%code%" is not a language code. Use two letters such as "en" or "de" (or a form like "pt-br").'
+settings.too_many_locales: Please use no more than %limit% languages.
+settings.locale_in_use: '%name% cannot be removed because pages, posts, categories or menus still exist in this language. Delete them first.'
+settings.locale_conflicts_with_page: 'A page already uses the address "%code%". Change the address of that page before adding this language.'
 content.blocks_invalid: Some blocks need your attention. Please check the fields marked below.
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.

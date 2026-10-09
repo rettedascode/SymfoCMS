@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>{{ site_name }}</title>
-        <link>{{ url('app_blog') }}</link>
+        <link>{{ site_url('app_blog') }}</link>
         <description>{{ site_tagline ?: site_name }}</description>
         <language>{{ app.locale }}</language>
         <lastBuildDate>{{ updated|date('r') }}</lastBuildDate>
-        <atom:link href="{{ url('app_feed') }}" rel="self" type="application/rss+xml"/>
+        <atom:link href="{{ site_url('app_feed') }}" rel="self" type="application/rss+xml"/>
         {% for post in posts %}
             <item>
                 <title>{{ post.title }}</title>
-                <link>{{ url('app_blog_post', {slug: post.slug}) }}</link>
-                <guid isPermaLink="true">{{ url('app_blog_post', {slug: post.slug}) }}</guid>
+                <link>{{ content_url(post) }}</link>
+                <guid isPermaLink="true">{{ content_url(post) }}</guid>
                 <pubDate>{{ post.publishedAt|date('r') }}</pubDate>
                 {% if post.author %}<dc:creator>{{ post.author.name }}</dc:creator>{% endif %}
                 {% if post.category %}<category>{{ post.category.name }}</category>{% endif %}

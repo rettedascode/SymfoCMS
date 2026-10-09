@@ -12,6 +12,7 @@ use App\Enum\ContentStatus;
 use App\Enum\MenuItemType;
 use App\Enum\MenuLocation;
 use App\Enum\UserRole;
+use App\Service\ContentLocales;
 use App\Service\MediaManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -22,8 +23,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Demo content for local development: three users, two pages, three blog
- * posts with generated cover images, and both menus.
+ * Demo content for local development: three users, two pages and three blog
+ * posts with generated cover images, both menus, and German versions of the
+ * pages and of one post to show how translations work.
  *
  *     php bin/console doctrine:fixtures:load
  */
@@ -36,12 +38,16 @@ final class AppFixtures extends Fixture
         private readonly MediaManager $mediaManager,
         #[Autowire(param: 'app.media_dir')]
         private readonly string $mediaDir,
+        private readonly ContentLocales $locales,
     ) {
     }
 
     public function load(ObjectManager $manager): void
     {
         $this->removeOldUploads();
+
+        // The demo site is bilingual: English is the main language, German lives under /de.
+        $this->locales->save(['en', 'de']);
 
         $admin = $this->createUser($manager, 'admin@example.com', 'Ada Admin', UserRole::Admin);
         $editor = $this->createUser($manager, 'editor@example.com', 'Eric Editor', UserRole::Editor);
@@ -116,7 +122,55 @@ final class AppFixtures extends Fixture
                 ['type' => 'text', 'data' => ['content' => '<p>While you are logged in, you can open drafts and scheduled posts to see how they will look.</p>']],
             ]);
 
+        // German versions. Sharing the translation group is what links them to the English originals.
+        $startseite = (new Page())
+            ->setLocale('de')
+            ->setTranslationGroup($home->getTranslationGroup())
+            ->setTitle('Willkommen bei SymfoCMS')
+            ->setSlug('startseite')
+            ->setStatus(ContentStatus::Published)
+            ->setHomepage(true)
+            ->setMetaDescription('SymfoCMS ist ein kleines, freundliches Content-Management-System mit einem einfachen Block-Editor.')
+            ->setBlocks([
+                ['type' => 'text', 'data' => ['content' => '<p>Das ist deine neue Website. Alles, was du hier siehst, besteht aus <strong>Blöcken</strong> – Überschriften, Texten, Bildern, Buttons und mehr –, die du mit wenigen Klicks hinzufügst, verschiebst und entfernst.</p>']],
+                ['type' => 'image', 'data' => ['image' => $harbour->getId(), 'alt' => 'Sonnenaufgang über einem ruhigen Hafen', 'caption' => 'Bilder kommen aus der Mediathek und werden automatisch verkleinert.']],
+                ['type' => 'heading', 'data' => ['text' => 'Mehrsprachig von Anfang an', 'level' => '2']],
+                ['type' => 'text', 'data' => ['content' => '<p>Diese Seite ist die deutsche Version der englischen Startseite. Über den Sprachumschalter oben gelangst du zur jeweils anderen Fassung.</p>']],
+                ['type' => 'button', 'data' => ['label' => 'Zum Blog', 'url' => '/de/blog', 'style' => 'primary']],
+            ]);
+        $manager->persist($startseite);
+
+        $ueberUns = (new Page())
+            ->setLocale('de')
+            ->setTranslationGroup($about->getTranslationGroup())
+            ->setTitle('Über uns')
+            ->setSlug('ueber-uns')
+            ->setStatus(ContentStatus::Published)
+            ->setMetaDescription('Worum es auf dieser Demo-Website geht und wie du sie zu deiner eigenen machst.')
+            ->setBlocks([
+                ['type' => 'text', 'data' => ['content' => '<p>Diese Seite gehört zu den Demo-Inhalten. Melde dich an, öffne <strong>Seiten</strong> und bearbeite sie, um Besuchern zu erzählen, wer du bist.</p>']],
+                ['type' => 'button', 'data' => ['label' => 'Anmelden', 'url' => '/login', 'style' => 'secondary']],
+            ]);
+        $manager->persist($ueberUns);
+
+        $neuigkeiten = (new Category())->setLocale('de')->setName('Neuigkeiten')->setSlug('neuigkeiten');
+        $manager->persist($neuigkeiten);
+
+        $hallo = $this->createPost($manager, 'Hallo Welt', 'hallo-welt', $neuigkeiten, $admin, $harbour, '-9 days',
+            'Der erste Beitrag auf dieser Website – ein kurzes Hallo und ein Blick auf das, was kommt.', [
+                ['type' => 'text', 'data' => ['content' => '<p>Jeder Blog braucht einen ersten Beitrag, und das ist unserer. Beiträge werden mit demselben Block-Editor geschrieben wie Seiten.</p>']],
+                ['type' => 'quote', 'data' => ['text' => 'Das Geheimnis des Vorwärtskommens besteht darin, den ersten Schritt zu tun.', 'author' => 'Mark Twain']],
+            ]);
+        $hallo->setLocale('de')->setTranslationGroup($firstPost->getTranslationGroup());
+
         $manager->flush();
+
+        // German menus: every language has its own navigation.
+        $this->createMenuItem($manager, MenuLocation::Main, 0, 'Startseite', page: $startseite)->setLocale('de');
+        $this->createMenuItem($manager, MenuLocation::Main, 1, 'Über uns', page: $ueberUns)->setLocale('de');
+        $this->createMenuItem($manager, MenuLocation::Main, 2, 'Blog', url: '/de/blog')->setLocale('de');
+        $this->createMenuItem($manager, MenuLocation::Footer, 0, 'Über uns', page: $ueberUns)->setLocale('de');
+        $this->createMenuItem($manager, MenuLocation::Footer, 1, 'RSS-Feed', url: '/de/feed.xml')->setLocale('de');
 
         // Main navigation: Home, About and a "Blog" dropdown with the two categories.
         $this->createMenuItem($manager, MenuLocation::Main, 0, 'Home', page: $home);

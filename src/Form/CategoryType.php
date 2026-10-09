@@ -41,7 +41,7 @@ final class CategoryType extends AbstractType
 
             $slug = $this->slugGenerator->slugify($category->getSlug());
             if ('' === $slug && '' !== $category->getName()) {
-                $slug = $this->slugGenerator->unique($category->getName(), Category::class, $category->getId());
+                $slug = $this->slugGenerator->unique($category->getName(), Category::class, $category->getLocale(), $category->getId());
             }
             $category->setSlug($slug);
         });

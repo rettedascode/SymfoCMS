@@ -55,8 +55,9 @@ Log in at <http://localhost:8000/login> with `admin@example.com` / `demo-passwor
 - **Permissions** are checked on the server with voters (`src/Security/Voter`). Hiding a button is never enough.
 - **Anything a user typed** is validated or sanitized before it is stored and escaped when it is shown. Do not use `|raw` in templates except for rich text that went through `BlockNormalizer`.
 - **JavaScript** is plain ES modules loaded through AssetMapper – no build step, no npm. Keep dependencies to a minimum.
+- **Public links** in themes and extensions use `site_path()` / `content_path()` instead of `path()`, so they work in every language.
 - **Interface texts** go into `translations/messages.en.yaml` **and** `translations/messages.de.yaml`. Write them for people who are not technical: short, friendly, no jargon.
-- **Database changes** need a Doctrine migration that works on SQLite, MySQL and PostgreSQL. Prefer the schema API (`$schema->getTable(...)`) over raw SQL, as in the existing migration.
+- **Database changes** need a Doctrine migration that works on SQLite, MySQL and PostgreSQL. Prefer the schema API (`$schema->getTable(...)`) over raw SQL, and extend `App\Doctrine\PortableMigration` when changing existing tables: it keeps SQLite from deleting related rows while it rebuilds a table. Add the new columns to `MigrationTest` so upgrades stay covered.
 - **Accessibility** matters in the admin area and in the public theme: every control needs a label, everything must work with a keyboard, and drag and drop always has a button alternative.
 - Code, comments, commit messages and documentation are written in English.
 

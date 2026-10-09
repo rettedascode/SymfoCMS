@@ -15,7 +15,9 @@
 
 {% block main %}
     {% set is_draft = content.status.value == 'draft' %}
-    <div class="editor" data-controller="editor" data-editor-config-value="{{ editor_config|json_encode }}">
+    {# After a save that failed validation the editor shows what was typed, which is not stored yet. #}
+    <div class="editor" data-controller="editor" data-editor-config-value="{{ editor_config|json_encode }}"
+         data-editor-unsaved-value="{{ form.vars.submitted and not form.vars.valid ? 'true' : 'false' }}">
         {{ form_start(form, {attr: {
             'data-editor-target': 'form',
             'data-action': 'submit->editor#submit input->editor#fieldChanged change->editor#fieldChanged keydown->editor#preventImplicitSubmit',
@@ -23,6 +25,7 @@
 
         <div class="editor__bar">
             <a class="editor__back" href="{{ back_url }}">← {{ back_label|trans }}</a>
+            {% if is_multilingual() %}<span class="locale-chip" lang="{{ content.locale }}">{{ locale_name(content.locale) }}</span>{% endif %}
             <span class="editor__status" data-editor-target="status" role="status" aria-live="polite"></span>
             <div class="editor__bar-actions">
                 <div class="segmented editor__view-switch" role="group" aria-label="{{ 'editor.view'|trans }}">
@@ -44,7 +47,9 @@
             <button type="button" class="link-button" data-action="editor#discardAutosave">{{ 'editor.restore_discard'|trans }}</button>
         </div>
 
-        {{ form_errors(form) }}
+        {% if form.vars.errors|length > 0 %}
+            <div class="flash flash--error editor__errors">{{ form_errors(form) }}</div>
+        {% endif %}
 
         <div class="editor__layout">
             <div class="editor__main">
@@ -70,6 +75,29 @@
                         <p class="muted">{{ 'editor.seo_intro'|trans }}</p>
                         {{ form_row(form.seoTitle) }}
                         {{ form_row(form.metaDescription) }}
+
+                        {# Only on multilingual sites: the other language versions of this content. #}
+                        {% if translations is not empty %}
+                            <h2 class="card__heading">{{ 'language.translations_heading'|trans }}</h2>
+                            <p class="muted">{{ 'language.translations_intro'|trans }}</p>
+                            <ul class="translation-list">
+                                {% for code, version in translations %}
+                                    <li>
+                                        <span class="locale-chip" lang="{{ code }}">{{ locale_name(code) }}</span>
+                                        {% if version %}
+                                            <span class="translation-list__title">{{ version.title }}</span>
+                                            <a class="button button--small" href="{{ path(edit_route, {id: version.id}) }}">{{ 'language.edit_version'|trans }}</a>
+                                        {% else %}
+                                            <span class="translation-list__title muted">{{ 'language.no_version'|trans }}</span>
+                                            {# Sends the editor form to the translate action; only the token below is read there. #}
+                                            <button type="submit" class="button button--small" formnovalidate
+                                                    formaction="{{ path(translate_route, {id: content.id, locale: code}) }}"
+                                                    name="_token" value="{{ csrf_token('admin') }}">{{ 'language.translate_into'|trans({'%language%': locale_name(code)}) }}</button>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
                 </div>
             </div>

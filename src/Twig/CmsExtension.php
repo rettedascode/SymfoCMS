@@ -90,9 +90,9 @@ final class CmsExtension
      * @return list<array{label: string, url: string, current: bool, children: list<array{label: string, url: string, current: bool, children: array{}}>}>
      */
     #[AsTwigFunction('cms_menu')]
-    public function menu(string $location): array
+    public function menu(string $location, ?string $locale = null): array
     {
-        return $this->menuBuilder->build(MenuLocation::from($location));
+        return $this->menuBuilder->build(MenuLocation::from($location), $locale);
     }
 
     /**

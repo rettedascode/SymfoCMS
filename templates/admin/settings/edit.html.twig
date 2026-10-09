@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.settings'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.settings'|trans }}</h1>
+    </div>
+
+    <div class="card card--narrow">
+        <h2>{{ 'settings.languages_heading'|trans }}</h2>
+        <p class="muted">{{ 'settings.languages_intro'|trans }}</p>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="form-actions">
+            <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

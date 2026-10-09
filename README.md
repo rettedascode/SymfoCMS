@@ -49,7 +49,8 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, meta and Open Graph tags, `sitemap.xml`, `robots.txt`, friendly 404 page
-- Admin interface in English and German; [other languages](#adding-a-language) are one translation file away
+- Admin interface in English and German; [other languages](#adding-an-interface-language) are one translation file away
+- [Multilingual content](docs/multilingual.md): language versions of pages and posts, menus per language, a language switcher and `hreflang` tags – completely invisible on single-language sites
 
 ## Requirements
 
@@ -69,7 +70,7 @@ cd symfocms
 
 composer install                                    # PHP dependencies and frontend libraries
 php bin/console doctrine:migrations:migrate -n      # creates the SQLite database in var/data.db
-php bin/console doctrine:fixtures:load -n           # optional: demo pages, posts, menus and users
+php bin/console doctrine:fixtures:load -n           # optional: demo site in English and German
 
 php -S localhost:8000 -t public bin/dev-router.php  # or: symfony serve
 ```
@@ -112,7 +113,7 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `DEFAULT_URI` | `http://localhost` | Base URL for links generated outside of web requests |
 | `APP_SITE_NAME` | `SymfoCMS` | Name shown in the header, the browser tab and the feed |
 | `APP_SITE_TAGLINE` | `A small, friendly CMS` | Default meta description |
-| `APP_LOCALE` | `en` | Language of the public website and default admin language (`en` or `de`) |
+| `APP_LOCALE` | `en` | Language of the website until languages are chosen under *Settings* in the admin area, and default admin language |
 | `APP_TIMEZONE` | `UTC` | Time zone for publish dates, e.g. `Europe/Berlin`. Choose it before creating content. |
 | `APP_MAX_UPLOAD_MB` | `8` | Largest accepted image. PHP's `upload_max_filesize` and `post_max_size` must allow it too. |
 
@@ -155,6 +156,7 @@ php bin/console doctrine:migrations:migrate -n
 | Blog categories | ✔ | ✔ | – |
 | Media library | ✔ | ✔ | upload, and manage own uploads |
 | Menus | ✔ | – | – |
+| Settings (languages) | ✔ | – | – |
 | Users | ✔ | – | – |
 
 Every user can change their own name, language and password under their name at the bottom of the sidebar.
@@ -229,12 +231,14 @@ Every field accepts `->help('...')`, `->placeholder('...')` and `->required()`. 
 
 To ship block types as a reusable Composer package, to validate block data, or to react to events such as "content was published", see [docs/extensions.md](docs/extensions.md).
 
-## Adding a language
+## Adding an interface language
+
+This is about the language of the admin area and of theme texts such as "Read more". To offer your *content* in several languages, see [Multilingual websites](docs/multilingual.md).
 
 1. Copy `translations/messages.en.yaml` to `translations/messages.<locale>.yaml` and translate the values (do the same for `validators.en.yaml` and `security.en.yaml`).
 2. Add the locale to `enabled_locales` in `config/packages/translation.yaml`.
 
-The language then appears in the user settings. `APP_LOCALE` selects the language of the public website.
+The language then appears in the user settings.
 
 ## Changing the design
 
@@ -261,6 +265,8 @@ templates/blocks/   One template per block type
 templates/site/     Public theme
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
+examples/           Example extension (a block type in its own bundle)
+docs/               Guides: extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

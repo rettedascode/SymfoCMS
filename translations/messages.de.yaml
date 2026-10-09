@@ -263,6 +263,23 @@ menu.js.type_page: 'Seite: %title%'
 menu.js.type_post: 'Beitrag: %title%'
 menu.js.blog_label: Blog
 
+nav.settings: Einstellungen
+
+settings.languages_heading: Sprachen
+settings.languages_intro: Deine Website kann Seiten und Beiträge in mehreren Sprachen anbieten. Bei nur einer Sprache wird sonst nirgends etwas zu Sprachen angezeigt.
+settings.locales: Sprachen der Website
+settings.locales_help: 'Sprachcodes, durch Kommas getrennt, zum Beispiel „de, en“. Die erste ist die Hauptsprache: Ihre Adressen haben kein Präfix, die anderen beginnen mit ihrem Code, etwa /en/contact.'
+
+language.choose: Sprache
+language.new_content_hint: ist die Sprache des neuen Inhalts.
+language.translations_heading: Andere Sprachen
+language.translations_intro: Jede Sprache hat ihre eigene Version dieses Inhalts. Eine neue Version beginnt als Kopie, die du anschließend übersetzt.
+language.edit_version: Bearbeiten
+language.no_version: Noch nicht übersetzt
+language.translate_into: In %language% übersetzen
+flash.translation_created: Eine Kopie in der neuen Sprache wurde als Entwurf angelegt. Übersetze sie und veröffentliche sie, wenn du so weit bist.
+site.languages: Sprache
+
 error.not_found_title: Seite nicht gefunden
 error.not_found_text: Die gesuchte Seite gibt es leider nicht oder sie wurde verschoben.
 error.forbidden_title: Kein Zugriff

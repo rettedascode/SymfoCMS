@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Enum\ContentStatus;
 use App\Enum\UserRole;
+use App\Service\ContentLocales;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -83,13 +84,25 @@ abstract class AppWebTestCase extends WebTestCase
         return $user;
     }
 
-    protected function createPage(string $title, ContentStatus $status, bool $homepage = false): Page
+    /**
+     * Makes the test site multilingual. The first language is the default one.
+     */
+    protected function enableLocales(string ...$locales): void
+    {
+        static::getContainer()->get(ContentLocales::class)->save(array_values($locales));
+    }
+
+    protected function createPage(string $title, ContentStatus $status, bool $homepage = false, string $locale = 'en', ?Page $translationOf = null): Page
     {
         $page = (new Page())
+            ->setLocale($locale)
             ->setTitle($title)
             ->setSlug(strtolower(str_replace(' ', '-', $title)))
             ->setStatus($status)
             ->setHomepage($homepage);
+        if (null !== $translationOf) {
+            $page->setTranslationGroup($translationOf->getTranslationGroup());
+        }
 
         $this->em()->persist($page);
         $this->em()->flush();
@@ -97,9 +110,9 @@ abstract class AppWebTestCase extends WebTestCase
         return $page;
     }
 
-    protected function createCategory(string $name): Category
+    protected function createCategory(string $name, string $locale = 'en'): Category
     {
-        $category = (new Category())->setName($name)->setSlug(strtolower(str_replace(' ', '-', $name)));
+        $category = (new Category())->setLocale($locale)->setName($name)->setSlug(strtolower(str_replace(' ', '-', $name)));
 
         $this->em()->persist($category);
         $this->em()->flush();
@@ -117,8 +130,12 @@ abstract class AppWebTestCase extends WebTestCase
         ContentStatus $status = ContentStatus::Published,
         ?\DateTimeImmutable $publishedAt = new \DateTimeImmutable('-1 day'),
         ?string $excerpt = null,
+        string $locale = 'en',
+        ?Post $translationOf = null,
     ): Post {
         $post = (new Post())
+            ->setLocale($locale)
+            ->setTranslationGroup($translationOf?->getTranslationGroup() ?? bin2hex(random_bytes(16)))
             ->setTitle($title)
             ->setSlug(trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($title)), '-'))
             ->setStatus($status)

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MenuItemRepository::class)]
 #[ORM\Table(name: 'menu_items')]
-#[ORM\Index(name: 'idx_menu_items_location', columns: ['location', 'position'])]
+#[ORM\Index(name: 'idx_menu_items_location', columns: ['location', 'locale', 'position'])]
 class MenuItem
 {
     #[ORM\Id]
@@ -21,6 +21,9 @@ class MenuItem
 
     #[ORM\Column(length: 20, enumType: MenuLocation::class)]
     private MenuLocation $location = MenuLocation::Main;
+
+    #[ORM\Column(length: 10, options: ['default' => 'en'])]
+    private string $locale = 'en';
 
     #[ORM\Column(length: 20, enumType: MenuItemType::class)]
     private MenuItemType $type = MenuItemType::Url;
@@ -69,6 +72,18 @@ class MenuItem
     public function setLocation(MenuLocation $location): static
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
 
         return $this;
     }

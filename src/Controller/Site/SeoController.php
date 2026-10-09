@@ -5,6 +5,8 @@ namespace App\Controller\Site;
 use App\Repository\CategoryRepository;
 use App\Repository\PageRepository;
 use App\Repository\PostRepository;
+use App\Service\ContentLocales;
+use App\Service\SiteUrls;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,42 +15,41 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class SeoController extends AbstractController
 {
     /**
-     * Lists every public URL for search engines.
+     * Lists every public URL of every language for search engines.
      */
     #[Route('/sitemap.xml', name: 'app_sitemap', methods: ['GET'])]
-    public function sitemap(PageRepository $pages, PostRepository $posts, CategoryRepository $categories): Response
+    public function sitemap(PageRepository $pages, PostRepository $posts, CategoryRepository $categories, ContentLocales $locales, SiteUrls $siteUrls): Response
     {
         $urls = [];
-        $hasHomepage = false;
+        $homepages = [];
 
         foreach ($pages->findPublished() as $page) {
-            $hasHomepage = $hasHomepage || $page->isHomepage();
-            $urls[] = [
-                'loc' => $page->isHomepage()
-                    ? $this->generateUrl('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL)
-                    : $this->generateUrl('app_page', ['slug' => $page->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
-                'lastmod' => $page->getUpdatedAt(),
-            ];
+            if (!$locales->isEnabled($page->getLocale())) {
+                continue;
+            }
+            if ($page->isHomepage()) {
+                $homepages[$page->getLocale()] = true;
+            }
+            $urls[] = ['loc' => $siteUrls->content($page, absolute: true), 'lastmod' => $page->getUpdatedAt()];
         }
 
-        if (!$hasHomepage) {
-            $urls[] = ['loc' => $this->generateUrl('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL), 'lastmod' => null];
-        }
+        foreach ($locales->all() as $locale) {
+            if (!isset($homepages[$locale])) {
+                $urls[] = ['loc' => $siteUrls->generate('app_home', [], $locale, absolute: true), 'lastmod' => null];
+            }
 
-        $publicPosts = $posts->findPublic(1, 5000);
-        if ([] !== $publicPosts) {
-            $urls[] = ['loc' => $this->generateUrl('app_blog', [], UrlGeneratorInterface::ABSOLUTE_URL), 'lastmod' => $publicPosts[0]->getPublishedAt()];
-        }
+            $publicPosts = $posts->findPublic($locale, 1, 5000);
+            if ([] !== $publicPosts) {
+                $urls[] = ['loc' => $siteUrls->generate('app_blog', [], $locale, absolute: true), 'lastmod' => $publicPosts[0]->getPublishedAt()];
+            }
 
-        foreach ($categories->findWithPublicPosts() as $category) {
-            $urls[] = ['loc' => $this->generateUrl('app_blog_category', ['slug' => $category->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL), 'lastmod' => null];
-        }
+            foreach ($categories->findWithPublicPosts($locale) as $category) {
+                $urls[] = ['loc' => $siteUrls->generate('app_blog_category', ['slug' => $category->getSlug()], $locale, absolute: true), 'lastmod' => null];
+            }
 
-        foreach ($publicPosts as $post) {
-            $urls[] = [
-                'loc' => $this->generateUrl('app_blog_post', ['slug' => $post->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
-                'lastmod' => $post->getUpdatedAt(),
-            ];
+            foreach ($publicPosts as $post) {
+                $urls[] = ['loc' => $siteUrls->content($post, absolute: true), 'lastmod' => $post->getUpdatedAt()];
+            }
         }
 
         $response = $this->render('site/sitemap.xml.twig', ['urls' => $urls]);

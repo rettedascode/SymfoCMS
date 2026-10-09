@@ -9,7 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'categories')]
-#[UniqueEntity('slug', message: 'content.slug_taken')]
+#[ORM\UniqueConstraint(name: 'uniq_categories_locale_slug', columns: ['locale', 'slug'])]
+#[UniqueEntity(['locale', 'slug'], message: 'content.slug_taken', errorPath: 'slug')]
 class Category
 {
     #[ORM\Id]
@@ -22,10 +23,26 @@ class Category
     #[Assert\Length(max: 100)]
     private string $name = '';
 
-    #[ORM\Column(length: 100, unique: true)]
+    #[ORM\Column(length: 100)]
     #[Assert\Length(max: 100)]
     #[Assert\Regex(pattern: Content::SLUG_PATTERN, message: 'content.slug_invalid')]
     private string $slug = '';
+
+    /** Language of the posts this category groups. */
+    #[ORM\Column(length: 10, options: ['default' => 'en'])]
+    private string $locale = 'en';
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {

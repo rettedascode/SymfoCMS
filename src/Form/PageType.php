@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Page;
+use App\Service\SlugGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +16,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 final class PageType extends AbstractType
 {
+    public function __construct(private readonly SlugGenerator $slugGenerator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('homepage', CheckboxType::class, [
@@ -28,7 +33,7 @@ final class PageType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Page::class,
-            'constraints' => [new Assert\Callback(self::validateSlug(...))],
+            'constraints' => [new Assert\Callback($this->validateSlug(...))],
         ]);
     }
 
@@ -42,9 +47,9 @@ final class PageType extends AbstractType
         return 'page';
     }
 
-    public static function validateSlug(Page $page, ExecutionContextInterface $context): void
+    public function validateSlug(Page $page, ExecutionContextInterface $context): void
     {
-        if (\in_array($page->getSlug(), Page::RESERVED_SLUGS, true)) {
+        if ($this->slugGenerator->isReservedForPages($page->getSlug())) {
             $context->buildViolation('content.slug_reserved')->atPath('slug')->addViolation();
         }
     }

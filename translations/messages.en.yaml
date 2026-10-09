@@ -264,6 +264,23 @@ menu.js.type_page: 'Page: %title%'
 menu.js.type_post: 'Post: %title%'
 menu.js.blog_label: Blog
 
+nav.settings: Settings
+
+settings.languages_heading: Languages
+settings.languages_intro: Your website can offer its pages and posts in several languages. With a single language, nothing about languages is shown anywhere else.
+settings.locales: Languages of the website
+settings.locales_help: 'Language codes separated by commas, for example "en, de". The first one is the main language: its addresses have no prefix, the others start with their code, such as /de/kontakt.'
+
+language.choose: Language
+language.new_content_hint: is the language of the new content.
+language.translations_heading: Other languages
+language.translations_intro: Each language has its own version of this content. A new version starts as a copy that you then translate.
+language.edit_version: Edit
+language.no_version: Not translated yet
+language.translate_into: Translate into %language%
+flash.translation_created: A copy in the new language has been created as a draft. Translate it and publish it when you are ready.
+site.languages: Language
+
 error.not_found_title: Page not found
 error.not_found_text: Sorry, the page you are looking for does not exist or has been moved.
 error.forbidden_title: No access

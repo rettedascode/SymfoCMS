@@ -1,6 +1,6 @@
 <article class="post-card">
     {% if post.coverImage %}
-        <a href="{{ path('app_blog_post', {slug: post.slug}) }}" tabindex="-1" aria-hidden="true">
+        <a href="{{ content_path(post) }}" tabindex="-1" aria-hidden="true">
             <img class="post-card__image" src="{{ media_url(post.coverImage, 'medium') }}" alt="" loading="lazy"
                  width="{{ post.coverImage.width }}" height="{{ post.coverImage.height }}">
         </a>
@@ -10,7 +10,7 @@
             <time datetime="{{ post.publishedAt|date('Y-m-d') }}">{{ post.publishedAt|local_date }}</time>
             {% if post.category %} · {{ post.category.name }}{% endif %}
         </p>
-        <h2 class="post-card__title"><a href="{{ path('app_blog_post', {slug: post.slug}) }}">{{ post.title }}</a></h2>
+        <h2 class="post-card__title"><a href="{{ content_path(post) }}">{{ post.title }}</a></h2>
         {% if post.excerpt %}<p class="post-card__excerpt">{{ post.excerpt }}</p>{% endif %}
     </div>
 </article>

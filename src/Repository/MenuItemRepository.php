@@ -18,11 +18,12 @@ class MenuItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Top-level items of a menu in display order, with their children and link targets loaded.
+     * Top-level items of one menu (a location in one language) in display order,
+     * with their children and link targets loaded.
      *
      * @return list<MenuItem>
      */
-    public function findTree(MenuLocation $location): array
+    public function findTree(MenuLocation $location, string $locale): array
     {
         /** @var list<MenuItem> $items */
         $items = $this->createQueryBuilder('m')
@@ -32,8 +33,10 @@ class MenuItemRepository extends ServiceEntityRepository
             ->leftJoin('c.page', 'cpage')->addSelect('cpage')
             ->leftJoin('c.post', 'cpost')->addSelect('cpost')
             ->where('m.location = :location')
+            ->andWhere('m.locale = :locale')
             ->andWhere('m.parent IS NULL')
             ->setParameter('location', $location)
+            ->setParameter('locale', $locale)
             ->orderBy('m.position', 'ASC')
             ->addOrderBy('c.position', 'ASC')
             ->getQuery()
@@ -42,15 +45,17 @@ class MenuItemRepository extends ServiceEntityRepository
         return $items;
     }
 
-    public function deleteLocation(MenuLocation $location): void
+    public function deleteMenu(MenuLocation $location, string $locale): void
     {
-        // Children first, so the delete also works on databases without cascading foreign keys (SQLite by default).
+        // Children first, so the delete also works on databases without cascading foreign keys.
         foreach (['IS NOT NULL', 'IS NULL'] as $parentCondition) {
             $this->createQueryBuilder('m')
                 ->delete()
                 ->where('m.location = :location')
+                ->andWhere('m.locale = :locale')
                 ->andWhere('m.parent '.$parentCondition)
                 ->setParameter('location', $location)
+                ->setParameter('locale', $locale)
                 ->getQuery()
                 ->execute();
         }

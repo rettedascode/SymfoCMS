@@ -17,21 +17,26 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    public function findHomepage(): ?Page
+    /**
+     * Every language has its own homepage.
+     */
+    public function findHomepage(string $locale): ?Page
     {
-        return $this->findOneBy(['homepage' => true]);
+        return $this->findOneBy(['homepage' => true, 'locale' => $locale]);
     }
 
     /**
+     * Published pages of all languages.
+     *
      * @return list<Page>
      */
     public function findPublished(): array
     {
-        return $this->findBy(['status' => ContentStatus::Published], ['title' => 'ASC']);
+        return $this->findBy(['status' => ContentStatus::Published], ['locale' => 'ASC', 'title' => 'ASC']);
     }
 
     /**
-     * Makes sure the given page is the only one flagged as homepage.
+     * Makes sure the given page is the only homepage of its language.
      */
     public function unsetOtherHomepages(Page $homepage): void
     {
@@ -39,8 +44,10 @@ class PageRepository extends ServiceEntityRepository
             ->update()
             ->set('p.homepage', ':false')
             ->where('p.homepage = :true')
+            ->andWhere('p.locale = :locale')
             ->setParameter('false', false)
-            ->setParameter('true', true);
+            ->setParameter('true', true)
+            ->setParameter('locale', $homepage->getLocale());
 
         if (null !== $homepage->getId()) {
             $qb->andWhere('p.id != :id')->setParameter('id', $homepage->getId());

@@ -34,6 +34,9 @@
                 {% if is_granted('MENU_MANAGE') %}
                     <li><a href="{{ path('admin_menu_index') }}" {% if route starts with 'admin_menu_' %}aria-current="page"{% endif %}><span aria-hidden="true">☰</span> {{ 'nav.menus'|trans }}</a></li>
                 {% endif %}
+                {% if is_granted('SETTINGS_MANAGE') %}
+                    <li><a href="{{ path('admin_settings') }}" {% if route == 'admin_settings' %}aria-current="page"{% endif %}><span aria-hidden="true">⚙</span> {{ 'nav.settings'|trans }}</a></li>
+                {% endif %}
                 {% if is_granted('USER_MANAGE') %}
                     <li><a href="{{ path('admin_user_index') }}" {% if route starts with 'admin_user_' %}aria-current="page"{% endif %}><span aria-hidden="true">☺</span> {{ 'nav.users'|trans }}</a></li>
                 {% endif %}

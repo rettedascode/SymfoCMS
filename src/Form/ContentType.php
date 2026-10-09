@@ -69,7 +69,7 @@ final class ContentType extends AbstractType
 
                 $slug = $this->slugGenerator->slugify($content->getSlug());
                 if ('' === $slug && '' !== $content->getTitle()) {
-                    $slug = $this->slugGenerator->unique($content->getTitle(), $content::class, $content->getId());
+                    $slug = $this->slugGenerator->unique($content->getTitle(), $content::class, $content->getLocale(), $content->getId());
                 }
                 $content->setSlug($slug);
             });

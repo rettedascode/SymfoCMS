@@ -5,6 +5,10 @@ media.invalid_type: Diese Datei ist kein unterstütztes Bild. Bitte lade eine JP
 media.too_large: Diese Datei ist zu groß. Die maximale Größe beträgt %limit% MB.
 media.too_many_pixels: Dieses Bild hat zu viele Pixel. Bitte verkleinere es und versuche es erneut.
 media.upload_failed: Das Hochladen hat nicht funktioniert. Bitte versuche es erneut.
+settings.locale_invalid: '„%code%“ ist kein Sprachcode. Verwende zwei Buchstaben wie „de“ oder „en“ (oder eine Form wie „pt-br“).'
+settings.too_many_locales: Bitte verwende höchstens %limit% Sprachen.
+settings.locale_in_use: '%name% kann nicht entfernt werden, weil es in dieser Sprache noch Seiten, Beiträge, Kategorien oder Menüs gibt. Lösche diese zuerst.'
+settings.locale_conflicts_with_page: 'Eine Seite verwendet bereits die Adresse „%code%“. Ändere zuerst die Adresse dieser Seite, bevor du diese Sprache hinzufügst.'
 content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte prüfe die unten markierten Felder.
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.

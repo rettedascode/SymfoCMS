@@ -18,7 +18,11 @@
     {% if canonical %}<meta property="og:url" content="{{ canonical }}">{% endif %}
     {% if og_image|default(null) %}<meta property="og:image" content="{{ og_image }}">{% endif %}
     <meta name="twitter:card" content="{{ og_image|default(null) ? 'summary_large_image' : 'summary' }}">
-    <link rel="alternate" type="application/rss+xml" title="{{ site_name }}" href="{{ path('app_feed') }}">
+    {# Tell search engines about the other language versions of this page. #}
+    {% for hreflang, href in (translatable|default(null) ? content_alternates(translatable) : {}) %}
+        <link rel="alternate" hreflang="{{ hreflang }}" href="{{ href }}">
+    {% endfor %}
+    <link rel="alternate" type="application/rss+xml" title="{{ site_name }}" href="{{ site_path('app_feed') }}">
     {% block head %}{% endblock %}
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
     <link rel="stylesheet" href="{{ asset('styles/site.css') }}">
@@ -46,7 +50,7 @@
 
 <header class="site-header">
     <div class="container">
-        <a class="site-brand" href="{{ path('app_home') }}">{{ site_name }}</a>
+        <a class="site-brand" href="{{ site_path('app_home') }}">{{ site_name }}</a>
         {% block navigation %}
             {% set main_menu = cms_menu('main') %}
             {% if main_menu is not empty %}
@@ -67,6 +71,19 @@
                                     </ul>
                                 {% endif %}
                             </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% endblock %}
+        {% block language_switcher %}
+            {# Empty on single-language sites. Links to the same page in the other language where it exists. #}
+            {% set languages = language_switcher(translatable|default(null), switch_route|default('app_home')) %}
+            {% if languages is not empty %}
+                <nav class="language-switcher" aria-label="{{ 'site.languages'|trans }}">
+                    <ul>
+                        {% for language in languages %}
+                            <li><a href="{{ language.url }}" lang="{{ language.locale }}" hreflang="{{ language.locale }}"{% if language.current %} aria-current="true"{% endif %}>{{ language.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </nav>

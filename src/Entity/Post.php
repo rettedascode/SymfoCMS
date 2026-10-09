@@ -12,7 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'posts')]
 #[ORM\Index(name: 'idx_posts_listing', columns: ['status', 'published_at'])]
-#[UniqueEntity('slug', message: 'content.slug_taken')]
+#[ORM\UniqueConstraint(name: 'uniq_posts_locale_slug', columns: ['locale', 'slug'])]
+#[ORM\UniqueConstraint(name: 'uniq_posts_translation', columns: ['translation_group', 'locale'])]
+#[UniqueEntity(['locale', 'slug'], message: 'content.slug_taken', errorPath: 'slug')]
 class Post extends Content
 {
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -21,7 +21,7 @@ const UNDO_DURATION = 8000;
  */
 export default class extends Controller {
     static targets = ['form', 'title', 'input', 'list', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
-    static values = { config: Object };
+    static values = { config: Object, unsaved: Boolean };
 
     connect() {
         this.config = this.configValue;
@@ -34,7 +34,7 @@ export default class extends Controller {
         this.errors = Array.isArray(this.config.errors) ? {} : { ...this.config.errors };
         this.lists = new WeakMap();
         this.sortables = [];
-        this.dirty = false;
+        this.dirty = this.unsavedValue;
         this.submitting = false;
         this.previewRequest = 0;
 

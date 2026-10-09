@@ -9,9 +9,11 @@
 
     <nav class="tabs" aria-label="{{ 'nav.menus'|trans }}">
         {% for item in locations %}
-            <a href="{{ path('admin_menu_index', {location: item.value}) }}" {% if item == location %}aria-current="page"{% endif %}>{{ ('menu.location_' ~ item.value)|trans }}</a>
+            <a href="{{ path('admin_menu_index', {location: item.value}|merge(locale == default_content_locale() ? {} : {locale: locale})) }}" {% if item == location %}aria-current="page"{% endif %}>{{ ('menu.location_' ~ item.value)|trans }}</a>
         {% endfor %}
     </nav>
+
+    {{ include('admin/_locale_tabs.html.twig', {route: 'admin_menu_index', parameters: {location: location.value}, current: locale}) }}
 
     <p class="muted">{{ ('menu.intro_' ~ location.value)|trans }}</p>
 

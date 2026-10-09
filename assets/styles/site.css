@@ -105,6 +105,11 @@ p, ul, ol { margin: 0 0 1.25rem; }
 .has-children:hover > .site-nav__sub,
 .has-children.is-open > .site-nav__sub { display: block; }
 
+.language-switcher ul { list-style: none; display: flex; gap: .15rem; margin: 0; padding: 0; }
+.language-switcher a { display: block; padding: .35rem .6rem; border-radius: 6px; font-size: .92rem; color: var(--color-muted); text-decoration: none; }
+.language-switcher a:hover { background: var(--color-surface); color: var(--color-accent); }
+.language-switcher a[aria-current="true"] { color: var(--color-text); font-weight: 700; }
+
 /* ---------- Content ---------- */
 
 .site-main { flex: 1; padding: 3rem 0 4rem; }

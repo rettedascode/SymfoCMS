@@ -26,10 +26,22 @@ abstract class Content
     #[Assert\Length(max: 200)]
     protected string $title = '';
 
-    #[ORM\Column(length: 200, unique: true)]
+    /** Unique within one language; see the unique constraints on Page and Post. */
+    #[ORM\Column(length: 200)]
     #[Assert\Length(max: 200)]
     #[Assert\Regex(pattern: self::SLUG_PATTERN, message: 'content.slug_invalid')]
     protected string $slug = '';
+
+    /** Language of this content, one of the codes configured in the settings. */
+    #[ORM\Column(length: 10, options: ['default' => 'en'])]
+    protected string $locale = 'en';
+
+    /**
+     * Shared by all language versions of the same page or post.
+     * There is at most one version per language in a group.
+     */
+    #[ORM\Column(length: 32, options: ['default' => ''])]
+    protected string $translationGroup;
 
     #[ORM\Column(length: 20, enumType: ContentStatus::class)]
     protected ContentStatus $status = ContentStatus::Draft;
@@ -66,6 +78,7 @@ abstract class Content
 
     public function __construct()
     {
+        $this->translationGroup = bin2hex(random_bytes(16));
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -101,6 +114,33 @@ abstract class Content
     public function setSlug(?string $slug): static
     {
         $this->slug = trim((string) $slug);
+
+        return $this;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function getTranslationGroup(): string
+    {
+        return $this->translationGroup;
+    }
+
+    /**
+     * Links this content to the language versions that share the given group.
+     */
+    public function setTranslationGroup(string $translationGroup): static
+    {
+        $this->translationGroup = $translationGroup;
 
         return $this;
     }

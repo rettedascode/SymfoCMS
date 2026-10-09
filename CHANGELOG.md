@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Multilingual content: pages, posts, categories and menus belong to a language; pages and posts can be linked to their versions in other languages (see `docs/multilingual.md`).
+- "Translate into …" in the editor creates the version in another language as a draft copy.
+- Settings screen for admins to choose the languages of the website. With a single language, nothing about languages is shown.
+- Language prefix in public URLs for all languages except the main one, a language switcher, `hreflang` tags, and a blog, feed and menus per language.
+- `site_path()`, `site_url()`, `content_path()` and `content_url()` Twig functions for language-aware links.
 - Extension API: block types can be added by third-party Composer packages, with required fields and custom validation per block type (see `docs/extensions.md` and the example in `examples/callout-block-bundle`).
 - Events for extensions: `ContentSavingEvent`, `ContentSavedEvent`, `ContentPublishedEvent`, `ContentDeletedEvent` and `ContentRenderEvent`.
 - Block editor for pages and blog posts with the block types heading, rich text, image, button, quote, divider and two columns.
@@ -25,5 +30,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Admin interface in English and German.
 - Console command `app:create-admin`, demo fixtures and a Docker Compose setup for development.
 - Database migration that runs on SQLite, MySQL and PostgreSQL.
+
+### Changed
+
+- Web addresses of pages, posts and categories only have to be unique within one language.
+- Existing content is assigned to the language set in `APP_LOCALE` by the migration; addresses do not change.
+- The demo content is bilingual (English and German).
+
+### Fixed
+
+- Migrations that rebuild tables on SQLite no longer risk deleting related rows through cascading foreign keys.
 
 [Unreleased]: https://github.com/rettedascode/SymfoCMS/commits/main

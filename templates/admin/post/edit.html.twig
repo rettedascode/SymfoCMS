@@ -1,9 +1,11 @@
 {% extends 'admin/content/editor.html.twig' %}
 
 {% set content = post %}
-{% set back_url = path('admin_post_index') %}
+{% set back_url = path('admin_post_index', post.locale == default_content_locale() ? {} : {locale: post.locale}) %}
 {% set back_label = 'nav.blog' %}
-{% set public_url = path('app_blog_post', {slug: post.slug}) %}
+{% set public_url = content_path(post) %}
+{% set edit_route = 'admin_post_edit' %}
+{% set translate_route = 'admin_post_translate' %}
 
 {% block settings_main %}
     {{ form_row(form.excerpt) }}

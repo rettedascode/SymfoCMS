@@ -132,3 +132,6 @@
 @media (max-width: 560px) {
     .block__body--layout { grid-template-columns: 1fr; }
 }
+
+.editor__errors { margin: 1rem 1.5rem 0; }
+.editor__errors .field__errors { margin: 0; color: inherit; }
