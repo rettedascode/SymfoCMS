@@ -4,14 +4,13 @@ namespace App\Controller\Admin;
 
 use App\Block\BlockNormalizer;
 use App\Entity\Page;
-use App\Enum\ContentStatus;
 use App\Form\NewContentType;
 use App\Form\PageType;
 use App\Repository\PageRepository;
 use App\Security\Voter\PageVoter;
 use App\Service\ContentEditor;
+use App\Service\ContentManager;
 use App\Service\SlugGenerator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class PageController extends AdminController
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private readonly ContentManager $contentManager,
         private readonly PageRepository $pages,
         private readonly ContentEditor $editor,
     ) {
@@ -49,8 +48,7 @@ final class PageController extends AdminController
                 ->setTitle($title)
                 ->setSlug($slugGenerator->unique($title, Page::class));
 
-            $this->entityManager->persist($page);
-            $this->entityManager->flush();
+            $this->contentManager->save($page, []);
 
             return $this->redirectToRoute('admin_page_edit', ['id' => $page->getId()]);
         }
@@ -74,15 +72,11 @@ final class PageController extends AdminController
             $blocks = $normalizer->normalizeJson($form->get('blocks')->getData());
 
             if ($form->isValid()) {
-                if ($request->request->has('publish')) {
-                    $page->setStatus(ContentStatus::Published);
-                }
                 if ($page->isHomepage()) {
                     $this->pages->unsetOtherHomepages($page);
                 }
 
-                $page->setBlocks($blocks)->setAutosave(null);
-                $this->entityManager->flush();
+                $this->contentManager->save($page, $blocks, publish: $request->request->has('publish'));
                 $this->addFlash('success', $page->isPublic() ? 'flash.page_published' : 'flash.draft_saved');
 
                 return $this->redirectToRoute('admin_page_edit', ['id' => $page->getId()]);
@@ -121,8 +115,7 @@ final class PageController extends AdminController
     {
         $this->requireCsrfToken($request);
 
-        $this->entityManager->remove($page);
-        $this->entityManager->flush();
+        $this->contentManager->delete($page);
         $this->addFlash('success', 'flash.page_deleted');
 
         return $this->redirectToRoute('admin_page_index');

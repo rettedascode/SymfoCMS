@@ -10,8 +10,8 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Security\Voter\PostVoter;
 use App\Service\ContentEditor;
+use App\Service\ContentManager;
 use App\Service\SlugGenerator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class PostController extends AdminController
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private readonly ContentManager $contentManager,
         private readonly PostRepository $posts,
         private readonly ContentEditor $editor,
     ) {
@@ -54,8 +54,7 @@ final class PostController extends AdminController
                 ->setSlug($slugGenerator->unique($title, Post::class))
                 ->setAuthor($this->currentUser());
 
-            $this->entityManager->persist($post);
-            $this->entityManager->flush();
+            $this->contentManager->save($post, []);
 
             return $this->redirectToRoute('admin_post_edit', ['id' => $post->getId()]);
         }
@@ -90,8 +89,7 @@ final class PostController extends AdminController
                     $post->setPublishedAt(new \DateTimeImmutable());
                 }
 
-                $post->setBlocks($blocks)->setAutosave(null);
-                $this->entityManager->flush();
+                $this->contentManager->save($post, $blocks);
                 $this->addFlash('success', match (true) {
                     $post->isScheduled() => 'flash.post_scheduled',
                     $post->isPublic() => 'flash.post_published',
@@ -137,8 +135,7 @@ final class PostController extends AdminController
     {
         $this->requireCsrfToken($request);
 
-        $this->entityManager->remove($post);
-        $this->entityManager->flush();
+        $this->contentManager->delete($post);
         $this->addFlash('success', 'flash.post_deleted');
 
         return $this->redirectToRoute('admin_post_index');
