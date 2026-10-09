@@ -49,6 +49,7 @@ final class MigrationTest extends AppWebTestCase
 
         // Tables added by later migrations exist and start empty.
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM revisions'));
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM shared_blocks'));
 
         // The result is exactly the schema the application expects (the command fails otherwise) ...
         $this->runCommand(['command' => 'doctrine:schema:validate']);

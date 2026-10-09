@@ -21,6 +21,8 @@
     <article class="content">
         {% if kind == 'post' %}
             <header class="post-header"><h1>{{ title }}</h1></header>
+        {% elseif kind == 'fragment' %}
+            {# A shared block is shown on its own, without a page title. #}
         {% else %}
             <h1 class="page-title">{{ title }}</h1>
         {% endif %}

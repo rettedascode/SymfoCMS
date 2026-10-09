@@ -273,6 +273,33 @@ menu.js.type_post: 'Post: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Settings
+nav.shared_blocks: Shared blocks
+
+shared_block.intro: A shared block is content you write once and show on many pages, such as opening hours or a call to action. Change it here and every page that uses it is updated.
+shared_block.new: New shared block
+shared_block.edit: Edit shared block
+shared_block.name: Name
+shared_block.name_help: Only you and your colleagues see this name. It helps to find the block when adding it to a page.
+shared_block.used_on: Used on
+shared_block.usage_count: '{0}Not used yet|{1}1 page or post|]1,Inf[%count% pages or posts'
+shared_block.usage_heading: Where this block is used
+shared_block.usage_warning: Changes you save here appear on all of these pages right away.
+shared_block.usage_none: This block is not used on any page or post yet. Add it in the editor with "Add block" and "Shared block".
+shared_block.empty_title: No shared blocks yet
+shared_block.empty_text: Create one here, or click the bookmark symbol of any block in the editor to turn it into a shared block.
+shared_block.delete_confirm: 'Delete the shared block "%name%"? It is used on %count% pages or posts, which will no longer show it.'
+flash.shared_block_saved: The shared block has been saved.
+flash.shared_block_deleted: The shared block has been deleted.
+block.shared.label: Shared block
+block.shared.block: Shared block
+editor.share: Save as shared block
+editor.share_intro: Give this block a name to reuse it on other pages. From then on it is edited in one place, under "Shared blocks".
+editor.share_name: Name, e.g. "Opening hours"
+editor.share_save: Save as shared block
+editor.shared_none: There are no shared blocks yet.
+editor.shared_choose: Choose a shared block …
+editor.shared_edit: Edit this shared block
+editor.shared_hint: The content of a shared block is the same on every page that shows it.
 
 settings.languages_heading: Languages
 settings.languages_intro: Your website can offer its pages and posts in several languages. With a single language, nothing about languages is shown anywhere else.

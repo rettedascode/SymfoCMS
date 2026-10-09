@@ -9,6 +9,7 @@ settings.locale_invalid: '„%code%“ ist kein Sprachcode. Verwende zwei Buchst
 settings.too_many_locales: Bitte verwende höchstens %limit% Sprachen.
 settings.locale_in_use: '%name% kann nicht entfernt werden, weil es in dieser Sprache noch Seiten, Beiträge, Kategorien oder Menüs gibt. Lösche diese zuerst.'
 settings.locale_conflicts_with_page: 'Eine Seite verwendet bereits die Adresse „%code%“. Ändere zuerst die Adresse dieser Seite, bevor du diese Sprache hinzufügst.'
+shared_block.invalid: Bitte gib einen Namen für den geteilten Block ein.
 content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte prüfe die unten markierten Felder.
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.

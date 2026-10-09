@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.shared_blocks'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.shared_blocks'|trans }}</h1>
+        <a class="button button--primary" href="{{ path('admin_shared_block_new') }}">+ {{ 'shared_block.new'|trans }}</a>
+    </div>
+
+    <p class="muted">{{ 'shared_block.intro'|trans }}</p>
+
+    {% if shared_blocks is empty %}
+        <div class="empty">
+            <h2>{{ 'shared_block.empty_title'|trans }}</h2>
+            <p>{{ 'shared_block.empty_text'|trans }}</p>
+        </div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'shared_block.name'|trans }}</th>
+                    <th scope="col">{{ 'shared_block.used_on'|trans }}</th>
+                    <th scope="col">{{ 'label.updated'|trans }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for shared_block in shared_blocks %}
+                    <tr>
+                        <th scope="row"><a href="{{ path('admin_shared_block_edit', {id: shared_block.id}) }}">{{ shared_block.name }}</a></th>
+                        <td>{{ 'shared_block.usage_count'|trans({'%count%': usage[shared_block.id]}) }}</td>
+                        <td>{{ shared_block.updatedAt|local_date(true) }}</td>
+                        <td class="table__actions">
+                            <a class="button button--small" href="{{ path('admin_shared_block_edit', {id: shared_block.id}) }}">{{ 'action.edit'|trans }}</a>
+                            <form method="post" action="{{ path('admin_shared_block_delete', {id: shared_block.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'shared_block.delete_confirm'|trans({'%name%': shared_block.name, '%count%': usage[shared_block.id]}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

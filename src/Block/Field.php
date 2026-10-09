@@ -17,6 +17,18 @@ final class Field
     public const CHECKBOX = 'checkbox';
     /** A nested list of blocks, used by layout blocks such as columns. */
     public const BLOCKS = 'blocks';
+    /** The id of a shared block from the "Shared blocks" section. */
+    public const SHARED_BLOCK = 'shared_block';
+    /** A list of image ids, e.g. for a gallery. */
+    public const IMAGES = 'images';
+    /** A repeatable group of fields, e.g. the questions of an accordion. */
+    public const ITEMS = 'items';
+    /** Source code or other text whose spaces and line breaks matter. */
+    public const CODE = 'code';
+    /** A place on the map: {lat, lon}. */
+    public const LOCATION = 'location';
+    /** The id of a form built in the "Forms" section. */
+    public const FORM = 'form';
 
     public ?string $help = null;
     public bool $required = false;
@@ -24,6 +36,7 @@ final class Field
 
     /**
      * @param array<int|string, string> $options value => label, for select fields
+     * @param list<Field>               $fields  the fields of one entry, for item lists
      */
     private function __construct(
         public readonly string $name,
@@ -31,7 +44,51 @@ final class Field
         public readonly string $label,
         public readonly mixed $default,
         public readonly array $options = [],
+        public readonly array $fields = [],
     ) {
+    }
+
+    /**
+     * Stores a list of image ids from the media library. Look each one up with cms_media(id).
+     */
+    public static function images(string $name, string $label): self
+    {
+        return new self($name, self::IMAGES, $label, []);
+    }
+
+    /**
+     * A list the user can add entries to, each entry made of the given fields.
+     * In the template, data.<name> is a list of arrays keyed by field name.
+     *
+     * @param list<Field> $fields simple fields only (no item lists or nested blocks)
+     */
+    public static function items(string $name, string $label, array $fields): self
+    {
+        return new self($name, self::ITEMS, $label, [], fields: $fields);
+    }
+
+    /**
+     * Text in a fixed-width font whose spaces and line breaks are kept exactly as typed.
+     */
+    public static function code(string $name, string $label): self
+    {
+        return new self($name, self::CODE, $label, '');
+    }
+
+    /**
+     * A place found by typing an address. Stores {lat, lon} or null.
+     */
+    public static function location(string $name, string $label): self
+    {
+        return new self($name, self::LOCATION, $label, null);
+    }
+
+    /**
+     * Stores the id of a form from the "Forms" section (or null).
+     */
+    public static function form(string $name, string $label): self
+    {
+        return new self($name, self::FORM, $label, null);
     }
 
     public static function text(string $name, string $label, string $default = ''): self
@@ -78,6 +135,14 @@ final class Field
     public static function blocks(string $name, string $label): self
     {
         return new self($name, self::BLOCKS, $label, []);
+    }
+
+    /**
+     * Stores the id of a shared block (or null). Render it with render_shared_block(data.name).
+     */
+    public static function sharedBlock(string $name, string $label): self
+    {
+        return new self($name, self::SHARED_BLOCK, $label, null);
     }
 
     /**

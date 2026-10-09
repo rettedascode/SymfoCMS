@@ -9,6 +9,7 @@ settings.locale_invalid: '"%code%" is not a language code. Use two letters such 
 settings.too_many_locales: Please use no more than %limit% languages.
 settings.locale_in_use: '%name% cannot be removed because pages, posts, categories or menus still exist in this language. Delete them first.'
 settings.locale_conflicts_with_page: 'A page already uses the address "%code%". Change the address of that page before adding this language.'
+shared_block.invalid: Please enter a name for the shared block.
 content.blocks_invalid: Some blocks need your attention. Please check the fields marked below.
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.

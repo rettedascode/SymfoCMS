@@ -37,6 +37,7 @@ Extend `App\Block\AbstractBlockType` to get sensible defaults for everything exc
 | `Field::image()` | image picker | media id – use `cms_media(data.image)` |
 | `Field::checkbox()` | checkbox | `true` / `false` |
 | `Field::blocks()` | nested list of blocks | list – use `render_blocks(data.name)` |
+| `Field::sharedBlock()` | choice of a shared block | id – use `render_shared_block(data.name)` |
 
 Every field accepts `->help('…')`, `->placeholder('…')` and `->required()`.
 

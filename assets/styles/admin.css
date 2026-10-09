@@ -159,6 +159,8 @@ img { max-width: 100%; }
 .flash--success { background: var(--success-soft); border-color: #c3e6cb; color: #1e6b30; }
 .flash--error { background: var(--danger-soft); border-color: #f1c0c0; color: var(--danger); }
 .flash--info { background: var(--accent-soft); border-color: #cdd7fb; color: #2b3f99; }
+.flash--warning { background: var(--warning-soft); border-color: #f0dc9c; color: var(--warning); }
+.flash--warning a { color: inherit; font-weight: 600; }
 
 .empty { text-align: center; padding: 3rem 1.5rem; background: var(--surface); border: 1px dashed var(--border-strong); border-radius: var(--radius); }
 .empty h2 { margin-bottom: .5rem; }

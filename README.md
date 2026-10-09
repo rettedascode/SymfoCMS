@@ -26,6 +26,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Live preview that uses the real public theme
 - Automatic backup while you type, restored when you come back, and a warning before leaving with unsaved changes
+- Shared blocks: write a block once, show it on many pages, edit it in one place – with a list of where it is used
 - Revision history: every save keeps the previous version, which can be previewed and restored with one click
 - All content is validated and sanitized on the server ([symfony/html-sanitizer](https://symfony.com/doc/current/html_sanitizer.html))
 - A block type is one PHP class plus one Twig template – [adding your own](#adding-a-custom-block-type) needs no JavaScript
@@ -157,6 +158,7 @@ php bin/console doctrine:migrations:migrate -n
 | Blog posts | all | all | own posts only |
 | Blog categories | ✔ | ✔ | – |
 | Media library | ✔ | ✔ | upload, and manage own uploads |
+| Shared blocks | ✔ | ✔ | use only |
 | Menus | ✔ | – | – |
 | Settings (languages) | ✔ | – | – |
 | Users | ✔ | – | – |

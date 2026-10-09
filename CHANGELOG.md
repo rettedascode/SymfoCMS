@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Shared blocks: any block can be saved under a name, inserted on many pages and edited in one place. The admin section shows where each shared block is used before it is changed or deleted.
+- `Field::sharedBlock()` and the `render_shared_block()` Twig function for block types that show a shared block.
 - Revision history: every save of a page or post keeps a revision with author and time; earlier versions can be previewed and restored from the new "History" tab of the editor. The number of revisions kept is set with `APP_MAX_REVISIONS` (default 50).
 - Multilingual content: pages, posts, categories and menus belong to a language; pages and posts can be linked to their versions in other languages (see `docs/multilingual.md`).
 - "Translate into …" in the editor creates the version in another language as a draft copy.

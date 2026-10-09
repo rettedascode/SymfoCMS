@@ -6,6 +6,7 @@ use App\Block\BlockRenderer;
 use App\Entity\Media;
 use App\Enum\MenuLocation;
 use App\Repository\MediaRepository;
+use App\Repository\SharedBlockRepository;
 use App\Service\MenuBuilder;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -21,6 +22,8 @@ final class CmsExtension
     /** @var array<int, Media|null> */
     private array $mediaCache = [];
 
+    private int $sharedBlockDepth = 0;
+
     public function __construct(
         private readonly BlockRenderer $blockRenderer,
         private readonly MediaRepository $mediaRepository,
@@ -29,6 +32,7 @@ final class CmsExtension
         private readonly string $mediaPublicPath,
         private readonly LocaleAwareInterface $localeAware,
         private readonly MenuBuilder $menuBuilder,
+        private readonly SharedBlockRepository $sharedBlocks,
     ) {
     }
 
@@ -39,6 +43,30 @@ final class CmsExtension
     public function renderBlocks(?array $blocks): string
     {
         return $this->blockRenderer->render($blocks ?? []);
+    }
+
+    /**
+     * Renders the blocks of a shared block. Empty when it does not exist (any more).
+     */
+    #[AsTwigFunction('render_shared_block', isSafe: ['html'])]
+    public function renderSharedBlock(mixed $id): string
+    {
+        // Shared blocks cannot contain shared blocks, but stay safe against data that was edited by hand.
+        if (!is_numeric($id) || $this->sharedBlockDepth > 0) {
+            return '';
+        }
+
+        $sharedBlock = $this->sharedBlocks->find((int) $id);
+        if (null === $sharedBlock) {
+            return '';
+        }
+
+        ++$this->sharedBlockDepth;
+        try {
+            return $this->blockRenderer->render($sharedBlock->getBlocks());
+        } finally {
+            --$this->sharedBlockDepth;
+        }
     }
 
     /**

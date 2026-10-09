@@ -9,9 +9,13 @@ use App\Block\Field;
 use App\Controller\Admin\AdminController;
 use App\Entity\Content;
 use App\Entity\Media;
+use App\Entity\SharedBlock;
 use App\Repository\MediaRepository;
+use App\Repository\SharedBlockRepository;
+use App\Security\Voter\AdminAreaVoter;
 use App\Twig\CmsExtension;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +43,34 @@ final class ContentEditor
         private readonly TranslatorInterface $translator,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly SharedBlockRepository $sharedBlocks,
+        private readonly Security $security,
     ) {
+    }
+
+    /**
+     * What every use of the editor needs: block types, texts, tokens and the media of the given blocks.
+     *
+     * @param array<array-key, mixed> $blocksWithMedia
+     * @param array<string, string>   $errors
+     *
+     * @return array{types: list<array<string, mixed>>, urls: array<string, string|null>, ...<string, mixed>}
+     */
+    private function baseConfig(array $blocksWithMedia, array $errors): array
+    {
+        return [
+            'errors' => $errors,
+            'types' => $this->typeDefinitions(),
+            'media' => $this->mediaMap($blocksWithMedia),
+            'i18n' => $this->translations('editor.'),
+            'csrf' => $this->csrfTokenManager->getToken(AdminController::CSRF_ID)->getValue(),
+            'locale' => $this->translator->getLocale(),
+            'urls' => [
+                'preview' => $this->urlGenerator->generate('admin_preview'),
+                'mediaList' => $this->urlGenerator->generate('admin_media_list'),
+                'mediaUpload' => $this->urlGenerator->generate('admin_media_upload'),
+            ],
+        ];
     }
 
     /**
@@ -54,22 +85,50 @@ final class ContentEditor
     public function config(Content $content, array $blocks, array $urls, string $kind, array $errors = []): array
     {
         $autosave = $content->getAutosave();
+        $canShare = $this->security->isGranted(AdminAreaVoter::MANAGE_SHARED_BLOCKS);
 
+        $config = $this->baseConfig([...$blocks, ...($autosave['blocks'] ?? [])], $errors);
+        $config['kind'] = $kind;
+        $config['blocks'] = $blocks;
+        $config['autosave'] = $autosave;
+        $config['urls'] += $urls;
+        // Turning a block into a shared block is for people who may manage shared blocks.
+        $config['urls']['sharedCreate'] = $canShare ? $this->urlGenerator->generate('admin_shared_block_create') : null;
+        $config['sharedBlocks'] = array_map($this->describeSharedBlock(...), $this->sharedBlocks->findBy([], ['name' => 'ASC']));
+
+        return $config;
+    }
+
+    /**
+     * Editor configuration for the content of a shared block itself: no
+     * autosave, and shared blocks cannot be put into shared blocks.
+     *
+     * @param list<array{type: string, data: array<string, mixed>}> $blocks
+     * @param array<string, string>                                 $errors
+     *
+     * @return array<string, mixed>
+     */
+    public function fragmentConfig(array $blocks, array $errors = []): array
+    {
+        $config = $this->baseConfig($blocks, $errors);
+        $config['kind'] = 'fragment';
+        $config['blocks'] = $blocks;
+        $config['autosave'] = null;
+        $config['sharedBlocks'] = [];
+        $config['types'] = array_values(array_filter($config['types'], static fn (array $type): bool => !$type['reference']));
+
+        return $config;
+    }
+
+    /**
+     * @return array{id: int|null, name: string, editUrl: string}
+     */
+    public function describeSharedBlock(SharedBlock $sharedBlock): array
+    {
         return [
-            'kind' => $kind,
-            'blocks' => $blocks,
-            'errors' => $errors,
-            'autosave' => $autosave,
-            'types' => $this->typeDefinitions(),
-            'media' => $this->mediaMap([...$blocks, ...($autosave['blocks'] ?? [])]),
-            'i18n' => $this->translations('editor.'),
-            'csrf' => $this->csrfTokenManager->getToken(AdminController::CSRF_ID)->getValue(),
-            'locale' => $this->translator->getLocale(),
-            'urls' => $urls + [
-                'preview' => $this->urlGenerator->generate('admin_preview'),
-                'mediaList' => $this->urlGenerator->generate('admin_media_list'),
-                'mediaUpload' => $this->urlGenerator->generate('admin_media_upload'),
-            ],
+            'id' => $sharedBlock->getId(),
+            'name' => $sharedBlock->getName(),
+            'editUrl' => $this->urlGenerator->generate('admin_shared_block_edit', ['id' => $sharedBlock->getId()]),
         ];
     }
 
@@ -81,10 +140,10 @@ final class ContentEditor
      *
      * @return array{list<array{type: string, data: array<string, mixed>}>, array<string, string>} blocks and errors
      */
-    public function submittedBlocks(FormInterface $form): array
+    public function submittedBlocks(FormInterface $form, bool $allowShared = true): array
     {
         $json = $form->get('blocks')->getData();
-        $blocks = $this->normalizer->normalizeJson(\is_string($json) ? $json : null);
+        $blocks = $this->normalizer->normalizeJson(\is_string($json) ? $json : null, $allowShared);
         $errors = $this->validator->validate($blocks);
 
         if ([] !== $errors) {
@@ -136,35 +195,42 @@ final class ContentEditor
     {
         $definitions = [];
         foreach ($this->registry->all() as $name => $type) {
-            $fields = [];
-            foreach ($type->getFields() as $field) {
-                $options = [];
-                foreach ($field->options as $value => $label) {
-                    $options[] = ['value' => (string) $value, 'label' => $this->translator->trans($label)];
-                }
-
-                $fields[] = [
-                    'name' => $field->name,
-                    'type' => $field->type,
-                    'label' => $this->translator->trans($field->label),
-                    'help' => null !== $field->help ? $this->translator->trans($field->help) : null,
-                    'placeholder' => null !== $field->placeholder ? $this->translator->trans($field->placeholder) : null,
-                    'default' => $field->default,
-                    'required' => $field->required,
-                    'options' => $options,
-                ];
-            }
+            $fields = array_map($this->describeField(...), $type->getFields());
 
             $definitions[] = [
                 'type' => $name,
                 'label' => $this->translator->trans($type->getLabel()),
                 'icon' => $type->getIcon(),
                 'layout' => $this->registry->isLayout($type),
+                'reference' => $this->registry->isReference($type),
                 'fields' => $fields,
             ];
         }
 
         return $definitions;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function describeField(Field $field): array
+    {
+        $options = [];
+        foreach ($field->options as $value => $label) {
+            $options[] = ['value' => (string) $value, 'label' => $this->translator->trans($label)];
+        }
+
+        return [
+            'name' => $field->name,
+            'type' => $field->type,
+            'label' => $this->translator->trans($field->label),
+            'help' => null !== $field->help ? $this->translator->trans($field->help) : null,
+            'placeholder' => null !== $field->placeholder ? $this->translator->trans($field->placeholder) : null,
+            'default' => $field->default,
+            'required' => $field->required,
+            'options' => $options,
+            'fields' => array_map($this->describeField(...), $field->fields),
+        ];
     }
 
     /**
@@ -241,17 +307,40 @@ final class ContentEditor
                 continue;
             }
 
-            foreach ($this->registry->get($block['type'])->getFields() as $field) {
-                $value = $block['data'][$field->name] ?? null;
-                if (Field::IMAGE === $field->type && \is_int($value)) {
-                    $ids[] = $value;
-                } elseif (Field::BLOCKS === $field->type && \is_array($value)) {
-                    $ids = [...$ids, ...$this->collectMediaIds($value)];
+            $data = \is_array($block['data'] ?? null) ? $block['data'] : [];
+            $ids = [...$ids, ...$this->collectFieldMediaIds($this->registry->get($block['type'])->getFields(), $data)];
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * @param list<Field>         $fields
+     * @param array<mixed, mixed> $data
+     *
+     * @return list<int>
+     */
+    private function collectFieldMediaIds(array $fields, array $data): array
+    {
+        $ids = [];
+        foreach ($fields as $field) {
+            $value = $data[$field->name] ?? null;
+            if (Field::IMAGE === $field->type && \is_int($value)) {
+                $ids[] = $value;
+            } elseif (Field::IMAGES === $field->type && \is_array($value)) {
+                $ids = [...$ids, ...array_filter($value, is_int(...))];
+            } elseif (Field::BLOCKS === $field->type && \is_array($value)) {
+                $ids = [...$ids, ...$this->collectMediaIds($value)];
+            } elseif (Field::ITEMS === $field->type && \is_array($value)) {
+                foreach ($value as $item) {
+                    if (\is_array($item)) {
+                        $ids = [...$ids, ...$this->collectFieldMediaIds($field->fields, $item)];
+                    }
                 }
             }
         }
 
-        return array_values(array_unique($ids));
+        return array_values($ids);
     }
 
     /**

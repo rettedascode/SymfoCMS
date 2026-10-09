@@ -1,0 +1,65 @@
+{# The block editor, reduced to what a shared block needs: a name, the blocks and the live preview. #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ shared_block.id ? shared_block.name : 'shared_block.new'|trans }}{% endblock %}
+{% block body_class %}admin--editor{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/editor.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="editor" data-controller="editor" data-editor-config-value="{{ editor_config|json_encode }}"
+         data-editor-unsaved-value="{{ form.vars.submitted and not form.vars.valid ? 'true' : 'false' }}">
+        {{ form_start(form, {attr: {
+            'data-editor-target': 'form',
+            'data-action': 'submit->editor#submit input->editor#fieldChanged change->editor#fieldChanged keydown->editor#preventImplicitSubmit',
+        }}) }}
+
+        <div class="editor__bar">
+            <a class="editor__back" href="{{ path('admin_shared_block_index') }}">← {{ 'nav.shared_blocks'|trans }}</a>
+            <span class="editor__status" data-editor-target="status" role="status" aria-live="polite"></span>
+            <div class="editor__bar-actions">
+                <div class="segmented editor__view-switch" role="group" aria-label="{{ 'editor.view'|trans }}">
+                    <button type="button" data-editor-target="viewButton" data-view="edit" data-action="editor#showView" aria-pressed="true">{{ 'editor.view_edit'|trans }}</button>
+                    <button type="button" data-editor-target="viewButton" data-view="preview" data-action="editor#showView" aria-pressed="false">{{ 'editor.view_preview'|trans }}</button>
+                </div>
+                <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
+            </div>
+        </div>
+
+        {# Shown before anything is changed: saving affects every page in this list. #}
+        {% if shared_block.id %}
+            <div class="flash {{ used_by is empty ? 'flash--info' : 'flash--warning' }} editor__notice">
+                {% if used_by is empty %}
+                    {{ 'shared_block.usage_none'|trans }}
+                {% else %}
+                    <strong>{{ 'shared_block.usage_heading'|trans }}:</strong>
+                    {% for content in used_by %}
+                        <a href="{{ content_path(content) }}" target="_blank" rel="noopener">{{ content.title }}</a>{{ not loop.last ? ',' }}
+                    {% endfor %}
+                    – {{ 'shared_block.usage_warning'|trans }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if form.vars.errors|length > 0 %}
+            <div class="flash flash--error editor__errors">{{ form_errors(form) }}</div>
+        {% endif %}
+
+        <div class="editor__layout">
+            <div class="editor__main">
+                {{ form_row(form.name) }}
+                <div class="blocks" data-editor-target="list"></div>
+                <noscript><p class="flash flash--error">{{ 'editor.needs_javascript'|trans }}</p></noscript>
+            </div>
+
+            <aside class="editor__preview" aria-label="{{ 'editor.preview_label'|trans }}">
+                <div class="editor__preview-label">{{ 'editor.preview_label'|trans }}</div>
+                <iframe data-editor-target="preview" title="{{ 'editor.preview_label'|trans }}" sandbox="allow-same-origin"></iframe>
+            </aside>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

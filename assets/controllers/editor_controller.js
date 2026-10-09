@@ -54,7 +54,7 @@ export default class extends Controller {
             }
         };
         this.onDocumentClick = (event) => {
-            if (this.menu && !this.menu.contains(event.target) && !event.target.closest('[data-opens-menu]')) {
+            if (this.menu && !this.menu.contains(event.target) && !event.target.closest('[data-opens-menu], [data-block-action="share"]')) {
                 this.closeMenu();
             }
         };
@@ -169,7 +169,8 @@ export default class extends Controller {
     }
 
     async autosave() {
-        if (this.submitting || !this.dirty) {
+        // Some uses of the editor (shared blocks) have no autosave.
+        if (this.submitting || !this.dirty || !this.config.urls.autosave) {
             return;
         }
 
@@ -355,6 +356,10 @@ export default class extends Controller {
                     onclick: () => this.toggleMenu(node, list, index + 1, nested),
                 }, icon('plus')),
                 actionButton('duplicate', this.i18n.duplicate, icon('copy'), () => this.duplicate(list, index)),
+                // Only for people who may manage shared blocks, and not for a block that already is one.
+                this.config.urls.sharedCreate && !type.reference
+                    ? actionButton('share', this.i18n.share, icon('share'), () => this.askSharedBlockName(node, list, index))
+                    : null,
                 actionButton('delete', this.i18n.delete, icon('trash'), () => this.remove(list, index)),
             ),
         );
@@ -434,6 +439,60 @@ export default class extends Controller {
         };
         this.render();
         this.changed();
+    }
+
+    // ----- Shared blocks --------------------------------------------------
+
+    /** Asks for a name right inside the block, then turns the block into a shared block. */
+    askSharedBlockName(node, list, index) {
+        this.closeMenu();
+
+        const input = el('input', { type: 'text', maxlength: '120', placeholder: this.i18n.share_name, 'aria-label': this.i18n.share_name });
+        const message = el('p', { class: 'field__errors', role: 'alert', hidden: true });
+        const save = async () => {
+            const name = input.value.trim();
+            if (name === '') {
+                input.focus();
+
+                return;
+            }
+
+            try {
+                const response = await this.post(this.config.urls.sharedCreate, { name, block: list[index] });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error ?? this.i18n.picker_error);
+                }
+
+                this.config.sharedBlocks.push(result);
+                list[index] = { type: 'shared', data: { block: result.id } };
+                this.render();
+                this.changed();
+            } catch (error) {
+                message.textContent = error.message || this.i18n.picker_error;
+                message.hidden = false;
+            }
+        };
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                save();
+            }
+        });
+
+        this.menu = el('div', { class: 'block-menu block-menu--form' },
+            el('p', { class: 'block-menu__intro', text: this.i18n.share_intro }),
+            input,
+            el('div', { class: 'form-actions' },
+                el('button', { type: 'button', class: 'button button--primary button--small', onclick: save }, this.i18n.share_save),
+                el('button', { type: 'button', class: 'button button--small', onclick: () => this.closeMenu() }, this.i18n.rt_link_cancel),
+            ),
+            message,
+        );
+        this.menuAnchor = node;
+        node.querySelector('.block__header').after(this.menu);
+        input.focus();
     }
 
     // ----- "Add block" menu ----------------------------------------------

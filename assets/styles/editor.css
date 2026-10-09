@@ -83,6 +83,13 @@
 .block-menu__item:hover, .block-menu__item:focus-visible { background: var(--accent-soft); border-color: #cdd7fb; }
 .block-menu__icon { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 700; flex: none; }
 
+.block-menu--form { display: block; margin: .6rem; }
+.block-menu--form input { margin-bottom: .6rem; }
+.block-menu--form .form-actions { margin-top: 0; }
+.block-menu__intro { margin: 0 0 .6rem; font-size: .92rem; color: var(--muted); }
+.shared-field { display: grid; gap: .5rem; justify-items: start; }
+.shared-field select { justify-self: stretch; }
+
 /* ---------- Rich text ---------- */
 
 .richtext { border: 1px solid var(--border-strong); border-radius: 6px; background: #fff; }
@@ -135,3 +142,5 @@
 
 .editor__errors { margin: 1rem 1.5rem 0; }
 .editor__errors .field__errors { margin: 0; color: inherit; }
+
+.editor__notice { margin: 1rem 1.5rem 0; }

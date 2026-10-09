@@ -119,7 +119,33 @@ function blocks({ editor, block, field, path, error }) {
     };
 }
 
-const RENDERERS = { text, textarea, richtext, select, checkbox, image, blocks, url: text };
+/** Chooses which shared block to show. Its content is edited in the "Shared blocks" section. */
+function sharedBlock({ editor, id, value, update }) {
+    const available = editor.config.sharedBlocks ?? [];
+    if (available.length === 0) {
+        return el('p', { class: 'field__help', text: editor.i18n.shared_none });
+    }
+
+    const current = available.find((candidate) => candidate.id === value);
+    const choice = el('select', {
+        id,
+        onchange: (event) => {
+            update(event.target.value === '' ? null : Number(event.target.value));
+            editor.render();
+        },
+    },
+    el('option', { value: '', text: editor.i18n.shared_choose }),
+    ...available.map((candidate) => el('option', { value: String(candidate.id), text: candidate.name, selected: candidate.id === value })),
+    );
+
+    return el('div', { class: 'shared-field' },
+        choice,
+        current ? el('a', { class: 'button button--small', href: current.editUrl, target: '_blank', rel: 'noopener' }, `${editor.i18n.shared_edit} ↗`) : null,
+        el('p', { class: 'field__help', text: editor.i18n.shared_hint }),
+    );
+}
+
+const RENDERERS = { text, textarea, richtext, select, checkbox, image, blocks, url: text, shared_block: sharedBlock };
 
 export function renderField(editor, block, field, path) {
     const id = uid('block-field');

@@ -8,6 +8,7 @@ use App\Entity\MenuItem;
 use App\Entity\Page;
 use App\Entity\Post;
 use App\Entity\Revision;
+use App\Entity\SharedBlock;
 use App\Entity\User;
 use App\Enum\ContentStatus;
 use App\Enum\MenuItemType;
@@ -59,6 +60,18 @@ final class AppFixtures extends Fixture
         $forest = $this->createImage($admin, 'forest.jpg', 'Green hills under a bright sky', [24, 110, 90], [190, 230, 160]);
         $desk = $this->createImage($admin, 'desk.jpg', 'Warm evening light', [120, 50, 110], [255, 170, 130]);
 
+        // A shared block: written once, shown at the end of several pages.
+        $callToAction = (new SharedBlock())
+            ->setName('Get in touch')
+            ->setBlocks([
+                ['type' => 'divider', 'data' => []],
+                ['type' => 'heading', 'data' => ['text' => 'Questions? Get in touch', 'level' => '3']],
+                ['type' => 'text', 'data' => ['content' => '<p>This box is a <strong>shared block</strong>. Edit it once under "Shared blocks" and it changes on every page that shows it.</p>']],
+            ]);
+        $manager->persist($callToAction);
+        $manager->flush();
+        $shared = ['type' => 'shared', 'data' => ['block' => $callToAction->getId()]];
+
         $home = (new Page())
             ->setTitle('Welcome to SymfoCMS')
             ->setSlug('home')
@@ -81,6 +94,7 @@ final class AppFixtures extends Fixture
                 ]],
                 ['type' => 'quote', 'data' => ['text' => 'Simple things should be simple, complex things should be possible.', 'author' => 'Alan Kay']],
                 ['type' => 'button', 'data' => ['label' => 'Read the blog', 'url' => '/blog', 'style' => 'primary']],
+                $shared,
             ]);
         $manager->persist($home);
 
@@ -95,6 +109,7 @@ final class AppFixtures extends Fixture
                 ['type' => 'text', 'data' => ['content' => '<ul><li>Change the texts and images on this page</li><li>Write your first blog post</li><li>Rearrange the navigation under <em>Menus</em></li></ul>']],
                 ['type' => 'divider', 'data' => []],
                 ['type' => 'button', 'data' => ['label' => 'Log in', 'url' => '/login', 'style' => 'secondary']],
+                $shared,
             ]);
         $manager->persist($about);
 

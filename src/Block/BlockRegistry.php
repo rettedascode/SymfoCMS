@@ -43,6 +43,20 @@ final class BlockRegistry
     }
 
     /**
+     * Reference blocks show a shared block. They cannot be used inside a shared block.
+     */
+    public function isReference(BlockTypeInterface $type): bool
+    {
+        foreach ($type->getFields() as $field) {
+            if (Field::SHARED_BLOCK === $field->type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Layout blocks contain other blocks and cannot be nested into each other.
      */
     public function isLayout(BlockTypeInterface $type): bool

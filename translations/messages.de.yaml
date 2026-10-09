@@ -272,6 +272,33 @@ menu.js.type_post: 'Beitrag: %title%'
 menu.js.blog_label: Blog
 
 nav.settings: Einstellungen
+nav.shared_blocks: Geteilte Blöcke
+
+shared_block.intro: Ein geteilter Block ist Inhalt, den du einmal schreibst und auf vielen Seiten zeigst, etwa Öffnungszeiten oder ein Aufruf zum Handeln. Änderst du ihn hier, ändert er sich auf jeder Seite, die ihn verwendet.
+shared_block.new: Neuer geteilter Block
+shared_block.edit: Geteilten Block bearbeiten
+shared_block.name: Name
+shared_block.name_help: Diesen Namen sehen nur du und deine Kollegen. Er hilft, den Block beim Einfügen in eine Seite zu finden.
+shared_block.used_on: Verwendet auf
+shared_block.usage_count: '{0}Noch nicht verwendet|{1}1 Seite oder Beitrag|]1,Inf[%count% Seiten oder Beiträgen'
+shared_block.usage_heading: Wo dieser Block verwendet wird
+shared_block.usage_warning: Änderungen, die du hier speicherst, erscheinen sofort auf all diesen Seiten.
+shared_block.usage_none: Dieser Block wird noch auf keiner Seite und in keinem Beitrag verwendet. Füge ihn im Editor über „Block hinzufügen“ und „Geteilter Block“ ein.
+shared_block.empty_title: Noch keine geteilten Blöcke
+shared_block.empty_text: Lege hier einen an oder klicke im Editor auf das Lesezeichen-Symbol eines Blocks, um ihn in einen geteilten Block umzuwandeln.
+shared_block.delete_confirm: 'Geteilten Block „%name%“ löschen? Er wird auf %count% Seiten oder Beiträgen verwendet, die ihn dann nicht mehr anzeigen.'
+flash.shared_block_saved: Der geteilte Block wurde gespeichert.
+flash.shared_block_deleted: Der geteilte Block wurde gelöscht.
+block.shared.label: Geteilter Block
+block.shared.block: Geteilter Block
+editor.share: Als geteilten Block speichern
+editor.share_intro: Gib diesem Block einen Namen, um ihn auf anderen Seiten wiederzuverwenden. Ab dann wird er an einer Stelle bearbeitet, unter „Geteilte Blöcke“.
+editor.share_name: Name, z. B. „Öffnungszeiten“
+editor.share_save: Als geteilten Block speichern
+editor.shared_none: Es gibt noch keine geteilten Blöcke.
+editor.shared_choose: Geteilten Block auswählen …
+editor.shared_edit: Diesen geteilten Block bearbeiten
+editor.shared_hint: Der Inhalt eines geteilten Blocks ist auf jeder Seite, die ihn zeigt, derselbe.
 
 settings.languages_heading: Sprachen
 settings.languages_intro: Deine Website kann Seiten und Beiträge in mehreren Sprachen anbieten. Bei nur einer Sprache wird sonst nirgends etwas zu Sprachen angezeigt.

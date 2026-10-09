@@ -23,7 +23,7 @@ final class PreviewController extends AdminController
         $response = $this->render('site/preview.html.twig', [
             'title' => \is_string($payload['title'] ?? null) ? $payload['title'] : '',
             'blocks' => $normalizer->normalize($payload['blocks'] ?? []),
-            'kind' => 'post' === ($payload['kind'] ?? null) ? 'post' : 'page',
+            'kind' => \in_array($payload['kind'] ?? null, ['post', 'fragment'], true) ? $payload['kind'] : 'page',
         ]);
         $response->headers->set('X-Robots-Tag', 'noindex');
 

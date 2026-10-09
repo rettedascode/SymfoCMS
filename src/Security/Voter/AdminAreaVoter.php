@@ -16,11 +16,13 @@ final class AdminAreaVoter extends Voter
     public const MANAGE_MENUS = 'MENU_MANAGE';
     public const MANAGE_CATEGORIES = 'CATEGORY_MANAGE';
     public const MANAGE_SETTINGS = 'SETTINGS_MANAGE';
+    public const MANAGE_SHARED_BLOCKS = 'SHARED_BLOCK_MANAGE';
 
     private const REQUIRED_ROLE = [
         self::MANAGE_MENUS => 'ROLE_ADMIN',
         self::MANAGE_CATEGORIES => 'ROLE_EDITOR',
         self::MANAGE_SETTINGS => 'ROLE_ADMIN',
+        self::MANAGE_SHARED_BLOCKS => 'ROLE_EDITOR',
     ];
 
     public function __construct(private readonly AccessDecisionManagerInterface $decisionManager)
