@@ -24,6 +24,10 @@
 
     <aside class="sidebar" id="sidebar" data-sidebar-target="panel">
         <a class="sidebar__brand" href="{{ path('admin_dashboard') }}">{{ site_name }}</a>
+        <form class="sidebar__search" role="search" method="get" action="{{ path('admin_search') }}">
+            <label class="visually-hidden" for="sidebar-search">{{ 'search.label'|trans }}</label>
+            <input type="search" id="sidebar-search" name="q" maxlength="100" placeholder="{{ 'search.title'|trans }} …" value="{{ route == 'admin_search' ? app.request.query.get('q') : '' }}">
+        </form>
         <nav aria-label="{{ 'admin.navigation'|trans }}">
             <ul class="sidebar__nav">
                 {% if is_granted('PAGE_MANAGE') %}

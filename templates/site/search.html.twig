@@ -1,0 +1,60 @@
+{% extends 'site/base.html.twig' %}
+
+{% set noindex = true %}
+{% set switch_route = 'app_search' %}
+
+{% block title %}{{ query ? 'site.search_results_for'|trans({'%query%': query}) : 'site.search'|trans }}{% endblock %}
+
+{# The page has its own, larger search field. #}
+{% block search %}{% endblock %}
+
+{% block content %}
+    <h1>{{ 'site.search'|trans }}</h1>
+
+    <form class="search-form" role="search" method="get" action="{{ site_path('app_search') }}">
+        <label class="visually-hidden" for="search-query">{{ 'site.search_label'|trans }}</label>
+        <input type="search" id="search-query" name="q" value="{{ query }}" maxlength="100" placeholder="{{ 'site.search_placeholder'|trans }}"{% if not query %} autofocus{% endif %}>
+        <button type="submit" class="button button--primary">{{ 'site.search_submit'|trans }}</button>
+    </form>
+
+    {% if too_short %}
+        <p class="notice" role="status">{{ 'site.search_too_short'|trans }}</p>
+    {% elseif query %}
+        <p class="search-summary" role="status">{{ 'site.search_count'|trans({'%count%': total, '%query%': query}) }}</p>
+
+        {% if results is empty %}
+            <p class="notice">{{ 'site.search_no_results'|trans }}</p>
+        {% else %}
+            <ol class="search-results" start="{{ (page - 1) * 10 + 1 }}">
+                {% for result in results %}
+                    <li>
+                        <h2><a href="{{ content_path(result.content) }}">{{ result.content.title|highlight(terms) }}</a></h2>
+                        <p class="search-results__meta">
+                            {{ (result.kind == 'post' ? 'site.search_post' : 'site.search_page')|trans }}
+                            {% if result.kind == 'post' and result.content.publishedAt %}
+                                · <time datetime="{{ result.content.publishedAt|date('Y-m-d') }}">{{ result.content.publishedAt|local_date }}</time>
+                            {% endif %}
+                        </p>
+                        {% if result.body %}<p>{{ result.body|search_excerpt(terms)|highlight(terms) }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if pages > 1 %}
+            <nav class="pagination" aria-label="{{ 'site.pagination'|trans }}">
+                {% if page > 1 %}
+                    <a rel="prev" href="{{ site_path('app_search', {q: query}|merge(page > 2 ? {page: page - 1} : {})) }}">← {{ 'site.search_previous'|trans }}</a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                <span class="pagination__status">{{ 'site.page_of'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                {% if page < pages %}
+                    <a rel="next" href="{{ site_path('app_search', {q: query, page: page + 1}) }}">{{ 'site.search_next'|trans }} →</a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

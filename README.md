@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Search](docs/search.md): full-text search over published pages and posts with highlighted matches, per language, on every supported database; one search field in the admin area for pages, posts and images
 - [SEO](docs/seo.md): live preview of the search result in the editor, Open Graph and Twitter cards with a selectable share image, JSON-LD for posts, FAQs and breadcrumbs
 - Admin interface in English and German; [other languages](#adding-an-interface-language) are one translation file away
 - [Multilingual content](docs/multilingual.md): language versions of pages and posts, menus per language, a language switcher and `hreflang` tags – completely invisible on single-language sites
@@ -280,7 +281,7 @@ templates/site/     Public theme
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: the editor, forms, redirects, SEO, extensions, multilingual websites
+docs/               Guides: the editor, forms, redirects, SEO, search, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

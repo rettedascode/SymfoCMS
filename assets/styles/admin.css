@@ -355,3 +355,15 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- Search ---------- */
+
+.sidebar__search { padding: 0 .25rem 1rem; }
+.sidebar__search input { width: 100%; padding: .5rem .75rem; border: 1px solid rgba(255, 255, 255, .18); border-radius: 8px; background: rgba(255, 255, 255, .08); color: #fff; font: inherit; font-size: .92rem; }
+.sidebar__search input::placeholder { color: rgba(255, 255, 255, .6); }
+.sidebar__search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; background: rgba(255, 255, 255, .14); }
+.search-bar { display: flex; gap: .5rem; margin-bottom: 1.5rem; max-width: 40rem; }
+.search-bar input { flex: 1; min-width: 0; padding: .6rem .8rem; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: var(--surface); }
+.search-group { font-size: 1.05rem; margin: 2rem 0 .75rem; }
+.search-excerpt { margin: .25rem 0 0; font-weight: 400; font-size: .9rem; color: var(--muted); }
+mark { background: #fff1a8; color: inherit; padding: 0 .1em; border-radius: 2px; }

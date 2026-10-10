@@ -54,6 +54,7 @@ final class MigrationTest extends AppWebTestCase
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM forms'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM redirects'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM form_submissions'));
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM search_index'));
 
         // The result is exactly the schema the application expects (the command fails otherwise) ...
         $this->runCommand(['command' => 'doctrine:schema:validate']);
@@ -63,6 +64,10 @@ final class MigrationTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextSame('h1', 'About');
         self::assertSelectorTextContains('.site-nav__list', 'About');
+
+        // The search index fills itself the first time somebody searches.
+        $this->client->request('GET', '/search?q=about');
+        self::assertSelectorTextContains('.search-results', 'About');
     }
 
     private function insertFirstReleaseContent(Connection $connection): void

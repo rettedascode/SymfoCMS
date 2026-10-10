@@ -282,3 +282,32 @@ p, ul, ol { margin: 0 0 1.25rem; }
 @media print {
     .site-header, .site-footer, .edit-bar, .pagination { display: none; }
 }
+
+/* ---------- Search ---------- */
+
+.site-search { display: flex; align-items: center; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-bg); }
+.site-search:focus-within { border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.site-search input { width: 8.5rem; min-width: 0; border: 0; background: transparent; padding: .4rem 0 .4rem .9rem; font: inherit; font-size: .92rem; color: var(--color-text); outline: none; }
+.site-search button { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 50%; background: transparent; color: var(--color-muted); cursor: pointer; }
+.site-search button:hover, .site-search button:focus-visible { color: var(--color-accent); }
+
+.search-form { display: flex; gap: .5rem; margin: 1.5rem 0; }
+.search-form input { flex: 1; min-width: 0; padding: .7rem .9rem; border: 1px solid var(--color-border); border-radius: var(--radius); font: inherit; background: var(--color-bg); color: var(--color-text); }
+.search-form .button { cursor: pointer; font: inherit; font-weight: 600; }
+.search-summary { color: var(--color-muted); }
+.search-results { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 2rem; }
+.search-results h2 { font-size: 1.3rem; margin: 0; }
+.search-results h2 a { text-decoration: none; }
+.search-results h2 a:hover { text-decoration: underline; }
+.search-results p { margin: .35rem 0 0; }
+.search-results__meta { color: var(--color-muted); font-size: .9rem; }
+mark { background: #fff1a8; color: inherit; padding: 0 .1em; border-radius: 2px; }
+
+@media (max-width: 760px) {
+    .site-search { order: 5; flex-basis: 100%; margin-bottom: .75rem; }
+    .site-search input { flex: 1; width: auto; }
+}
+
+@media print {
+    .site-search, .search-form { display: none; }
+}

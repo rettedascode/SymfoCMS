@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Search on the website: full-text search over published pages and posts with highlighted matches, per language, working on SQLite, MySQL and PostgreSQL (see `docs/search.md`).
+- Search in the admin area across pages, posts and images, limited to what the user may work on.
+- Command `app:search:reindex` to rebuild the search index.
 - Live preview of the search result in the editor, with hints when title or description are too long.
 - Selectable image for sharing per page and post; Open Graph and Twitter card tags including image, image description and language.
 - JSON-LD structured data: `BlogPosting` for posts, `FAQPage` for questions-and-answers blocks and `BreadcrumbList` (see `docs/seo.md`).

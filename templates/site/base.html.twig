@@ -85,6 +85,15 @@
                 </nav>
             {% endif %}
         {% endblock %}
+        {% block search %}
+            <form class="site-search" role="search" method="get" action="{{ site_path('app_search') }}">
+                <label class="visually-hidden" for="site-search">{{ 'site.search_label'|trans }}</label>
+                <input type="search" id="site-search" name="q" maxlength="100" placeholder="{{ 'site.search'|trans }}">
+                <button type="submit" aria-label="{{ 'site.search_submit'|trans }}">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                </button>
+            </form>
+        {% endblock %}
         {% block language_switcher %}
             {# Empty on single-language sites. Links to the same page in the other language where it exists. #}
             {% set languages = language_switcher(translatable|default(null), switch_route|default('app_home')) %}

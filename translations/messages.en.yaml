@@ -537,3 +537,25 @@ site.to_admin: Admin area
 site.welcome_title: Welcome to %name%
 site.welcome_text: This website has no homepage yet. Log in to create your first page.
 site.welcome_action: Go to the admin area
+
+site.search: Search
+site.search_label: Search this website
+site.search_placeholder: What are you looking for?
+site.search_submit: Search
+site.search_results_for: 'Search results for “%query%”'
+site.search_count: '{0}Nothing found for “%query%”.|{1}One result for “%query%”.|]1,Inf[%count% results for “%query%”.'
+site.search_no_results: Try a different or a shorter word.
+site.search_too_short: Please type at least two letters.
+site.search_page: Page
+site.search_post: Blog post
+site.search_previous: Previous results
+site.search_next: More results
+
+search.title: Search
+search.label: Search pages, posts and images
+search.placeholder: Title, text or file name
+search.submit: Search
+search.results_for: 'Search results for “%query%”'
+search.too_short: Please type at least two letters.
+search.empty_title: Nothing found
+search.empty_text: Try a different or a shorter word. Pages, posts and images of all languages are searched, drafts included.

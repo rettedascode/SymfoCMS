@@ -536,3 +536,25 @@ site.to_admin: Verwaltung
 site.welcome_title: Willkommen bei %name%
 site.welcome_text: Diese Website hat noch keine Startseite. Melde dich an, um deine erste Seite anzulegen.
 site.welcome_action: Zur Verwaltung
+
+site.search: Suche
+site.search_label: Diese Website durchsuchen
+site.search_placeholder: Wonach suchen Sie?
+site.search_submit: Suchen
+site.search_results_for: 'Suchergebnisse für „%query%“'
+site.search_count: '{0}Nichts gefunden für „%query%“.|{1}Ein Ergebnis für „%query%“.|]1,Inf[%count% Ergebnisse für „%query%“.'
+site.search_no_results: Versuchen Sie es mit einem anderen oder kürzeren Wort.
+site.search_too_short: Bitte geben Sie mindestens zwei Buchstaben ein.
+site.search_page: Seite
+site.search_post: Blogbeitrag
+site.search_previous: Vorherige Ergebnisse
+site.search_next: Weitere Ergebnisse
+
+search.title: Suche
+search.label: Seiten, Beiträge und Bilder durchsuchen
+search.placeholder: Titel, Text oder Dateiname
+search.submit: Suchen
+search.results_for: 'Suchergebnisse für „%query%“'
+search.too_short: Bitte geben Sie mindestens zwei Buchstaben ein.
+search.empty_title: Nichts gefunden
+search.empty_text: Versuchen Sie es mit einem anderen oder kürzeren Wort. Durchsucht werden Seiten, Beiträge und Bilder aller Sprachen, auch Entwürfe.

@@ -1,0 +1,76 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'search.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ query ? 'search.results_for'|trans({'%query%': query}) : 'search.title'|trans }}</h1>
+    </div>
+
+    <form class="search-bar" role="search" method="get" action="{{ path('admin_search') }}">
+        <label class="visually-hidden" for="admin-search-query">{{ 'search.label'|trans }}</label>
+        <input type="search" id="admin-search-query" name="q" value="{{ query }}" maxlength="100" placeholder="{{ 'search.placeholder'|trans }}"{% if not query %} autofocus{% endif %}>
+        <button type="submit" class="button button--primary">{{ 'search.submit'|trans }}</button>
+    </form>
+
+    {% if too_short %}
+        <div class="empty"><p>{{ 'search.too_short'|trans }}</p></div>
+    {% elseif query and total == 0 %}
+        <div class="empty">
+            <h2>{{ 'search.empty_title'|trans }}</h2>
+            <p>{{ 'search.empty_text'|trans }}</p>
+        </div>
+    {% elseif query %}
+        {% for group in [
+            {label: 'nav.pages', route: 'admin_page_edit', results: pages},
+            {label: 'nav.blog', route: 'admin_post_edit', results: posts},
+        ] %}
+            {% if group.results is not empty %}
+                <h2 class="search-group">{{ group.label|trans }} <span class="muted">({{ group.results|length }})</span></h2>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">{{ 'label.title'|trans }}</th>
+                            <th scope="col">{{ 'label.status'|trans }}</th>
+                            <th scope="col">{{ 'label.updated'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for result in group.results %}
+                            <tr>
+                                <th scope="row">
+                                    <a href="{{ path(group.route, {id: result.entity.id}) }}">{{ result.entity.title|highlight(terms) }}</a>
+                                    {% if is_multilingual() %}<span class="badge">{{ result.entity.locale|upper }}</span>{% endif %}
+                                    {% if result.body %}<p class="search-excerpt">{{ result.body|search_excerpt(terms, 160)|highlight(terms) }}</p>{% endif %}
+                                </th>
+                                <td><span class="badge badge--{{ result.entity.status.value }}">{{ result.entity.status.label|trans }}</span></td>
+                                <td>{{ result.entity.updatedAt|local_date(true) }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if media is not empty %}
+            <h2 class="search-group">{{ 'nav.media'|trans }} <span class="muted">({{ media|length }})</span></h2>
+            <ul class="media-grid">
+                {% for item in media %}
+                    <li>
+                        {% if is_granted('MEDIA_EDIT', item) %}
+                            <a class="media-tile" href="{{ path('admin_media_edit', {id: item.id}) }}" title="{{ item.originalName }}">
+                                <img src="{{ media_url(item, 'thumb') }}" alt="{{ item.alt ?: item.originalName }}" loading="lazy">
+                            </a>
+                        {% else %}
+                            <span class="media-tile" title="{{ item.originalName }}">
+                                <img src="{{ media_url(item, 'thumb') }}" alt="{{ item.alt ?: item.originalName }}" loading="lazy">
+                            </span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}
