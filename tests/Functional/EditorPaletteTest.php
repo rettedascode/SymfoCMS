@@ -30,7 +30,8 @@ final class EditorPaletteTest extends AppWebTestCase
 
         $config = json_decode((string) $crawler->filter('[data-controller="editor"]')->attr('data-editor-config-value'), true);
         self::assertSame(['image/jpeg', 'image/png', 'image/gif', 'image/webp'], $config['upload']['types']);
-        self::assertSame(8 * 1024 * 1024, $config['upload']['maxBytes'], 'The limit of the server, so too large files are refused before they travel.');
+        // The limit of this server (PHP may allow less than the configured 8 MB), so too large files are refused before they travel.
+        self::assertSame(static::getContainer()->get(\App\Service\MediaManager::class)->maxUploadMb() * 1024 * 1024, $config['upload']['maxBytes']);
         self::assertSame('/admin/media/upload', $config['urls']['mediaUpload']);
         self::assertContains('gallery', array_column($config['types'], 'type'), 'Several dropped images need the gallery block.');
         foreach (['palette_add', 'palette_added', 'drop_images', 'dropped_image', 'dropped_gallery'] as $key) {
