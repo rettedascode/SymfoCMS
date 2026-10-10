@@ -429,3 +429,28 @@ fieldset.field legend { font-weight: 600; margin-bottom: .35rem; padding: 0; }
 .review-box__note { white-space: pre-line; }
 
 .editor .review-box, .editor .review-banner { margin: 1rem 1.5rem 0; }
+
+/* ---------- Activity log ---------- */
+
+.audit-filter { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem; margin: 1rem 0 1.5rem; }
+.audit-filter .field { margin: 0; min-width: 11rem; }
+.audit-table td { vertical-align: top; }
+.audit-table td:first-child { white-space: nowrap; color: var(--muted); }
+.audit-table__fields { display: block; margin-top: .2rem; font-size: .88rem; color: var(--muted); }
+.audit-table__history { margin-left: .35rem; text-decoration: none; color: var(--muted); }
+.audit-table__history:hover { color: var(--accent); }
+.badge[class*="badge--audit-"] { background: #eef0f3; color: var(--text); }
+.badge.badge--audit-created, .badge.badge--audit-published, .badge.badge--audit-login { background: var(--success-soft); color: var(--success); }
+.badge.badge--audit-deleted, .badge.badge--audit-login_failed { background: var(--danger-soft); color: var(--danger); }
+.badge.badge--audit-submitted, .badge.badge--audit-returned, .badge.badge--audit-unpublished { background: var(--warning-soft); color: var(--warning); }
+
+@media (max-width: 700px) {
+    /* On phones every entry of the log becomes a small card instead of a table row. */
+    .audit-table thead { display: none; }
+    .audit-table, .audit-table tbody, .audit-table tr, .audit-table td { display: block; }
+    .audit-table tr { padding: .7rem 1rem; border-bottom: 1px solid var(--border); }
+    .audit-table tr:last-child { border-bottom: 0; }
+    .audit-table td, .audit-table tbody tr:last-child td { padding: .1rem 0; border: 0; }
+    .audit-table td:first-child { white-space: normal; font-size: .88rem; }
+    .audit-filter .field, .audit-filter select, .audit-filter input { width: 100%; }
+}

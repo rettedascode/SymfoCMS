@@ -768,3 +768,81 @@ flash.post_sent_back: Der Beitrag wurde zurückgegeben.
 settings.review_heading: Blog
 settings.review_required: Beiträge von Autoren müssen von der Redaktion freigegeben werden
 settings.review_required_help: Autoren reichen ihre Beiträge dann zur Prüfung ein, statt sie zu veröffentlichen, und können einen veröffentlichten Beitrag nicht mehr ändern. Redakteure und Administratoren veröffentlichen wie bisher.
+
+audit.title: Aktivitätsprotokoll
+audit.open: Aktivitätsprotokoll öffnen
+audit.settings_hint: Sehen Sie, wer wann was an der Website geändert hat.
+audit.intro: Jede Änderung an Seiten, Beiträgen, Bildern, Benutzern und Einstellungen wird hier aufgelistet, die neueste zuerst. Einträge werden ein Jahr lang aufbewahrt.
+audit.system: System
+audit.unknown: Unbekannt
+audit.history: Verlauf dieses Eintrags anzeigen
+audit.changed: 'Geändert:'
+audit.filter.user: Wer
+audit.filter.everybody: Alle
+audit.filter.type: Was
+audit.filter.everything: Alles
+audit.filter.search: Titel oder Name enthält
+audit.filter.submit: Anzeigen
+audit.filter.reset: Alles anzeigen
+audit.column.when: Wann
+audit.column.who: Wer
+audit.column.what: Was
+audit.empty_title: Nichts anzuzeigen
+audit.empty_text: Für diese Auswahl gibt es keine Einträge.
+audit.action.created: Erstellt
+audit.action.updated: Geändert
+audit.action.deleted: Gelöscht
+audit.action.published: Veröffentlicht
+audit.action.unpublished: Offline genommen
+audit.action.submitted: Zur Prüfung eingereicht
+audit.action.returned: Zurück im Entwurf
+audit.action.login: Angemeldet
+audit.action.login_failed: Fehlgeschlagene Anmeldung
+audit.action.imported: Importiert
+audit.action.exported: Exportiert
+audit.type.page: Seite
+audit.type.post: Beitrag
+audit.type.category: Kategorie
+audit.type.media: Bild
+audit.type.user: Benutzer
+audit.type.form: Formular
+audit.type.shared_block: Geteilter Block
+audit.type.page_template: Seitenvorlage
+audit.type.redirect: Weiterleitung
+audit.type.settings: Einstellung
+audit.type.menu: Menü
+audit.type.site: Website
+audit.type.wordpress: WordPress-Website
+audit.field.title: Titel
+audit.field.slug: Adresse
+audit.field.status: Status
+audit.field.blocks: Inhalt
+audit.field.locale: Sprache
+audit.field.translationGroup: Übersetzungen
+audit.field.seoTitle: Titel für Suchmaschinen
+audit.field.metaDescription: Beschreibung für Suchmaschinen
+audit.field.shareImage: Bild zum Teilen
+audit.field.homepage: Startseite
+audit.field.excerpt: Zusammenfassung
+audit.field.coverImage: Titelbild
+audit.field.category: Kategorie
+audit.field.author: Autor
+audit.field.publishedAt: Veröffentlichungsdatum
+audit.field.reviewNote: Hinweis der Prüfung
+audit.field.name: Name
+audit.field.email: E-Mail-Adresse
+audit.field.password: Passwort
+audit.field.role: Rolle
+audit.field.active: Zugang
+audit.field.totpSecret: Anmeldung in zwei Schritten
+audit.field.backupCodes: Ersatzcodes
+audit.field.alt: Beschreibung
+audit.field.filename: Datei
+audit.field.variants: Bildgrößen
+audit.field.fields: Felder
+audit.field.submitLabel: Text der Schaltfläche
+audit.field.successMessage: Bestätigungstext
+audit.field.notifyEmail: Benachrichtigungsadresse
+audit.field.source: Alte Adresse
+audit.field.target: Neue Adresse
+audit.field.value: Wert

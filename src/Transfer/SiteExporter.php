@@ -2,6 +2,7 @@
 
 namespace App\Transfer;
 
+use App\Audit\AuditLogger;
 use App\Entity\Category;
 use App\Entity\Content;
 use App\Entity\Form;
@@ -36,6 +37,7 @@ final class SiteExporter
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly MenuItemRepository $menuItems,
+        private readonly AuditLogger $audit,
         #[Autowire(param: 'app.media_dir')]
         private readonly string $mediaDir,
     ) {
@@ -68,6 +70,8 @@ final class SiteExporter
         foreach (['pages', 'posts', 'categories', 'media', 'shared_blocks', 'forms', 'page_templates', 'redirects'] as $key) {
             $counts[$key] = \count($data[$key]);
         }
+
+        $this->audit->log('exported', 'site', null, '', ['counts' => $counts]);
 
         return $counts;
     }

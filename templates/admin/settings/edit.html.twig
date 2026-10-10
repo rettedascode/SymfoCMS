@@ -2,6 +2,12 @@
 
 {% block title %}{{ 'nav.settings'|trans }}
     <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'audit.title'|trans }}</h2>
+        <p class="muted">{{ 'audit.settings_hint'|trans }}</p>
+        <a class="button" href="{{ path('admin_audit_index') }}">{{ 'audit.open'|trans }}</a>
+    </div>
+
+    <div class="card card--narrow table-wrap--spaced">
         <h2>{{ 'transfer.title'|trans }}</h2>
         <p class="muted">{{ 'transfer.settings_hint'|trans }}</p>
         <a class="button" href="{{ path('admin_transfer_index') }}">{{ 'transfer.open'|trans }}</a>
@@ -42,6 +48,12 @@
         <h2>{{ 'redirect.title'|trans }}</h2>
         <p class="muted">{{ 'redirect.settings_hint'|trans }}</p>
         <a class="button" href="{{ path('admin_redirect_index') }}">{{ 'redirect.manage'|trans }}</a>
+    </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'audit.title'|trans }}</h2>
+        <p class="muted">{{ 'audit.settings_hint'|trans }}</p>
+        <a class="button" href="{{ path('admin_audit_index') }}">{{ 'audit.open'|trans }}</a>
     </div>
 
     <div class="card card--narrow table-wrap--spaced">

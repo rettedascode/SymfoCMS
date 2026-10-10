@@ -20,6 +20,7 @@ parameters:
     env(APP_MAX_REVISIONS): '50'
     env(APP_MAIL_FROM): 'noreply@example.com'
     env(APP_INSTALLER): '1'
+    env(APP_AUDIT_DAYS): '365'
 
 services:
     _defaults:

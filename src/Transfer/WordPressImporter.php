@@ -2,6 +2,7 @@
 
 namespace App\Transfer;
 
+use App\Audit\AuditLogger;
 use App\Block\BlockNormalizer;
 use App\Entity\Category;
 use App\Entity\Content;
@@ -47,6 +48,7 @@ final class WordPressImporter
         private readonly SlugGenerator $slugs,
         private readonly SiteUrls $siteUrls,
         private readonly RedirectManager $redirects,
+        private readonly AuditLogger $audit,
     ) {
     }
 
@@ -111,6 +113,8 @@ final class WordPressImporter
         if ($comments > 0) {
             $report->issue((string) $comments, 'transfer.wordpress.issue.comments');
         }
+
+        $this->audit->log('imported', 'wordpress', null, (string) $channel->title, ['counts' => $report->counts()], $user);
 
         return $report;
     }

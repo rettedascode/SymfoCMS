@@ -55,6 +55,7 @@ final class MigrationTest extends AppWebTestCase
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM redirects'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM form_submissions'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM search_index'));
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM audit_log'));
 
         // The result is exactly the schema the application expects (the command fails otherwise) ...
         $this->runCommand(['command' => 'doctrine:schema:validate']);

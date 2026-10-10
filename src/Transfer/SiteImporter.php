@@ -2,6 +2,7 @@
 
 namespace App\Transfer;
 
+use App\Audit\AuditLogger;
 use App\Block\BlockNormalizer;
 use App\Entity\Category;
 use App\Entity\Content;
@@ -75,6 +76,7 @@ final class SiteImporter
         private readonly RedirectManager $redirects,
         private readonly LinkSanitizer $linkSanitizer,
         private readonly SearchIndexer $searchIndexer,
+        private readonly AuditLogger $audit,
         #[Autowire(param: 'app.media_dir')]
         private readonly string $mediaDir,
         #[Autowire(param: 'kernel.cache_dir')]
@@ -136,6 +138,7 @@ final class SiteImporter
 
             $this->removeFiles($obsoleteFiles);
             $this->searchIndexer->rebuild();
+            $this->audit->log('imported', 'site', null, $replace ? 'replace' : 'add', ['counts' => $report->counts()], $user);
 
             return $report;
         } finally {

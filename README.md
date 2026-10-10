@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Activity log](docs/activity-log.md) for administrators: who changed what and when, filterable by person and content
 - [Review workflow](docs/review-workflow.md): authors submit posts, editors approve and publish them or send them back with a note
 - [Two-step login](docs/two-step-login.md) with an authenticator app (TOTP) and backup codes, optional for every user and enforceable for administrators
 - [Setup wizard](docs/installation.md) in the browser: requirements check, database connection, name of the website and administrator account
@@ -135,6 +136,7 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `MAILER_DSN` | `null://null` | How emails are sent ([forms guide](docs/forms.md#email-notifications)); the default sends nothing |
 | `APP_MAIL_FROM` | `noreply@example.com` | Sender address of emails the website sends |
 | `APP_MAX_UPLOAD_MB` | `8` | Largest accepted image. PHP's `upload_max_filesize` and `post_max_size` must allow it too. |
+| `APP_AUDIT_DAYS` | `365` | How long entries of the [activity log](docs/activity-log.md) are kept; `0` keeps them forever |
 | `APP_INSTALLER` | `1` | `0` switches the [setup wizard](docs/installation.md) off |
 
 ### Using MySQL or PostgreSQL
@@ -291,7 +293,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, two-step login, the review workflow, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
+docs/               Guides: installation, two-step login, the review workflow, the activity log, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

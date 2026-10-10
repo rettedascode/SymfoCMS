@@ -1,0 +1,96 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'audit.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'audit.title'|trans }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('admin_settings') }}">← {{ 'nav.settings'|trans }}</a>
+        </div>
+    </div>
+    <p class="muted">{{ 'audit.intro'|trans }}</p>
+
+    <form class="audit-filter" method="get" action="{{ path('admin_audit_index') }}">
+        <div class="field">
+            <label for="audit-user">{{ 'audit.filter.user'|trans }}</label>
+            <select id="audit-user" name="user">
+                <option value="">{{ 'audit.filter.everybody'|trans }}</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}"{% if filter.user == user.id ~ '' %} selected{% endif %}>{{ user.name }}</option>
+                {% endfor %}
+                <option value="system"{% if filter.user == 'system' %} selected{% endif %}>{{ 'audit.system'|trans }}</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="audit-type">{{ 'audit.filter.type'|trans }}</label>
+            <select id="audit-type" name="type">
+                <option value="">{{ 'audit.filter.everything'|trans }}</option>
+                {% for type in types %}
+                    <option value="{{ type }}"{% if filter.type == type %} selected{% endif %}>{{ ('audit.type.' ~ type)|trans }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label for="audit-q">{{ 'audit.filter.search'|trans }}</label>
+            <input type="search" id="audit-q" name="q" value="{{ filter.q }}" maxlength="100">
+        </div>
+        <button type="submit" class="button button--primary">{{ 'audit.filter.submit'|trans }}</button>
+        {% if filter.user or filter.type or filter.q %}
+            <a class="button" href="{{ path('admin_audit_index') }}">{{ 'audit.filter.reset'|trans }}</a>
+        {% endif %}
+    </form>
+
+    {% if entries is empty %}
+        <div class="empty">
+            <h2>{{ 'audit.empty_title'|trans }}</h2>
+            <p>{{ 'audit.empty_text'|trans }}</p>
+        </div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table audit-table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'audit.column.when'|trans }}</th>
+                    <th scope="col">{{ 'audit.column.who'|trans }}</th>
+                    <th scope="col">{{ 'audit.column.what'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in entries %}
+                    {% set link = links[entry.subjectType ~ ':' ~ entry.subjectId]|default(null) %}
+                    <tr data-action="{{ entry.action }}" data-type="{{ entry.subjectType }}">
+                        <td><time datetime="{{ entry.createdAt|date('c') }}">{{ entry.createdAt|local_date(true) }}</time></td>
+                        <td>
+                            {% if entry.userId %}
+                                <a href="{{ path('admin_audit_index', {user: entry.userId}) }}">{{ entry.userName }}</a>
+                            {% else %}
+                                <span class="muted">{{ (entry.action == 'login_failed' ? 'audit.unknown' : 'audit.system')|trans }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge--audit-{{ entry.action }}">{{ ('audit.action.' ~ entry.action)|trans }}</span>
+                            <span class="muted">{{ ('audit.type.' ~ entry.subjectType)|trans }}</span>
+                            {% if link %}<a href="{{ link }}">{{ entry.subjectLabel }}</a>{% else %}<strong>{{ entry.subjectLabel }}</strong>{% endif %}
+                            {% if entry.subjectId and entry.subjectType != 'user' %}
+                                <a class="audit-table__history" href="{{ path('admin_audit_index', {type: entry.subjectType, id: entry.subjectId}) }}" title="{{ 'audit.history'|trans }}">↺<span class="visually-hidden"> {{ 'audit.history'|trans }}</span></a>
+                            {% endif %}
+                            {% if entry.details.fields is defined %}
+                                <span class="audit-table__fields">{{ 'audit.changed'|trans }} {{ entry.details.fields|map(field => field|audit_field)|join(', ') }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pages > 1 %}
+            <nav class="pager" aria-label="{{ 'label.pagination'|trans }}">
+                {% if page > 1 %}<a class="button" href="{{ path('admin_audit_index', filter|filter(v => v)|merge({page: page - 1})) }}">← {{ 'action.previous'|trans }}</a>{% endif %}
+                <span class="muted">{{ 'label.page_of'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                {% if page < pages %}<a class="button" href="{{ path('admin_audit_index', filter|filter(v => v)|merge({page: page + 1})) }}">{{ 'action.next'|trans }} →</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -769,3 +769,81 @@ flash.post_sent_back: The post was sent back to its author.
 settings.review_heading: Blog
 settings.review_required: Posts by authors have to be approved by an editor
 settings.review_required_help: Authors then submit their posts for review instead of publishing them, and cannot change a post once it is public. Editors and administrators publish as before.
+
+audit.title: Activity log
+audit.open: Open the activity log
+audit.settings_hint: See who changed what on the website, and when.
+audit.intro: Every change of pages, posts, images, users and settings is listed here, newest first. Entries are kept for one year.
+audit.system: System
+audit.unknown: Unknown
+audit.history: Show the history of this entry
+audit.changed: 'Changed:'
+audit.filter.user: Who
+audit.filter.everybody: Everybody
+audit.filter.type: What
+audit.filter.everything: Everything
+audit.filter.search: Title or name contains
+audit.filter.submit: Show
+audit.filter.reset: Show everything
+audit.column.when: When
+audit.column.who: Who
+audit.column.what: What
+audit.empty_title: Nothing to show
+audit.empty_text: There are no entries for this selection.
+audit.action.created: Created
+audit.action.updated: Changed
+audit.action.deleted: Deleted
+audit.action.published: Published
+audit.action.unpublished: Taken offline
+audit.action.submitted: Submitted for review
+audit.action.returned: Returned to draft
+audit.action.login: Logged in
+audit.action.login_failed: Failed login
+audit.action.imported: Imported
+audit.action.exported: Exported
+audit.type.page: Page
+audit.type.post: Post
+audit.type.category: Category
+audit.type.media: Image
+audit.type.user: User
+audit.type.form: Form
+audit.type.shared_block: Shared block
+audit.type.page_template: Page template
+audit.type.redirect: Redirect
+audit.type.settings: Setting
+audit.type.menu: Menu
+audit.type.site: Website
+audit.type.wordpress: WordPress website
+audit.field.title: title
+audit.field.slug: address
+audit.field.status: status
+audit.field.blocks: content
+audit.field.locale: language
+audit.field.translationGroup: translations
+audit.field.seoTitle: title for search engines
+audit.field.metaDescription: description for search engines
+audit.field.shareImage: image for sharing
+audit.field.homepage: homepage
+audit.field.excerpt: summary
+audit.field.coverImage: cover image
+audit.field.category: category
+audit.field.author: author
+audit.field.publishedAt: publish date
+audit.field.reviewNote: note of the review
+audit.field.name: name
+audit.field.email: email address
+audit.field.password: password
+audit.field.role: role
+audit.field.active: access
+audit.field.totpSecret: two-step login
+audit.field.backupCodes: backup codes
+audit.field.alt: description
+audit.field.filename: file
+audit.field.variants: image sizes
+audit.field.fields: fields
+audit.field.submitLabel: button text
+audit.field.successMessage: confirmation text
+audit.field.notifyEmail: notification address
+audit.field.source: old address
+audit.field.target: new address
+audit.field.value: value

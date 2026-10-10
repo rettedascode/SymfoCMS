@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Activity log for administrators: who created, changed, published or deleted what and when, plus logins, filterable by person and content. Only the names of changed fields are stored, never values (see `docs/activity-log.md`).
 - Review workflow built on the Symfony Workflow component: authors submit posts for review, editors approve and publish them or send them back with a note. Off by default; switched on in the settings (see `docs/review-workflow.md`).
 - Two-step login with an authenticator app (TOTP) and one-time backup codes. Optional for every user, can be required for administrators in the settings, and administrators can reset it for people who lost their phone (see `docs/two-step-login.md`).
 - WordPress import: posts, pages, categories and images from a WordPress export file (WXR). Content is converted to blocks, old addresses get redirects, and a report lists what could not be converted. Also available as `app:wordpress:import`.
