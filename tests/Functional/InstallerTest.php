@@ -93,7 +93,7 @@ final class InstallerTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.flash--success', 'Willkommen');
         self::assertSelectorTextSame('.sidebar__brand', 'Bäckerei Sonne');
-        self::assertSelectorTextContains('.table', 'Willkommen');
+        self::assertSelectorTextContains('.page-tree', 'Willkommen');
 
         $admin = $this->em()->getRepository(User::class)->findOneBy(['email' => 'grace@example.com']);
         self::assertInstanceOf(User::class, $admin);

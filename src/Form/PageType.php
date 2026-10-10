@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Page;
+use App\Service\PageTree;
 use App\Service\SlugGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,8 +17,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 final class PageType extends AbstractType
 {
-    public function __construct(private readonly SlugGenerator $slugGenerator)
-    {
+    public function __construct(
+        private readonly SlugGenerator $slugGenerator,
+        private readonly PageTree $tree,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -51,6 +54,11 @@ final class PageType extends AbstractType
     {
         if ($this->slugGenerator->isReservedForPages($page->getSlug())) {
             $context->buildViolation('content.slug_reserved')->atPath('slug')->addViolation();
+        }
+
+        // The homepage answers at "/", so it can neither be a child page nor have child pages.
+        if ($page->isHomepage() && (null !== $page->getParent() || [] !== $this->tree->children($page, $page->getLocale()))) {
+            $context->buildViolation('page.tree.error.homepage')->atPath('homepage')->addViolation();
         }
     }
 }

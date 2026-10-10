@@ -1,0 +1,38 @@
+{#
+    One level of the page tree: every page with its child pages below it.
+    Each list is a drag list of the tree controller (see tree_controller.js); "parent" is the page the list belongs to.
+#}
+<ul class="{{ parent ? 'page-tree__children' : 'page-tree' }}" data-tree-target="list"
+    {% if parent %}data-tree-parent="{{ parent.id }}"{% endif %}
+    aria-label="{{ parent ? 'page.tree.inside'|trans({'%title%': parent.title}) : 'page.tree.label'|trans }}"
+    {% if parent %}data-dnd-empty-hint="{{ 'page.tree.drop_child'|trans }}"{% endif %}>
+    {% for node in nodes %}
+        {% set page = node.page %}
+        <li class="page-tree__item" data-dnd-item data-dnd-id="{{ page.id }}" data-dnd-label="{{ page.title }}"{% if page.homepage %} data-tree-top-only{% endif %}>
+            <div class="page-tree__row">
+                <button type="button" class="dnd-handle" data-dnd-handle aria-haspopup="menu"
+                        aria-label="{{ 'dnd.handle'|trans({'%item%': page.title}) }}" title="{{ 'dnd.handle_hint'|trans }}">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>
+                </button>
+                <button type="button" class="page-tree__toggle" data-action="tree#toggle" aria-expanded="true"
+                        aria-label="{{ 'page.tree.toggle'|trans({'%title%': page.title}) }}"{% if node.children is empty %} hidden{% endif %}><span aria-hidden="true">▾</span></button>
+                <a class="page-tree__title" href="{{ path('admin_page_edit', {id: page.id}) }}">{{ page.title }}</a>
+                {% if page.homepage %}<span class="badge badge--home">{{ 'page.homepage_badge'|trans }}</span>{% endif %}
+                <span class="badge badge--{{ page.status.value }}">{{ page.status.label|trans }}</span>
+                <span class="page-tree__path" data-page-path="{{ page.id }}">{{ content_path(page) }}</span>
+                <span class="page-tree__actions">
+                    <a class="button button--small" href="{{ path('admin_page_edit', {id: page.id}) }}">{{ 'action.edit'|trans }}</a>
+                    <a class="button button--small" href="{{ content_path(page) }}" data-page-link="{{ page.id }}" target="_blank" rel="noopener">{{ 'action.view'|trans }}</a>
+                    <form method="post" action="{{ path('admin_page_delete', {id: page.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'page.delete_confirm'|trans({'%title%': page.title}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                        <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                    </form>
+                </span>
+            </div>
+            {# Every page has a list for child pages, also an empty one: that is where others are dropped. The homepage has none. #}
+            {% if not page.homepage and depth < max_depth %}
+                {{ include('admin/page/_tree.html.twig', {nodes: node.children, parent: page, depth: depth + 1}) }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

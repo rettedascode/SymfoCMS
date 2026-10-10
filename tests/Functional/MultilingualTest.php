@@ -292,11 +292,11 @@ final class MultilingualTest extends AppWebTestCase
         $this->createCategory('Neues', 'de');
 
         $crawler = $this->client->request('GET', '/admin/pages');
-        self::assertSame(['About'], $crawler->filter('tbody th a')->each(static fn ($a) => $a->text()));
+        self::assertSame(['About'], $crawler->filter('.page-tree__title')->each(static fn ($a) => $a->text()));
         self::assertSame(['English', 'Deutsch'], $crawler->filter('.language-tabs a')->each(static fn ($a) => $a->text()));
 
         $crawler = $this->client->request('GET', '/admin/pages?locale=de');
-        self::assertSame(['Kontakt'], $crawler->filter('tbody th a')->each(static fn ($a) => $a->text()));
+        self::assertSame(['Kontakt'], $crawler->filter('.page-tree__title')->each(static fn ($a) => $a->text()));
 
         // New content is created in the language of the tab it was started from.
         $this->client->click($crawler->selectLink('+ New page')->link());

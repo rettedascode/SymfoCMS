@@ -937,3 +937,17 @@ form.js.list_options: 'Auswahlmöglichkeiten von „%field%“'
 form.js.option_number: 'Auswahl %number%'
 form.js.option_add: Auswahl hinzufügen
 form.js.option_delete: Diese Auswahl entfernen
+
+page.tree.label: Seiten
+page.tree.intro: Ziehen Sie eine Seite auf eine andere, um sie zur Unterseite zu machen. Unterseiten bekommen die Adresse der übergeordneten Seite vor ihre eigene.
+page.tree.inside: 'Unterseiten von „%title%“'
+page.tree.drop_child: Hier ablegen, um eine Unterseite zu erstellen
+page.tree.toggle: 'Unterseiten von „%title%“ ein- oder ausblenden'
+page.tree.confirm: '{1}Dadurch ändert sich die Adresse einer veröffentlichten Seite. Die alte Adresse führt dann zur neuen. Seite verschieben?|]1,Inf[Dadurch ändern sich die Adressen von %count% veröffentlichten Seiten. Die alten Adressen führen dann zu den neuen. Seite verschieben?'
+page.tree.confirm_title: Adressen ändern?
+page.tree.confirm_ok: Verschieben und weiterleiten
+page.tree.confirm_cancel: Am alten Platz lassen
+page.tree.moved: Die Seite wurde verschoben.
+page.tree.moved_redirects: '{1}Die Seite wurde verschoben. Die alte Adresse leitet zur neuen weiter.|]1,Inf[Die Seite wurde verschoben. %count% alte Adressen leiten zu den neuen weiter.'
+page.tree.error.homepage: Die Startseite bleibt auf der obersten Ebene und hat keine Unterseiten.
+page.tree.error.language: Eine Seite kann nur zu einer Seite derselben Sprache gehören.

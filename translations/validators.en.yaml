@@ -33,3 +33,5 @@ install.database.required: This is needed for a database server.
 
 media.edit_failed: This image cannot be edited.
 media.crop_too_small: The chosen part is too small.
+
+page.tree.error.homepage: The homepage stays on the top level and has no child pages. Move it or its child pages first.

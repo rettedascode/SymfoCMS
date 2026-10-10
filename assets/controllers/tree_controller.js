@@ -16,7 +16,7 @@ import { createDragList, saveOptimistically, sendMove } from '../lib/dnd.js';
  * Dropping an item into the list of another item makes it a child; with the
  * keyboard, Right moves an item into the one above it and Left moves it out.
  * An item can never be moved into itself or its own children, and not deeper
- * than the maximum depth.
+ * than the maximum depth. An item with data-tree-top-only stays on the top level.
  *
  * Branches can be collapsed with a button that carries
  * data-action="tree#toggle"; with a "storage" value the state is remembered
@@ -36,10 +36,16 @@ export default class extends Controller {
         storage: String,
     };
 
-    connect() {
+    // Stimulus announces the list targets before connect() runs, so the map has to exist earlier.
+    initialize() {
         this.lists = new Map();
+    }
+
+    connect() {
         this.element.setAttribute('data-dnd-scope', '');
         this.restoreCollapsed();
+        // The buttons were set up before the remembered state was known.
+        this.markParents();
 
         this.onMove = (event) => {
             this.markParents();
@@ -57,6 +63,12 @@ export default class extends Controller {
     }
 
     listTargetConnected(element) {
+        // An item that is dragged takes its own child list along: the list leaves the document and
+        // comes back at once. It must keep its drag list, or the drag in progress would be cut off.
+        if (this.lists.has(element)) {
+            return;
+        }
+
         this.lists.set(element, createDragList(element, {
             group: this.groupValue,
             accept: (item, list) => this.fits(item, list),
@@ -65,12 +77,21 @@ export default class extends Controller {
     }
 
     listTargetDisconnected(element) {
-        this.lists.get(element)?.destroy();
-        this.lists.delete(element);
+        // Only a list that is really gone is given up; see listTargetConnected().
+        setTimeout(() => {
+            if (!element.isConnected) {
+                this.lists.get(element)?.destroy();
+                this.lists.delete(element);
+            }
+        });
     }
 
     /** Would the item, together with everything below it, still be within the allowed depth in that list? */
     fits(item, list) {
+        // Items marked with data-tree-top-only never become a child of another item.
+        if (item.hasAttribute('data-tree-top-only') && list.closest('[data-dnd-item]')) {
+            return false;
+        }
         if (this.maxDepthValue < 1) {
             return true;
         }

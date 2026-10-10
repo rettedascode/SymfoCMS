@@ -33,3 +33,5 @@ install.database.required: Diese Angabe wird für einen Datenbankserver benötig
 
 media.edit_failed: Dieses Bild kann nicht bearbeitet werden.
 media.crop_too_small: Der gewählte Ausschnitt ist zu klein.
+
+page.tree.error.homepage: Die Startseite bleibt auf der obersten Ebene und hat keine Unterseiten. Verschieben Sie zuerst sie oder ihre Unterseiten.

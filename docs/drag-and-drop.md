@@ -48,7 +48,7 @@ All of this is one layer, `assets/lib/dnd.js`, wrapped by four Stimulus controll
 | Controller | Use |
 | --- | --- |
 | `sortable` | One list. `accept` is a selector that items must match to be dropped there. |
-| `tree` | Nested lists (`data-tree-target="list"`), with a maximum depth and collapsible branches whose state is remembered. An item never moves into itself or its children. |
+| `tree` | Nested lists (`data-tree-target="list"`), with a maximum depth and collapsible branches whose state is remembered. An item never moves into itself or its children; one marked with `data-tree-top-only` stays on the top level. Used by the menu editor and the [page tree](page-tree.md). |
 | `palette` | A fixed set of things to drag into a list to create something there. Dragging copies; clicking dispatches `palette:add`. |
 | `dropzone` | Files from the desktop: checks type and size, uploads with progress, dispatches `dropzone:uploaded`. |
 

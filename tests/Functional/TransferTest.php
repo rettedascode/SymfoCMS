@@ -82,7 +82,7 @@ final class TransferTest extends AppWebTestCase
         $crawler = $this->import($archive, 'replace');
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Import finished');
-        self::assertSame('3', $crawler->filter('[data-count="pages"] strong')->text());
+        self::assertSame('4', $crawler->filter('[data-count="pages"] strong')->text());
         self::assertSame('1', $crawler->filter('[data-count="posts"] strong')->text());
         self::assertSame('1', $crawler->filter('[data-count="media"] strong')->text());
         self::assertSelectorNotExists('.report-issues');
@@ -118,6 +118,11 @@ final class TransferTest extends AppWebTestCase
         $german = $this->em()->getRepository(Page::class)->findOneBy(['locale' => 'de']);
         self::assertInstanceOf(Page::class, $german);
         self::assertSame($home->getTranslationGroup(), $german->getTranslationGroup(), 'Translations stay linked.');
+
+        $prices = $this->em()->getRepository(Page::class)->findOneBy(['slug' => 'prices']);
+        self::assertInstanceOf(Page::class, $prices);
+        self::assertSame('shop/prices', $prices->getPath(), 'Child pages find their parent again.');
+        self::assertSame(2, $prices->getPosition());
 
         $post = $this->em()->getRepository(Post::class)->findOneBy(['slug' => 'first-post']);
         self::assertInstanceOf(Post::class, $post);
@@ -163,7 +168,7 @@ final class TransferTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
 
         $pages = $this->em()->getRepository(Page::class)->findBy(['locale' => 'en'], ['id' => 'ASC']);
-        self::assertSame(['home', 'home-2', 'shop'], array_map(static fn (Page $page): string => $page->getSlug(), $pages));
+        self::assertSame(['home', 'home-2', 'shop', 'prices'], array_map(static fn (Page $page): string => $page->getSlug(), $pages));
         self::assertTrue($this->entity(Page::class, $existingHome->getId())->isHomepage(), 'The homepage that was there stays the homepage.');
         self::assertFalse($pages[1]->isHomepage());
         self::assertSame(1, $this->em()->getRepository(Category::class)->count(['locale' => 'en']), 'An existing category is reused.');
@@ -273,13 +278,13 @@ final class TransferTest extends AppWebTestCase
         $export = new CommandTester($application->find('app:site:export'));
         $export->execute(['file' => $this->dir.'/cli.zip']);
         $export->assertCommandIsSuccessful();
-        self::assertStringContainsString('3 pages, 1 posts', (string) preg_replace('/\s+/', ' ', $export->getDisplay()));
+        self::assertStringContainsString('4 pages, 1 posts', (string) preg_replace('/\s+/', ' ', $export->getDisplay()));
 
         $import = new CommandTester($application->find('app:site:import'));
         $import->execute(['file' => $this->dir.'/cli.zip', '--replace' => true], ['interactive' => false]);
         $import->assertCommandIsSuccessful();
-        self::assertStringContainsString('3 pages', $import->getDisplay());
-        self::assertSame(3, $this->em()->getRepository(Page::class)->count([]));
+        self::assertStringContainsString('4 pages', $import->getDisplay());
+        self::assertSame(4, $this->em()->getRepository(Page::class)->count([]));
         self::assertSame(1, $this->em()->getRepository(Media::class)->count([]));
 
         $import->execute(['file' => $this->dir.'/missing.zip']);
@@ -311,7 +316,8 @@ final class TransferTest extends AppWebTestCase
             ['type' => 'form', 'data' => ['form' => $form->getId()]],
         ]);
         $this->createPage('Startseite', ContentStatus::Published, homepage: true, locale: 'de', translationOf: $home);
-        $this->createPage('Shop', ContentStatus::Draft);
+        $shop = $this->createPage('Shop', ContentStatus::Draft);
+        $this->createPage('Prices', ContentStatus::Draft)->setParent($shop)->setPosition(2);
 
         $admin = $this->entity(User::class, $admin->getId());
         $post = $this->createPost('First post', $admin, $this->createCategory('News'), publishedAt: new \DateTimeImmutable('2026-03-01 10:00'));

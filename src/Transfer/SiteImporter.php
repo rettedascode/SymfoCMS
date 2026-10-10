@@ -26,6 +26,7 @@ use App\Service\ContentLocales;
 use App\Service\FormDefinition;
 use App\Service\LinkSanitizer;
 use App\Service\MediaManager;
+use App\Service\PageTree;
 use App\Service\RedirectManager;
 use App\Service\SearchIndexer;
 use App\Service\Settings;
@@ -330,11 +331,32 @@ final class SiteImporter
             $isFirstInImport = [] === array_filter($this->pages, static fn (Page $other): bool => $other->isHomepage() && $other->getLocale() === $page->getLocale());
             $page->setHomepage(true === ($row['homepage'] ?? false) && !$hasHomepage && $isFirstInImport);
 
+            $page->setPosition(max(0, (int) ($row['position'] ?? 0)));
+
             $this->entityManager->persist($page);
             $this->entityManager->flush();
             $this->pages[(int) ($row['id'] ?? 0)] = $page;
             $report->count('pages');
         }
+
+        // Second pass, now that every page exists: put child pages below their parents again.
+        foreach ($rows as $row) {
+            $page = $this->pages[(int) ($row['id'] ?? 0)] ?? null;
+            $parent = $this->pages[(int) ($row['parent'] ?? 0)] ?? null;
+            if (null === $page || null === $parent || $page === $parent || $page->isHomepage() || $parent->isHomepage()
+                || $parent->getLocale() !== $page->getLocale() || $parent->getDepth() >= PageTree::MAX_DEPTH) {
+                continue;
+            }
+
+            // Never a loop, whatever the file says.
+            for ($ancestor = $parent; null !== $ancestor; $ancestor = $ancestor->getParent()) {
+                if ($ancestor === $page) {
+                    continue 2;
+                }
+            }
+            $page->setParent($parent);
+        }
+        $this->entityManager->flush();
     }
 
     /**

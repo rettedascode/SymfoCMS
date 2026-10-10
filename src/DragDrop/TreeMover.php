@@ -18,7 +18,8 @@ final class TreeMover
      * @param T           $node
      * @param T|null      $newParent   null for the top level
      * @param int         $position    wanted place among the new siblings, 0 is first; too large means "last"
-     * @param iterable<T> $siblings    the nodes that are children of $newParent now (with or without $node)
+     * @param iterable<T> $siblings    the nodes that are children of $newParent now (with or without $node), in the order
+     *                                 they are shown in: nodes with the same position keep that order
      * @param iterable<T> $oldSiblings the nodes that share the current parent of $node, when that parent changes
      * @param int         $maxDepth    deepest allowed level, 1 being the top level; 0 for no limit
      * @param int         $height      levels of the subtree that moves along: 1 for a node without children
@@ -50,7 +51,8 @@ final class TreeMover
                 $ordered[] = $sibling;
             }
         }
-        usort($ordered, static fn (TreeNode $a, TreeNode $b): int => [$a->getPosition(), $a->getId()] <=> [$b->getPosition(), $b->getId()]);
+        // Sorting is stable, so siblings that were never arranged (all at position 0) stay as the screen shows them.
+        usort($ordered, static fn (TreeNode $a, TreeNode $b): int => $a->getPosition() <=> $b->getPosition());
         array_splice($ordered, max(0, min($position, \count($ordered))), 0, [$node]);
 
         $node->setParent($newParent);
@@ -66,7 +68,7 @@ final class TreeMover
                     $remaining[] = $sibling;
                 }
             }
-            usort($remaining, static fn (TreeNode $a, TreeNode $b): int => [$a->getPosition(), $a->getId()] <=> [$b->getPosition(), $b->getId()]);
+            usort($remaining, static fn (TreeNode $a, TreeNode $b): int => $a->getPosition() <=> $b->getPosition());
             foreach ($remaining as $index => $sibling) {
                 $sibling->setPosition($index);
             }

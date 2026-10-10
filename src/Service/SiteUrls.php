@@ -67,6 +67,7 @@ final class SiteUrls
             return $this->generate('app_home', [], $content->getLocale(), $absolute);
         }
 
-        return $this->generate('app_page', ['slug' => $content->getSlug()], $content->getLocale(), $absolute);
+        // Child pages carry the slugs of their parents in front of their own: "/about/team".
+        return $this->generate('app_page', ['slug' => $content instanceof Page ? $content->getPath() : $content->getSlug()], $content->getLocale(), $absolute);
     }
 }

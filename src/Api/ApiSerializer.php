@@ -35,7 +35,7 @@ final class ApiSerializer
      */
     public function page(Page $page, bool $withContent = false): array
     {
-        return ['id' => $page->getId(), 'type' => 'page', 'homepage' => $page->isHomepage()] + $this->content($page, $withContent);
+        return ['id' => $page->getId(), 'type' => 'page', 'homepage' => $page->isHomepage(), 'parent' => $page->getParent()?->getId(), 'path' => $page->getPath()] + $this->content($page, $withContent);
     }
 
     /**

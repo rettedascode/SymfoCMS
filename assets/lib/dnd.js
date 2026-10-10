@@ -135,6 +135,7 @@ export function focusHandle(item) {
  * @param {boolean} [options.sort]   false for a palette: its own order is fixed
  * @param {boolean} [options.clone]  true for a palette: dragging copies instead of moving
  * @param {boolean} [options.put]    false when nothing may be dropped here
+ * @param {number}  [options.emptyReach] how close (in pixels) the pointer has to come to the list while it is empty
  *
  * @returns {{destroy: function(): void}}
  */
@@ -147,7 +148,7 @@ export function createDragList(element, options = {}) {
 }
 
 class DragList {
-    constructor(element, { group = 'default', accept = null, sort = true, clone = false, put = true } = {}) {
+    constructor(element, { group = 'default', accept = null, sort = true, clone = false, put = true, emptyReach = 5 } = {}) {
         this.el = element;
         this.group = group;
         this.accept = accept;
@@ -176,9 +177,9 @@ class DragList {
             bubbleScroll: true,
             scrollSensitivity: 90,
             scrollSpeed: 18,
-            // An empty list takes an item in as soon as the pointer comes this close (in pixels),
-            // so thin drop areas such as the gaps between the rows of a form are easy to hit.
-            emptyInsertThreshold: 12,
+            // An empty list takes an item in as soon as the pointer comes this close (in pixels).
+            // Thin drop areas, such as the gaps between the rows of a form, ask for more than the default.
+            emptyInsertThreshold: emptyReach,
             onStart: (event) => {
                 closeMenu();
                 startWatchingPointer(event.item, this.group);

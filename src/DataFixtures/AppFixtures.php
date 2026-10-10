@@ -141,6 +141,18 @@ final class AppFixtures extends Fixture
             ]);
         $manager->persist($about);
 
+        // A child page: it lives below "About" in the page tree and at /about/team on the website.
+        $team = (new Page())
+            ->setTitle('Our team')
+            ->setSlug('team')
+            ->setStatus(ContentStatus::Published)
+            ->setParent($about)
+            ->setMetaDescription('The people behind this demo website.')
+            ->setBlocks([
+                ['type' => 'text', 'data' => ['content' => '<p>This is a <strong>child page</strong> of "About". In the admin area, open <strong>Pages</strong> and drag a page onto another one to nest it – its address follows.</p>']],
+            ]);
+        $manager->persist($team);
+
         $news = (new Category())->setName('News')->setSlug('news');
         $guides = (new Category())->setName('Guides')->setSlug('guides');
         $manager->persist($news);

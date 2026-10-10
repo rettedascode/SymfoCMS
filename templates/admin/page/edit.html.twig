@@ -7,7 +7,8 @@
 {% set edit_route = 'admin_page_edit' %}
 {% set translate_route = 'admin_page_translate' %}
 {% set revision_route = 'admin_page_revision' %}
-{% set seo_base_url = site_url('app_page', {slug: 'slug-placeholder'}, page.locale)|replace({'slug-placeholder': ''}) %}
+{# A child page shows the address of its parents in front of its own slug. #}
+{% set seo_base_url = site_url('app_page', {slug: (page.parent ? page.parent.path ~ '/' : '') ~ 'slug-placeholder'}, page.locale)|replace({'slug-placeholder': ''}) %}
 
 {% block settings_extra %}
     {{ form_row(form.homepage) }}

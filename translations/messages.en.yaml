@@ -938,3 +938,17 @@ form.js.list_options: 'Choices of “%field%”'
 form.js.option_number: 'Choice %number%'
 form.js.option_add: Add a choice
 form.js.option_delete: Remove this choice
+
+page.tree.label: Pages
+page.tree.intro: Drag a page onto another one to make it a child page. Child pages get the address of their parent in front of their own.
+page.tree.inside: 'Child pages of “%title%”'
+page.tree.drop_child: Drop here to make a child page
+page.tree.toggle: 'Show or hide the child pages of “%title%”'
+page.tree.confirm: '{1}This changes the address of a published page. The old address will lead to the new one. Move the page?|]1,Inf[This changes the addresses of %count% published pages. The old addresses will lead to the new ones. Move the page?'
+page.tree.confirm_title: Change addresses?
+page.tree.confirm_ok: Move and redirect
+page.tree.confirm_cancel: Leave it where it was
+page.tree.moved: The page was moved.
+page.tree.moved_redirects: '{1}The page was moved. The old address redirects to the new one.|]1,Inf[The page was moved. %count% old addresses redirect to the new ones.'
+page.tree.error.homepage: The homepage stays on the top level and has no child pages.
+page.tree.error.language: A page can only belong to a page of the same language.

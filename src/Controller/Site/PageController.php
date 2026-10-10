@@ -14,6 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PageController extends AbstractController
 {
+    /** One or more slugs separated by slashes. */
+    private const PATH = '[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*)*';
+
     public function __construct(
         private readonly PageRepository $pages,
         private readonly ContentManager $contentManager,
@@ -44,12 +47,23 @@ final class PageController extends AbstractController
 
     /**
      * Catch-all for pages. The negative priority lets every other route win.
+     *
+     * The route with the language prefix is tried first: since paths may contain slashes, "/de/kontakt"
+     * would otherwise be read as the child page "kontakt" of a page "de". A prefix that is no language
+     * of the website is handed back to the path by the LocaleSubscriber.
      */
-    #[Route('/{slug<[a-z0-9]+(?:-[a-z0-9]+)*>}', name: 'app_page', methods: ['GET'], priority: -100)]
-    #[Route('/{_locale}/{slug<[a-z0-9]+(?:-[a-z0-9]+)*>}', name: 'app_page.localized', requirements: ['_locale' => ContentLocales::PATTERN], methods: ['GET'], priority: -100)]
+    #[Route('/{slug}', name: 'app_page', requirements: ['slug' => self::PATH], methods: ['GET'], priority: -100)]
+    #[Route('/{_locale}/{slug}', name: 'app_page.localized', requirements: ['_locale' => ContentLocales::PATTERN, 'slug' => self::PATH], methods: ['GET'], priority: -99)]
     public function show(string $slug): Response
     {
-        $page = $this->pages->findOneBy(['slug' => $slug, 'locale' => $this->siteUrls->currentLocale()]);
+        // "$slug" is the whole path: for a child page the slugs of its parents come first ("about/team").
+        $segments = explode('/', $slug);
+        $page = $this->pages->findOneBy(['slug' => end($segments), 'locale' => $this->siteUrls->currentLocale()]);
+
+        // A page only answers at its full address, not at a shorter or an older one.
+        if (null !== $page && $page->getPath() !== $slug) {
+            $page = null;
+        }
 
         // Drafts answer with 404 (not 403) so their existence is not revealed.
         if (null === $page || !$this->isGranted(PageVoter::VIEW, $page)) {

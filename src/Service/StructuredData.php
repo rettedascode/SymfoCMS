@@ -6,6 +6,7 @@ use App\Block\BlockRegistry;
 use App\Block\Field;
 use App\Entity\Content;
 use App\Entity\Media;
+use App\Entity\Page;
 use App\Entity\Post;
 use App\Twig\CmsExtension;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -65,6 +66,16 @@ final class StructuredData
             $trail = [[$this->site->name(), $home]];
             if ($content instanceof Post) {
                 $trail[] = [$this->translator->trans('site.blog', [], null, $content->getLocale()), $this->siteUrls->generate('app_blog', [], $content->getLocale(), absolute: true)];
+            }
+            // Parent pages are part of the way to a child page.
+            if ($content instanceof Page) {
+                $ancestors = [];
+                for ($parent = $content->getParent(); null !== $parent && \count($ancestors) < 20; $parent = $parent->getParent()) {
+                    if ($parent->isPublic()) {
+                        array_unshift($ancestors, [$parent->getTitle(), $this->siteUrls->content($parent, absolute: true)]);
+                    }
+                }
+                array_push($trail, ...$ancestors);
             }
             $trail[] = [$content->getTitle(), $url];
 

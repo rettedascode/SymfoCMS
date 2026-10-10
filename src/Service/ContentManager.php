@@ -78,9 +78,19 @@ final class ContentManager
 
         // Links and bookmarks to the old address keep working when the address of public content changes.
         if (null !== $previousPath && $content->isPublic()) {
-            $this->redirects->addAutomatic($previousPath, $this->siteUrls->content($content));
-        }
+            $newPath = $this->siteUrls->content($content);
+            $this->redirects->addAutomatic($previousPath, $newPath);
 
+            // The addresses of child pages start with the address of this page, so they have changed as well.
+            if ($content instanceof Page && $previousPath !== $newPath) {
+                foreach ($this->entityManager->getRepository(Page::class)->findBy(['locale' => $content->getLocale()]) as $other) {
+                    $childPath = $this->siteUrls->content($other);
+                    if ($other !== $content && $other->isPublic() && str_starts_with($childPath, $newPath.'/')) {
+                        $this->redirects->addAutomatic($previousPath.substr($childPath, \strlen($newPath)), $childPath);
+                    }
+                }
+            }
+        }
         $this->eventDispatcher->dispatch(new ContentSavedEvent($content, $isNew));
 
         if (!$wasPublished && ContentStatus::Published === $content->getStatus()) {

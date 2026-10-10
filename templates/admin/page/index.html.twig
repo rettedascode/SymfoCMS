@@ -13,44 +13,32 @@
 
     {{ include('admin/_locale_tabs.html.twig', {route: 'admin_page_index', current: locale}) }}
 
-    {% if pages is empty %}
+    {% if tree is empty %}
         <div class="empty">
             <h2>{{ 'page.empty_title'|trans }}</h2>
             <p>{{ 'page.empty_text'|trans }}</p>
             <a class="button button--primary" href="{{ path('admin_page_new', {locale: locale}) }}">+ {{ 'page.new'|trans }}</a>
         </div>
     {% else %}
-        <div class="table-wrap">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">{{ 'label.title'|trans }}</th>
-                    <th scope="col">{{ 'label.status'|trans }}</th>
-                    <th scope="col">{{ 'label.updated'|trans }}</th>
-                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for page in pages %}
-                    <tr>
-                        <th scope="row">
-                            <a href="{{ path('admin_page_edit', {id: page.id}) }}">{{ page.title }}</a>
-                            {% if page.homepage %}<span class="badge badge--home">{{ 'page.homepage_badge'|trans }}</span>{% endif %}
-                        </th>
-                        <td><span class="badge badge--{{ page.status.value }}">{{ page.status.label|trans }}</span></td>
-                        <td>{{ page.updatedAt|local_date(true) }}</td>
-                        <td class="table__actions">
-                            <a class="button button--small" href="{{ path('admin_page_edit', {id: page.id}) }}">{{ 'action.edit'|trans }}</a>
-                            <a class="button button--small" href="{{ content_path(page) }}" target="_blank" rel="noopener">{{ 'action.view'|trans }}</a>
-                            <form method="post" action="{{ path('admin_page_delete', {id: page.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'page.delete_confirm'|trans({'%title%': page.title}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
-                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <p class="muted">{{ 'page.tree.intro'|trans }}</p>
+        {#
+            The pages as a tree. "tree" makes it draggable and collapsible (the collapsed branches are
+            remembered per user), "page-tree" stores every move and asks before addresses change.
+        #}
+        <div data-controller="tree page-tree"
+             data-tree-group-value="pages"
+             data-tree-max-depth-value="{{ max_depth }}"
+             data-tree-storage-value="pages-{{ app.user.id }}-{{ locale }}"
+             data-page-tree-url-value="{{ path('admin_page_move') }}"
+             data-page-tree-csrf-value="{{ csrf_token('admin') }}"
+             data-page-tree-i18n-value="{{ {
+                 confirm_title: 'page.tree.confirm_title'|trans,
+                 confirm_ok: 'page.tree.confirm_ok'|trans,
+                 confirm_cancel: 'page.tree.confirm_cancel'|trans,
+                 moved: 'page.tree.moved'|trans,
+                 moved_redirects: 'page.tree.moved_redirects'|trans,
+             }|json_encode }}">
+            {{ include('admin/page/_tree.html.twig', {nodes: tree, parent: null, depth: 1}) }}
         </div>
     {% endif %}
 {% endblock %}

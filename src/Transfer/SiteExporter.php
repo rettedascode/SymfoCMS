@@ -133,7 +133,7 @@ final class SiteExporter
                 'name' => $template->getName(),
                 'blocks' => $template->getBlocks(),
             ], $this->entityManager->getRepository(PageTemplate::class)->findBy([], ['id' => 'ASC'])),
-            'pages' => array_map(fn (Page $page): array => $this->content($page) + ['homepage' => $page->isHomepage()], $this->entityManager->getRepository(Page::class)->findBy([], ['id' => 'ASC'])),
+            'pages' => array_map(fn (Page $page): array => $this->content($page) + ['homepage' => $page->isHomepage(), 'parent' => $page->getParent()?->getId(), 'position' => $page->getPosition()], $this->entityManager->getRepository(Page::class)->findBy([], ['id' => 'ASC'])),
             'posts' => array_map(fn (Post $post): array => $this->content($post) + [
                 'excerpt' => $post->getExcerpt(),
                 'published_at' => $post->getPublishedAt()?->format(\DATE_ATOM),

@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\DragDrop\InvalidMoveException;
+use App\DragDrop\MoveRequest;
 use App\Entity\Page;
 use App\Form\NewContentType;
 use App\Form\PageType;
@@ -12,7 +14,9 @@ use App\Service\ContentLocales;
 use App\Service\ContentManager;
 use App\Service\ContentTranslator;
 use App\Service\PageTemplates;
+use App\Service\PageTree;
 use App\Service\RevisionManager;
+use App\Service\SiteUrls;
 use App\Service\SlugGenerator;
 use App\Workflow\ReviewWorkflow;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/pages', name: 'admin_page_')]
 #[IsGranted(PageVoter::MANAGE)]
@@ -33,6 +38,8 @@ final class PageController extends AdminController
         private readonly ContentTranslator $translator,
         private readonly RevisionManager $revisions,
         private readonly ReviewWorkflow $review,
+        private readonly PageTree $tree,
+        private readonly SiteUrls $siteUrls,
     ) {
     }
 
@@ -42,9 +49,56 @@ final class PageController extends AdminController
         $locale = $this->locales->fromRequest($request);
 
         return $this->render('admin/page/index.html.twig', [
-            'pages' => $this->pages->findBy(['locale' => $locale], ['homepage' => 'DESC', 'title' => 'ASC']),
+            'tree' => $this->tree->tree($locale),
             'locale' => $locale,
+            'max_depth' => PageTree::MAX_DEPTH,
         ]);
+    }
+
+    /**
+     * A page was dragged to another place in the tree: below another page, to the top level, or among its siblings.
+     *
+     * When that changes the address of published pages, nothing happens until the person has confirmed it;
+     * the answer 409 lists the addresses. With "confirmed": true the move is made and the old addresses redirect.
+     */
+    #[Route('/move', name: 'move', methods: ['POST'])]
+    public function move(Request $request, TranslatorInterface $translator): JsonResponse
+    {
+        $this->requireCsrfToken($request);
+        $move = MoveRequest::fromRequest($request);
+
+        $page = $this->pages->find($move->id) ?? throw $this->createNotFoundException();
+        $parent = null !== $move->parent ? $this->pages->find($move->parent) : null;
+        if (null !== $move->parent && null === $parent) {
+            return $this->json(['error' => $translator->trans(InvalidMoveException::WRONG_PARENT)], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $changes = $this->tree->addressChanges($page, $parent);
+        $confirmed = true === (json_decode($request->getContent(), true)['confirmed'] ?? false);
+
+        try {
+            if ([] !== $changes && !$confirmed) {
+                // Dry run: would the move be allowed at all? Only then is it worth asking.
+                $this->tree->assertAllowed($page, $parent);
+
+                return $this->json([
+                    'confirm' => $translator->trans('page.tree.confirm', ['%count%' => \count($changes)]),
+                    'changes' => $changes,
+                ], Response::HTTP_CONFLICT);
+            }
+
+            $changes = $this->tree->move($page, $parent, $move->position);
+        } catch (InvalidMoveException $exception) {
+            return $this->json(['error' => $translator->trans($exception->getMessage())], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // The addresses shown in the tree, for the page and everything below it.
+        $paths = [];
+        foreach ([$page, ...$this->tree->descendants($page)] as $affected) {
+            $paths[(int) $affected->getId()] = $this->siteUrls->content($affected);
+        }
+
+        return $this->json(['paths' => $paths, 'redirects' => \count($changes)]);
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
@@ -192,6 +246,8 @@ final class PageController extends AdminController
         $this->requireCsrfToken($request);
         $locale = $page->getLocale();
 
+        // Child pages are not deleted along: they move up one level.
+        $this->tree->releaseChildren($page);
         $this->contentManager->delete($page);
         $this->addFlash('success', 'flash.page_deleted');
 

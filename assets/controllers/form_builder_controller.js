@@ -227,7 +227,8 @@ export default class extends Controller {
             'data-dnd-empty-hint': this.i18n.drop_new_row,
         });
         gap.before = before;
-        this.lists.push(createDragList(gap, { group: 'form-fields' }));
+        // The gap is only a thin line: it takes a field in when the pointer comes near.
+        this.lists.push(createDragList(gap, { group: 'form-fields', emptyReach: 12 }));
 
         return gap;
     }

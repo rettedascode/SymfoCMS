@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Page tree: the list of pages is a tree in which a page dragged below another one becomes its child page, with a nested address such as `/about/team`. Siblings are reordered by dragging, collapsed branches are remembered per user, and before the address of a published page changes the admin area asks and then redirects the old addresses of the page and all its child pages (see `docs/page-tree.md`).
+- The read API reports `parent` and `path` for pages; export and import keep the page tree.
 - Form builder with a palette of field types to drag into the form. Fields dragged next to each other share a row (up to three, stacked on small screens), and the choices of a selection field are arranged by dragging.
 - Block palette in the page editor: every block type can be dragged to any position of the page or a column; clicking one still adds it at the end.
 - Image files dropped from the desktop into the editor are uploaded and become an image block at that position, several at once a gallery. Progress is shown in place, and files that are too large or of the wrong type are refused with a clear message.

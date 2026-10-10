@@ -17,7 +17,7 @@ Everything lives below `/api/v1`.
 | --- | --- |
 | `/api/v1` | Languages of the website and links to all lists |
 | `/api/v1/pages` | Published pages, ordered by title |
-| `/api/v1/pages/{id}` | One page with its content |
+| `/api/v1/pages/{id}` | One page with its content. Pages carry `parent` (id of the parent page or `null`) and `path` (all address parts, e.g. `about/team`). |
 | `/api/v1/posts` | Published posts, newest first |
 | `/api/v1/posts/{id}` | One post with its content |
 | `/api/v1/categories` | Blog categories |

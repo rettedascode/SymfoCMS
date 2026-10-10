@@ -75,6 +75,11 @@ final class OpenApi
             'blocks' => ['type' => 'array', 'description' => 'The content as structured data, in the order it is shown.', 'items' => $ref('Block')],
             'html' => ['type' => 'string', 'description' => 'The same content rendered as HTML. Addresses of images and links inside it start at the root of the website.'],
         ];
+        $pageFields = [
+            'homepage' => ['type' => 'boolean'],
+            'parent' => $nullable(['type' => 'integer', 'description' => 'Id of the parent page; null for pages on the top level.']),
+            'path' => ['type' => 'string', 'description' => 'The slugs of the parent pages and of the page itself, e.g. "about/team".'],
+        ];
         $post = [
             'excerpt' => $nullable($string),
             'published_at' => $nullable($dateTime),
@@ -116,8 +121,8 @@ final class OpenApi
                 '/media/{id}' => $item('One image', 'Media'),
             ],
             'components' => ['schemas' => [
-                'Page' => ['type' => 'object', 'properties' => $content + ['homepage' => ['type' => 'boolean']]],
-                'PageDetail' => ['type' => 'object', 'properties' => $content + ['homepage' => ['type' => 'boolean']] + $body],
+                'Page' => ['type' => 'object', 'properties' => $content + $pageFields],
+                'PageDetail' => ['type' => 'object', 'properties' => $content + $pageFields + $body],
                 'Post' => ['type' => 'object', 'properties' => $content + $post],
                 'PostDetail' => ['type' => 'object', 'properties' => $content + $post + $body],
                 'Block' => [

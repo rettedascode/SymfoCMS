@@ -47,6 +47,9 @@ final class MigrationTest extends AppWebTestCase
         self::assertCount(2, array_unique($groups));
         self::assertSame([32, 32], array_map(\strlen(...), $groups));
 
+        // Pages that existed before there was a page tree are all on the top level.
+        self::assertSame(2, (int) $connection->fetchOne('SELECT COUNT(*) FROM pages WHERE parent_id IS NULL AND position = 0'));
+
         // Tables added by later migrations exist and start empty.
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM revisions'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM shared_blocks'));

@@ -86,6 +86,9 @@ final class LocaleSubscriber implements EventSubscriberInterface
                 $event->setResponse(new RedirectResponse($request->getBaseUrl().$target.(null !== $query ? '?'.$query : ''), Response::HTTP_MOVED_PERMANENTLY));
 
                 return;
+            } elseif ('app_page'.SiteUrls::LOCALIZED_SUFFIX === $route) {
+                // "/uk/offices" where "uk" is no language of the website: the child page "offices" of the page "uk".
+                $request->attributes->set('slug', $prefix.'/'.$request->attributes->get('slug'));
             } elseif (!$isLocalizedHome) {
                 throw new NotFoundHttpException(\sprintf('"%s" is not a language of this website.', $prefix));
             }

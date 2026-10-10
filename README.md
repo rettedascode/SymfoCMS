@@ -38,6 +38,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 **Content**
 
 - Pages with editable web address, draft/published status, SEO title and meta description; one page is the homepage
+- [Page tree](docs/page-tree.md): drag a page below another one to make it a child page with a nested address (`/about/team`); old addresses of published pages are redirected
 - Blog posts with excerpt, cover image, category, author and publish date (a date in the future schedules the post)
 - Blog overview with pagination, category pages and an RSS feed
 - Drafts and scheduled posts can be previewed by logged-in users only
@@ -298,7 +299,7 @@ translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 tests/Browser/      Tests that drive a real browser with Symfony Panther
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, drag and drop, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
+docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, drag and drop, the page tree, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

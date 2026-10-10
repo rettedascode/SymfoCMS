@@ -8,6 +8,8 @@ When you change the web address of a **published** page or post, SymfoCMS create
 
 Nothing is created for drafts: their address was never public.
 
+The same happens when a page gets another address because it was moved in the [page tree](page-tree.md) or because the address of its parent page changed: the page and all its child pages are redirected.
+
 Redirects never form chains. If a page moves from `/a` to `/b` and later to `/c`, both `/a` and `/b` lead straight to `/c`. If it moves back to `/a`, that address simply works again.
 
 ## Managing redirects by hand
