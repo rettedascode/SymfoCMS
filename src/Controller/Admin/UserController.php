@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Security\TwoFactor\TwoFactorManager;
 use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,6 +57,21 @@ final class UserController extends AdminController
         $user->setActive(!$user->isActive());
         $this->entityManager->flush();
         $this->addFlash('success', $user->isActive() ? 'flash.user_activated' : 'flash.user_deactivated');
+
+        return $this->redirectToRoute('admin_user_index');
+    }
+
+    /**
+     * For people who lost their phone and their backup codes: switches two-step login off so they can log in and set it up again.
+     */
+    #[Route('/{id<\d+>}/reset-two-factor', name: 'reset_two_factor', methods: ['POST'])]
+    public function resetTwoFactor(Request $request, User $user, TwoFactorManager $twoFactor): Response
+    {
+        $this->requireCsrfToken($request);
+        $this->denyAccessUnlessGranted(UserVoter::CHANGE_ACCESS, $user);
+
+        $twoFactor->disable($user);
+        $this->addFlash('success', 'flash.two_factor_reset');
 
         return $this->redirectToRoute('admin_user_index');
     }

@@ -12,6 +12,7 @@
         "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-iconv": "*",
+        "bacon/bacon-qr-code": "^3.1",
         "doctrine/doctrine-bundle": "^2.19.1",
         "doctrine/doctrine-migrations-bundle": "^3.7.1",
         "doctrine/orm": "^3.7.4",

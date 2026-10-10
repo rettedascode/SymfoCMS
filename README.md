@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Two-step login](docs/two-step-login.md) with an authenticator app (TOTP) and backup codes, optional for every user and enforceable for administrators
 - [Setup wizard](docs/installation.md) in the browser: requirements check, database connection, name of the website and administrator account
 - [Export and import](docs/import-export.md): the whole website as one ZIP file with content, menus, settings and images, importable into another installation
 - [WordPress import](docs/import-export.md#moving-from-wordpress): posts, pages, categories and images from a WordPress export file, converted to blocks, with a report of what could not be converted
@@ -289,7 +290,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
+docs/               Guides: installation, two-step login, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

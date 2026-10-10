@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\UserRole;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -46,6 +47,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
+
+    /** Secret shared with the user's authenticator app; null while two-step login is off. */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $totpSecret = null;
+
+    /** Time step of the last accepted code, so that a code cannot be used twice. */
+    #[ORM\Column(nullable: true)]
+    private ?int $totpLastStep = null;
+
+    /** @var list<string>|null fingerprints of the unused backup codes */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $backupCodes = null;
 
     public function __construct()
     {
@@ -147,6 +160,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return null !== $this->totpSecret;
+    }
+
+    public function getTotpSecret(): ?string
+    {
+        return $this->totpSecret;
+    }
+
+    public function setTotpSecret(?string $totpSecret): static
+    {
+        $this->totpSecret = $totpSecret;
+
+        return $this;
+    }
+
+    public function getTotpLastStep(): ?int
+    {
+        return $this->totpLastStep;
+    }
+
+    public function setTotpLastStep(?int $totpLastStep): static
+    {
+        $this->totpLastStep = $totpLastStep;
+
+        return $this;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getBackupCodes(): array
+    {
+        return $this->backupCodes ?? [];
+    }
+
+    /**
+     * @param list<string> $backupCodes
+     */
+    public function setBackupCodes(array $backupCodes): static
+    {
+        $this->backupCodes = [] !== $backupCodes ? $backupCodes : null;
+
+        return $this;
     }
 
     public function eraseCredentials(): void

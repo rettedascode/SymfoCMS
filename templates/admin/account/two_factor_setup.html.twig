@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'two_factor.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'two_factor.set_up'|trans }}</h1>
+        {% if not required %}
+            <div class="page-header__actions">
+                <a class="button" href="{{ path('admin_account') }}">← {{ 'account.title'|trans }}</a>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if required %}
+        <div class="flash flash--error" role="status">{{ 'two_factor.required'|trans }}</div>
+    {% endif %}
+    {% if error %}
+        <div class="flash flash--error" role="alert">{{ error|trans }}</div>
+    {% endif %}
+
+    <div class="card card--narrow">
+        <p class="muted">{{ 'two_factor.intro'|trans }}</p>
+        <form method="post" action="{{ path('admin_two_factor_enable') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+            <ol class="two-factor__steps">
+                <li>{{ 'two_factor.setup.step_app'|trans }}</li>
+                <li>
+                    {{ 'two_factor.setup.step_scan'|trans }}
+                    <img class="two-factor__qr" src="{{ qr_code }}" alt="{{ 'two_factor.setup.qr_alt'|trans }}" width="220" height="220">
+                    <span class="muted">{{ 'two_factor.setup.manual'|trans }}</span><br>
+                    <code class="two-factor__secret" data-secret>{{ secret|split('', 4)|join(' ') }}</code>
+                </li>
+                <li>
+                    <div class="field">
+                        <label for="two-factor-code">{{ 'two_factor.setup.step_code'|trans }}</label>
+                        <input type="text" class="code-input" id="two-factor-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required>
+                    </div>
+                </li>
+            </ol>
+            <div class="form-actions">
+                <button type="submit" class="button button--primary">{{ 'two_factor.setup.submit'|trans }}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

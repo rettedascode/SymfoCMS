@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'two_factor.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'two_factor.title'|trans }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('admin_account') }}">← {{ 'account.title'|trans }}</a>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="flash flash--error" role="alert">{{ error|trans }}</div>
+    {% endif %}
+
+    {% if backup_codes %}
+        <div class="card card--narrow">
+            <div class="flash flash--success" role="status">{{ 'two_factor.enabled'|trans }}</div>
+            <h2>{{ 'two_factor.backup.heading'|trans }}</h2>
+            <p>{{ 'two_factor.backup.intro'|trans }}</p>
+            <ul class="backup-codes">
+                {% for code in backup_codes %}<li>{{ code }}</li>{% endfor %}
+            </ul>
+            <a class="button button--primary" href="{{ path('admin_two_factor_index') }}">{{ 'two_factor.backup.done'|trans }}</a>
+        </div>
+    {% else %}
+        <div class="card card--narrow">
+            <p><span class="badge badge--published">{{ 'two_factor.status_on'|trans }}</span> {{ 'two_factor.enabled'|trans }}</p>
+            <p class="muted">{{ 'two_factor.backup.remaining'|trans({'%count%': app.user.backupCodes|length}) }}</p>
+
+            <form method="post" action="{{ path('admin_two_factor_backup_codes') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                <h2>{{ 'two_factor.backup.regenerate'|trans }}</h2>
+                <p class="muted">{{ 'two_factor.backup.regenerate_help'|trans }}</p>
+                <div class="field">
+                    <label for="backup-password">{{ 'two_factor.password'|trans }}</label>
+                    <input type="password" id="backup-password" name="password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="button">{{ 'two_factor.backup.regenerate'|trans }}</button>
+            </form>
+
+            <form method="post" action="{{ path('admin_two_factor_disable') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                <h2>{{ 'two_factor.disable.heading'|trans }}</h2>
+                <div class="field">
+                    <label for="disable-password">{{ 'two_factor.password'|trans }}</label>
+                    <input type="password" id="disable-password" name="password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="button button--danger">{{ 'two_factor.disable.submit'|trans }}</button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

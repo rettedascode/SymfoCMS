@@ -709,3 +709,43 @@ transfer.wordpress.note.element: 'An element of the type “%detail%” was left
 transfer.wordpress.issue.password: The entry was protected by a password in WordPress and was imported as a draft.
 transfer.wordpress.issue.type: '%count% entries of this WordPress content type were not imported.'
 transfer.wordpress.issue.comments: Comments are not supported and were not imported.
+
+two_factor.title: Two-step login
+two_factor.status_on: On
+two_factor.status_off: Off
+two_factor.intro: After your password you also enter a code from an app on your phone. Nobody gets into your account with the password alone.
+two_factor.set_up: Set up two-step login
+two_factor.manage: Manage two-step login
+two_factor.required: Administrators of this website have to use two-step login. Please set it up now to continue.
+two_factor.setup.step_app: 'Install an authenticator app on your phone, for example Aegis, Google Authenticator, Microsoft Authenticator or 2FAS.'
+two_factor.setup.step_scan: Scan this code with the app.
+two_factor.setup.manual: 'If you cannot scan it, type this key into the app:'
+two_factor.setup.step_code: Enter the six-digit code the app now shows.
+two_factor.setup.qr_alt: QR code for the authenticator app
+two_factor.code: Code
+two_factor.setup.submit: Switch on two-step login
+two_factor.enabled: Two-step login is on.
+two_factor.backup.heading: Your backup codes
+two_factor.backup.intro: Keep these codes somewhere safe, for example printed out. Each one lets you log in once when you do not have your phone. They are shown only now.
+two_factor.backup.done: I have saved the codes
+two_factor.backup.remaining: '{0}You have no backup codes left.|{1}You have one unused backup code.|]1,Inf[You have %count% unused backup codes.'
+two_factor.backup.regenerate: Create new backup codes
+two_factor.backup.regenerate_help: The old codes stop working.
+two_factor.disable.heading: Switch off two-step login
+two_factor.disable.submit: Switch off
+two_factor.password: Your password
+two_factor.challenge.heading: Enter your code
+two_factor.challenge.intro: Open the authenticator app on your phone and enter the six-digit code for this website. You can also use one of your backup codes.
+two_factor.challenge.submit: Continue
+two_factor.challenge.logout: Log in as somebody else
+two_factor.error.wrong_code: That code is not correct. Codes change every 30 seconds – please try the current one.
+two_factor.error.too_many: Too many attempts. Please wait a quarter of an hour and try again.
+two_factor.error.expired: The page was open for too long. Please try again.
+two_factor.error.wrong_password: The password is not correct.
+two_factor.reset: Reset two-step login
+two_factor.reset_confirm: 'Switch off two-step login for %name%? They can then log in with their password alone and set it up again.'
+flash.two_factor_disabled: Two-step login is switched off.
+flash.two_factor_reset: Two-step login was switched off for this user.
+settings.security_heading: Security
+settings.two_factor_admins: Administrators have to use two-step login
+settings.two_factor_admins_help: Administrators who have not set it up yet are asked to do so the next time they open the admin area.

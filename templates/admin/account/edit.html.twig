@@ -20,4 +20,12 @@
         </div>
         {{ form_end(form) }}
     </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'two_factor.title'|trans }}
+            <span class="badge badge--{{ app.user.twoFactorEnabled ? 'published' : 'draft' }}">{{ (app.user.twoFactorEnabled ? 'two_factor.status_on' : 'two_factor.status_off')|trans }}</span>
+        </h2>
+        <p class="muted">{{ 'two_factor.intro'|trans }}</p>
+        <a class="button" href="{{ path('admin_two_factor_index') }}">{{ (app.user.twoFactorEnabled ? 'two_factor.manage' : 'two_factor.set_up')|trans }}</a>
+    </div>
 {% endblock %}

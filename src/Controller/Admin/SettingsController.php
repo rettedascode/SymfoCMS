@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\EventSubscriber\ApiSubscriber;
 use App\Form\SettingsType;
+use App\Security\TwoFactor\TwoFactorManager;
 use App\Security\Voter\AdminAreaVoter;
 use App\Service\ContentLocales;
 use App\Service\FormSubmitter;
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class SettingsController extends AdminController
 {
     #[Route('/admin/settings', name: 'admin_settings', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ContentLocales $locales, Settings $settings, SiteInfo $site): Response
+    public function edit(Request $request, ContentLocales $locales, Settings $settings, SiteInfo $site, TwoFactorManager $twoFactor): Response
     {
         $retention = $settings->get(FormSubmitter::RETENTION_SETTING);
         $form = $this->createForm(SettingsType::class, [
@@ -26,6 +27,7 @@ final class SettingsController extends AdminController
             'siteTagline' => $site->tagline(),
             'locales' => implode(', ', $locales->all()),
             'retentionDays' => \is_int($retention) ? $retention : null,
+            'twoFactorAdmins' => $twoFactor->isRequiredForAdmins(),
             'apiEnabled' => true === $settings->get(ApiSubscriber::ENABLED_SETTING),
         ]);
         $form->handleRequest($request);
@@ -35,6 +37,7 @@ final class SettingsController extends AdminController
             $locales->save(SettingsType::parseLocales((string) $form->get('locales')->getData()));
             $days = $form->get('retentionDays')->getData();
             $settings->set(FormSubmitter::RETENTION_SETTING, \is_int($days) ? $days : null);
+            $twoFactor->requireForAdmins(true === $form->get('twoFactorAdmins')->getData());
             $settings->set(ApiSubscriber::ENABLED_SETTING, true === $form->get('apiEnabled')->getData() ? true : null);
             $this->addFlash('success', 'flash.saved');
 

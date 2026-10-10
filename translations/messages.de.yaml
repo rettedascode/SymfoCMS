@@ -708,3 +708,43 @@ transfer.wordpress.note.element: 'Ein Element vom Typ „%detail%“ wurde ausge
 transfer.wordpress.issue.password: Der Eintrag war in WordPress durch ein Passwort geschützt und wurde als Entwurf importiert.
 transfer.wordpress.issue.type: '%count% Einträge dieses WordPress-Inhaltstyps wurden nicht importiert.'
 transfer.wordpress.issue.comments: Kommentare werden nicht unterstützt und wurden nicht importiert.
+
+two_factor.title: Anmeldung in zwei Schritten
+two_factor.status_on: Ein
+two_factor.status_off: Aus
+two_factor.intro: Nach Ihrem Passwort geben Sie zusätzlich einen Code aus einer App auf Ihrem Handy ein. Mit dem Passwort allein kommt dann niemand in Ihr Konto.
+two_factor.set_up: Anmeldung in zwei Schritten einrichten
+two_factor.manage: Anmeldung in zwei Schritten verwalten
+two_factor.required: Administratoren dieser Website müssen die Anmeldung in zwei Schritten verwenden. Bitte richten Sie sie jetzt ein, um fortzufahren.
+two_factor.setup.step_app: 'Installieren Sie eine Authenticator-App auf Ihrem Handy, zum Beispiel Aegis, Google Authenticator, Microsoft Authenticator oder 2FAS.'
+two_factor.setup.step_scan: Scannen Sie diesen Code mit der App.
+two_factor.setup.manual: 'Falls Sie ihn nicht scannen können, tippen Sie diesen Schlüssel in die App:'
+two_factor.setup.step_code: Geben Sie den sechsstelligen Code ein, den die App jetzt anzeigt.
+two_factor.setup.qr_alt: QR-Code für die Authenticator-App
+two_factor.code: Code
+two_factor.setup.submit: Anmeldung in zwei Schritten einschalten
+two_factor.enabled: Die Anmeldung in zwei Schritten ist eingeschaltet.
+two_factor.backup.heading: Ihre Ersatzcodes
+two_factor.backup.intro: Bewahren Sie diese Codes an einem sicheren Ort auf, zum Beispiel ausgedruckt. Mit jedem können Sie sich einmal anmelden, wenn Sie Ihr Handy nicht zur Hand haben. Sie werden nur jetzt angezeigt.
+two_factor.backup.done: Ich habe die Codes gesichert
+two_factor.backup.remaining: '{0}Sie haben keine Ersatzcodes mehr.|{1}Sie haben einen unbenutzten Ersatzcode.|]1,Inf[Sie haben %count% unbenutzte Ersatzcodes.'
+two_factor.backup.regenerate: Neue Ersatzcodes erstellen
+two_factor.backup.regenerate_help: Die alten Codes funktionieren dann nicht mehr.
+two_factor.disable.heading: Anmeldung in zwei Schritten ausschalten
+two_factor.disable.submit: Ausschalten
+two_factor.password: Ihr Passwort
+two_factor.challenge.heading: Code eingeben
+two_factor.challenge.intro: Öffnen Sie die Authenticator-App auf Ihrem Handy und geben Sie den sechsstelligen Code für diese Website ein. Sie können auch einen Ihrer Ersatzcodes verwenden.
+two_factor.challenge.submit: Weiter
+two_factor.challenge.logout: Als jemand anderes anmelden
+two_factor.error.wrong_code: Dieser Code ist nicht richtig. Codes wechseln alle 30 Sekunden – bitte versuchen Sie den aktuellen.
+two_factor.error.too_many: Zu viele Versuche. Bitte warten Sie eine Viertelstunde und versuchen Sie es erneut.
+two_factor.error.expired: Die Seite war zu lange geöffnet. Bitte versuchen Sie es erneut.
+two_factor.error.wrong_password: Das Passwort ist nicht richtig.
+two_factor.reset: Zwei-Schritt-Anmeldung zurücksetzen
+two_factor.reset_confirm: 'Die Anmeldung in zwei Schritten für %name% ausschalten? Die Person kann sich dann nur mit dem Passwort anmelden und sie neu einrichten.'
+flash.two_factor_disabled: Die Anmeldung in zwei Schritten ist ausgeschaltet.
+flash.two_factor_reset: Die Anmeldung in zwei Schritten wurde für diese Person ausgeschaltet.
+settings.security_heading: Sicherheit
+settings.two_factor_admins: Administratoren müssen die Anmeldung in zwei Schritten verwenden
+settings.two_factor_admins_help: Administratoren, die sie noch nicht eingerichtet haben, werden beim nächsten Öffnen des Admin-Bereichs dazu aufgefordert.
