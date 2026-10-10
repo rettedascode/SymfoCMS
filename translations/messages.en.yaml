@@ -642,3 +642,9 @@ install.site.failed: The website could not be set up.
 install.homepage.title: Welcome
 install.homepage.text: This is the first page of %site%. Log in and open “Pages” to make it your own.
 install.homepage.menu: Home
+
+settings.api_heading: For developers
+settings.api_enabled: Offer the content of the website as data (read API)
+settings.api_enabled_help: Other programs, such as an app, can then read your published pages, posts, menus and images. Nothing can be changed through it, and drafts stay private. Leave it off if you do not need it.
+settings.api_address: 'Address of the API:'
+settings.api_description: Description (OpenAPI)

@@ -17,7 +17,7 @@ class Page extends Content
      * First path segments used by the application itself. A page with one
      * of these slugs would never be reachable.
      */
-    public const RESERVED_SLUGS = ['admin', 'blog', 'login', 'logout', 'assets', 'uploads', 'bundles', 'sitemap', 'feed', 'search'];
+    public const RESERVED_SLUGS = ['admin', 'blog', 'login', 'logout', 'assets', 'uploads', 'bundles', 'sitemap', 'feed', 'search', 'api', 'install'];
 
     #[ORM\Column]
     private bool $homepage = false;

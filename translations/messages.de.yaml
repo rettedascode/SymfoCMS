@@ -641,3 +641,9 @@ install.site.failed: Die Website konnte nicht eingerichtet werden.
 install.homepage.title: Willkommen
 install.homepage.text: Dies ist die erste Seite von %site%. Melden Sie sich an und öffnen Sie „Seiten“, um sie zu Ihrer eigenen zu machen.
 install.homepage.menu: Startseite
+
+settings.api_heading: Für Entwickler
+settings.api_enabled: Inhalte der Website als Daten anbieten (Lese-API)
+settings.api_enabled_help: Andere Programme, etwa eine App, können dann Ihre veröffentlichten Seiten, Beiträge, Menüs und Bilder lesen. Ändern lässt sich darüber nichts, und Entwürfe bleiben privat. Lassen Sie die Option aus, wenn Sie sie nicht brauchen.
+settings.api_address: 'Adresse der API:'
+settings.api_description: Beschreibung (OpenAPI)

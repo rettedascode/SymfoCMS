@@ -18,8 +18,10 @@ use App\Enum\ContentStatus;
 use App\Enum\MenuItemType;
 use App\Enum\MenuLocation;
 use App\Enum\UserRole;
+use App\EventSubscriber\ApiSubscriber;
 use App\Service\ContentLocales;
 use App\Service\MediaManager;
+use App\Service\Settings;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -45,6 +47,7 @@ final class AppFixtures extends Fixture
         #[Autowire(param: 'app.media_dir')]
         private readonly string $mediaDir,
         private readonly ContentLocales $locales,
+        private readonly Settings $settings,
     ) {
     }
 
@@ -54,6 +57,8 @@ final class AppFixtures extends Fixture
 
         // The demo site is bilingual: English is the main language, German lives under /de.
         $this->locales->save(['en', 'de']);
+        // The read API is off on a new website; the demo shows it: /api/v1
+        $this->settings->set(ApiSubscriber::ENABLED_SETTING, true);
 
         $admin = $this->createUser($manager, 'admin@example.com', 'Ada Admin', UserRole::Admin);
         $editor = $this->createUser($manager, 'editor@example.com', 'Eric Editor', UserRole::Editor);

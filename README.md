@@ -57,6 +57,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
 - [Setup wizard](docs/installation.md) in the browser: requirements check, database connection, name of the website and administrator account
+- [Read API](docs/api.md): read-only JSON for published pages, posts, categories, menus and images with pagination and language filter, blocks as structured data and as HTML, described with OpenAPI; off by default
 - [Themes](docs/themes.md): selectable in the admin area, with logo, colours and fonts as theme settings and locally served fonts; two themes included
 - [Search](docs/search.md): full-text search over published pages and posts with highlighted matches, per language, on every supported database; one search field in the admin area for pages, posts and images
 - [SEO](docs/seo.md): live preview of the search result in the editor, Open Graph and Twitter cards with a selectable share image, JSON-LD for posts, FAQs and breadcrumbs
@@ -286,7 +287,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, the editor, forms, redirects, SEO, search, themes, extensions, multilingual websites
+docs/               Guides: installation, the editor, forms, redirects, SEO, search, themes, the read API, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

@@ -17,6 +17,11 @@
         {{ form_row(form.locales) }}
         <h2 class="card__heading">{{ 'settings.forms_heading'|trans }}</h2>
         {{ form_row(form.retentionDays) }}
+        <h2 class="card__heading">{{ 'settings.api_heading'|trans }}</h2>
+        {{ form_row(form.apiEnabled) }}
+        {% if api_enabled %}
+            <p class="muted">{{ 'settings.api_address'|trans }} <a href="{{ path('api_index') }}" target="_blank" rel="noopener"><code>{{ url('api_index') }}</code></a> · <a href="{{ path('api_openapi') }}" target="_blank" rel="noopener">{{ 'settings.api_description'|trans }}</a></p>
+        {% endif %}
         <div class="form-actions">
             <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
         </div>

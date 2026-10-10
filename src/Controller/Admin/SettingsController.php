@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\EventSubscriber\ApiSubscriber;
 use App\Form\SettingsType;
 use App\Security\Voter\AdminAreaVoter;
 use App\Service\ContentLocales;
@@ -25,6 +26,7 @@ final class SettingsController extends AdminController
             'siteTagline' => $site->tagline(),
             'locales' => implode(', ', $locales->all()),
             'retentionDays' => \is_int($retention) ? $retention : null,
+            'apiEnabled' => true === $settings->get(ApiSubscriber::ENABLED_SETTING),
         ]);
         $form->handleRequest($request);
 
@@ -33,11 +35,15 @@ final class SettingsController extends AdminController
             $locales->save(SettingsType::parseLocales((string) $form->get('locales')->getData()));
             $days = $form->get('retentionDays')->getData();
             $settings->set(FormSubmitter::RETENTION_SETTING, \is_int($days) ? $days : null);
+            $settings->set(ApiSubscriber::ENABLED_SETTING, true === $form->get('apiEnabled')->getData() ? true : null);
             $this->addFlash('success', 'flash.saved');
 
             return $this->redirectToRoute('admin_settings');
         }
 
-        return $this->render('admin/settings/edit.html.twig', ['form' => $form]);
+        return $this->render('admin/settings/edit.html.twig', [
+            'form' => $form,
+            'api_enabled' => true === $settings->get(ApiSubscriber::ENABLED_SETTING),
+        ]);
     }
 }

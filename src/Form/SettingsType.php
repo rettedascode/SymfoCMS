@@ -9,6 +9,7 @@ use App\Entity\Post;
 use App\Service\ContentLocales;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @extends AbstractType<array{siteName: string, siteTagline: string|null, locales: string, retentionDays: int|null}>
+ * @extends AbstractType<array{siteName: string, siteTagline: string|null, locales: string, retentionDays: int|null, apiEnabled: bool}>
  */
 final class SettingsType extends AbstractType
 {
@@ -56,6 +57,12 @@ final class SettingsType extends AbstractType
             'required' => false,
             'constraints' => [new Assert\Range(min: 1, max: 3650)],
             'attr' => ['min' => 1, 'max' => 3650, 'inputmode' => 'numeric'],
+        ]);
+
+        $builder->add('apiEnabled', CheckboxType::class, [
+            'label' => 'settings.api_enabled',
+            'help' => 'settings.api_enabled_help',
+            'required' => false,
         ]);
     }
 
