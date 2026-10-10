@@ -846,3 +846,27 @@ audit.field.notifyEmail: Benachrichtigungsadresse
 audit.field.source: Alte Adresse
 audit.field.target: Neue Adresse
 audit.field.value: Wert
+
+media.editor.tools: Bildwerkzeuge
+media.editor.crop: Zuschneiden
+media.editor.focus: Fokuspunkt
+media.editor.rotate_left: Nach links drehen
+media.editor.rotate_right: Nach rechts drehen
+media.editor.stage_label: 'Bild. Ziehen Sie, um den Ausschnitt zu wählen. Mit den Pfeiltasten verschieben Sie die Auswahl, mit Umschalt und den Pfeiltasten ändern Sie ihre Größe.'
+media.editor.crop_help: Ziehen Sie über das Bild, um den Teil zu wählen, den Sie behalten möchten. Ziehen Sie an den Ecken, um ihn anzupassen.
+media.editor.shape: Form
+media.editor.shape_free: Frei
+media.editor.shape_original: Wie das Bild
+media.editor.shape_square: Quadrat
+media.editor.clear: Auswahl aufheben
+media.editor.apply_crop: Bild zuschneiden
+media.editor.focus_help: Klicken Sie auf die wichtigste Stelle des Bildes, zum Beispiel ein Gesicht. Wo das Bild in einer anderen Form gezeigt wird, bleibt diese Stelle sichtbar.
+media.editor.focus_saved: Gespeichert.
+media.editor.focus_failed: Der Fokuspunkt konnte nicht gespeichert werden.
+media.editor.restore: Alle Änderungen verwerfen und das hochgeladene Bild wiederherstellen
+media.editor.restore_confirm: Wirklich zum Bild zurückkehren, wie es hochgeladen wurde?
+flash.media_changed: Das Bild wurde geändert.
+
+media.edit_failed: Dieses Bild kann nicht bearbeitet werden.
+media.crop_too_small: Der gewählte Ausschnitt ist zu klein.
+media.editor.save_focus: Fokuspunkt setzen

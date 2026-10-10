@@ -204,7 +204,7 @@ final class TwoFactorTest extends AppWebTestCase
 
         // Editors cannot do that.
         $this->loginAs(UserRole::Editor);
-        $token = (string) $this->client->request('GET', '/admin/pages')->filter('input[name="_csrf_token"]')->attr('value');
+        $token = $this->csrfToken('/admin/account/two-factor');
         $this->client->request('POST', '/admin/users/'.$author->getId().'/reset-two-factor', ['_token' => $token]);
         self::assertResponseStatusCodeSame(403);
         self::assertTrue($this->user($author)->isTwoFactorEnabled());

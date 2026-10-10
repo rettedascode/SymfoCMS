@@ -8,12 +8,95 @@
     </div>
 
     <div class="media-edit">
-        <figure class="media-edit__preview">
-            <img src="{{ media_url(media, 'medium') }}" alt="{{ media.alt }}">
-            <figcaption class="muted">
+        <div class="media-edit__preview">
+            {% if can_edit and not media.animated %}
+                {#
+                    Crop and focal point are chosen on the image (see image_editor_controller.js);
+                    rotating and restoring are plain forms.
+                #}
+                <div class="image-editor" data-controller="image-editor"
+                     data-image-editor-focus-url-value="{{ path('admin_media_focus', {id: media.id}) }}"
+                     data-image-editor-csrf-value="{{ csrf_token('admin') }}"
+                     data-image-editor-focal-x-value="{{ media.focalX }}"
+                     data-image-editor-focal-y-value="{{ media.focalY }}"
+                     data-image-editor-saved-value="{{ 'media.editor.focus_saved'|trans }}"
+                     data-image-editor-failed-value="{{ 'media.editor.focus_failed'|trans }}">
+                    <div class="image-editor__toolbar">
+                        <div class="segmented" role="group" aria-label="{{ 'media.editor.tools'|trans }}">
+                            <button type="button" data-image-editor-target="modeButton" data-mode="crop" data-action="image-editor#showMode" aria-pressed="true">{{ 'media.editor.crop'|trans }}</button>
+                            <button type="button" data-image-editor-target="modeButton" data-mode="focus" data-action="image-editor#showMode" aria-pressed="false">{{ 'media.editor.focus'|trans }}</button>
+                        </div>
+                        <form method="post" action="{{ path('admin_media_rotate', {id: media.id}) }}" class="image-editor__rotate">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                            <button type="submit" name="direction" value="left" class="button button--small">↺ {{ 'media.editor.rotate_left'|trans }}</button>
+                            <button type="submit" name="direction" value="right" class="button button--small">↻ {{ 'media.editor.rotate_right'|trans }}</button>
+                        </form>
+                    </div>
+
+                    <div class="image-editor__stage" data-image-editor-target="stage" data-mode="crop" tabindex="0"
+                         aria-label="{{ 'media.editor.stage_label'|trans }}"
+                         data-action="pointerdown->image-editor#pointerDown pointermove->image-editor#pointerMove pointerup->image-editor#pointerUp pointercancel->image-editor#pointerUp keydown->image-editor#keyDown">
+                        <img src="{{ media_url(media, 'large') }}" alt="{{ media.alt }}" width="{{ media.width }}" height="{{ media.height }}" data-image-editor-target="image" draggable="false">
+                        <div class="image-editor__box" data-image-editor-target="box" hidden>
+                            <span data-handle="nw"></span><span data-handle="ne"></span><span data-handle="sw"></span><span data-handle="se"></span>
+                        </div>
+                        <span class="image-editor__point" data-image-editor-target="point" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="image-editor__panel" data-image-editor-target="cropPanel">
+                        <p class="muted">{{ 'media.editor.crop_help'|trans }}</p>
+                        <form method="post" action="{{ path('admin_media_crop', {id: media.id}) }}" class="image-editor__actions">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                            <input type="hidden" name="x" data-image-editor-target="x">
+                            <input type="hidden" name="y" data-image-editor-target="y">
+                            <input type="hidden" name="w" data-image-editor-target="w">
+                            <input type="hidden" name="h" data-image-editor-target="h">
+                            <label for="image-editor-aspect">{{ 'media.editor.shape'|trans }}</label>
+                            <select id="image-editor-aspect" data-image-editor-target="aspect" data-action="image-editor#aspectChanged">
+                                <option value="">{{ 'media.editor.shape_free'|trans }}</option>
+                                <option value="original">{{ 'media.editor.shape_original'|trans }}</option>
+                                <option value="1:1">{{ 'media.editor.shape_square'|trans }}</option>
+                                <option value="4:3">4 : 3</option>
+                                <option value="16:9">16 : 9</option>
+                                <option value="3:4">3 : 4</option>
+                            </select>
+                            <button type="button" class="button button--small" data-action="image-editor#clearCrop">{{ 'media.editor.clear'|trans }}</button>
+                            <button type="submit" class="button button--primary button--small" data-image-editor-target="cropButton" disabled>{{ 'media.editor.apply_crop'|trans }}</button>
+                        </form>
+                    </div>
+
+                    <div class="image-editor__panel" data-image-editor-target="focusPanel" hidden>
+                        <p class="muted">{{ 'media.editor.focus_help'|trans }}</p>
+                        <div class="image-editor__previews" aria-hidden="true">
+                            <img src="{{ media_url(media, 'medium') }}" alt="" data-image-editor-target="preview" style="aspect-ratio: 1">
+                            <img src="{{ media_url(media, 'medium') }}" alt="" data-image-editor-target="preview" style="aspect-ratio: 16 / 9">
+                            <img src="{{ media_url(media, 'medium') }}" alt="" data-image-editor-target="preview" style="aspect-ratio: 3 / 4">
+                        </div>
+                        {# Without JavaScript the point can still be set with numbers. #}
+                        <form method="post" action="{{ path('admin_media_focus', {id: media.id}) }}" class="image-editor__actions">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                            <input type="hidden" name="x" data-image-editor-target="focusX" value="{{ media.focalX }}">
+                            <input type="hidden" name="y" data-image-editor-target="focusY" value="{{ media.focalY }}">
+                            <span class="muted" role="status" data-image-editor-target="status"></span>
+                            <noscript><button type="submit" class="button button--small">{{ 'media.editor.save_focus'|trans }}</button></noscript>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <img src="{{ media_url(media, 'medium') }}" alt="{{ media.alt }}">
+            {% endif %}
+
+            <p class="muted media-edit__caption">
                 {{ media.originalName }} · {{ media.width }} × {{ media.height }} px · {{ (media.size / 1024)|round }} KB
-            </figcaption>
-        </figure>
+            </p>
+
+            {% if can_edit and media.sourceFile %}
+                <form method="post" action="{{ path('admin_media_restore', {id: media.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'media.editor.restore_confirm'|trans }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                    <button type="submit" class="link-button">{{ 'media.editor.restore'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
 
         <div class="card">
             {{ form_start(form) }}

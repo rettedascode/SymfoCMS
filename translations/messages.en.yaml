@@ -847,3 +847,27 @@ audit.field.notifyEmail: notification address
 audit.field.source: old address
 audit.field.target: new address
 audit.field.value: value
+
+media.editor.tools: Image tools
+media.editor.crop: Crop
+media.editor.focus: Focal point
+media.editor.rotate_left: Rotate left
+media.editor.rotate_right: Rotate right
+media.editor.stage_label: 'Image. Drag to choose the part to keep. With the arrow keys you move the selection, with Shift and the arrow keys you change its size.'
+media.editor.crop_help: Drag across the image to choose the part you want to keep. Drag the corners to adjust it.
+media.editor.shape: Shape
+media.editor.shape_free: Free
+media.editor.shape_original: Like the image
+media.editor.shape_square: Square
+media.editor.clear: Clear selection
+media.editor.apply_crop: Crop image
+media.editor.focus_help: Click the most important spot of the image, for example a face. Wherever the image is shown in another shape, this spot stays visible.
+media.editor.focus_saved: Saved.
+media.editor.focus_failed: The focal point could not be saved.
+media.editor.restore: Undo all changes and restore the uploaded image
+media.editor.restore_confirm: Really go back to the image as it was uploaded?
+flash.media_changed: The image was changed.
+
+media.edit_failed: This image cannot be edited.
+media.crop_too_small: The chosen part is too small.
+media.editor.save_focus: Set focal point

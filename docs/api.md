@@ -84,6 +84,7 @@ A single page or post additionally carries its content in two forms:
 }
 ```
 
+- Images carry a `focal_point` (`x` and `y` from 0 to 1): the spot that should stay visible when your app cuts the image to another shape.
 - `blocks` is the structured content, in the order it is shown. Images are referenced by the id of a media entry (`/api/v1/media/{id}`); a block of the type `shared` references a shared block whose content is part of `html`.
 - `html` is the same content rendered with the block templates of the active theme. Addresses inside it start at the root of the website (`/uploads/…`).
 

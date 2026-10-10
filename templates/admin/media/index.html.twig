@@ -30,7 +30,7 @@
             {% for item in media %}
                 <li>
                     <a class="media-tile" href="{{ path('admin_media_edit', {id: item.id}) }}" title="{{ item.originalName }}">
-                        <img src="{{ media_url(item, 'thumb') }}" alt="{{ item.alt ?: item.originalName }}" loading="lazy">
+                        <img src="{{ media_url(item, 'thumb') }}" alt="{{ item.alt ?: item.originalName }}" loading="lazy"{{ media_focus(item) }}>
                         {% if not item.alt %}<span class="media-tile__flag">{{ 'media.no_alt'|trans }}</span>{% endif %}
                     </a>
                 </li>

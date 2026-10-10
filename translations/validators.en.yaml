@@ -30,3 +30,6 @@ content.slug_taken: This address is already in use. Please choose another one.
 content.slug_reserved: This address is reserved by the system. Please choose another one.
 
 install.database.required: This is needed for a database server.
+
+media.edit_failed: This image cannot be edited.
+media.crop_too_small: The chosen part is too small.

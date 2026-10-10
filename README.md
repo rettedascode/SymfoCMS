@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Image editing](docs/images.md) in the browser: crop, rotate and a focal point that stays visible wherever an image is cut to another shape
 - [Activity log](docs/activity-log.md) for administrators: who changed what and when, filterable by person and content
 - [Review workflow](docs/review-workflow.md): authors submit posts, editors approve and publish them or send them back with a note
 - [Two-step login](docs/two-step-login.md) with an authenticator app (TOTP) and backup codes, optional for every user and enforceable for administrators
@@ -293,7 +294,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, two-step login, the review workflow, the activity log, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
+docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

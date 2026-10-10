@@ -17,15 +17,17 @@
     {% if description %}<meta property="og:description" content="{{ description }}">{% endif %}
     {% if canonical %}<meta property="og:url" content="{{ canonical }}">{% endif %}
     {% set share = share_image|default(null) %}
+    {# Shared links show a wide picture: the version cut around the focal point, where the image is large enough for one. #}
+    {% set share_variant = share and share.variants.social is defined ? 'social' : 'large' %}
     {% if share %}
-        <meta property="og:image" content="{{ absolute_url(media_url(share, 'large')) }}">
+        <meta property="og:image" content="{{ absolute_url(media_url(share, share_variant)) }}">
         {% if share.alt %}<meta property="og:image:alt" content="{{ share.alt }}">{% endif %}
     {% endif %}
     <meta property="og:locale" content="{{ app.locale|replace({'-': '_'}) }}">
     <meta name="twitter:card" content="{{ share ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ page_title ?: site_name }}">
     {% if description %}<meta name="twitter:description" content="{{ description }}">{% endif %}
-    {% if share %}<meta name="twitter:image" content="{{ absolute_url(media_url(share, 'large')) }}">{% endif %}
+    {% if share %}<meta name="twitter:image" content="{{ absolute_url(media_url(share, share_variant)) }}">{% endif %}
     {% if translatable|default(null) and not (noindex|default(false)) %}{{ structured_data(translatable, structured_blocks|default([])) }}{% endif %}
     {# Tell search engines about the other language versions of this page. #}
     {% for hreflang, href in (translatable|default(null) ? content_alternates(translatable) : {}) %}

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -115,6 +116,84 @@ final class MediaController extends AdminController
             'media' => $media,
             'can_edit' => $canEdit,
         ]);
+    }
+
+    /**
+     * Turns the image by a quarter in the given direction.
+     */
+    #[Route('/{id<\d+>}/rotate', name: 'rotate', methods: ['POST'])]
+    public function rotate(Request $request, Media $media): Response
+    {
+        return $this->change($request, $media, fn () => $this->mediaManager->transform($media, 'left' === $request->request->get('direction') ? 270 : 90, null));
+    }
+
+    /**
+     * Keeps the chosen part of the image. The part is given as fractions (0-1) of width and height.
+     */
+    #[Route('/{id<\d+>}/crop', name: 'crop', methods: ['POST'])]
+    public function crop(Request $request, Media $media): Response
+    {
+        $crop = [];
+        foreach (['x', 'y', 'w', 'h'] as $key) {
+            $value = $request->request->get($key);
+            if (!is_numeric($value) || (float) $value < 0 || (float) $value > 1) {
+                throw new BadRequestHttpException('The crop area is not valid.');
+            }
+            $crop[$key] = (float) $value;
+        }
+
+        return $this->change($request, $media, fn () => $this->mediaManager->transform($media, 0, $crop));
+    }
+
+    #[Route('/{id<\d+>}/restore', name: 'restore', methods: ['POST'])]
+    public function restore(Request $request, Media $media): Response
+    {
+        return $this->change($request, $media, fn () => $this->mediaManager->restore($media));
+    }
+
+    /**
+     * Stores the focal point: the spot that stays visible wherever the image is cut to another shape.
+     * Called by the image editor while the person clicks around, and by its form without JavaScript.
+     */
+    #[Route('/{id<\d+>}/focus', name: 'focus', methods: ['POST'])]
+    public function focus(Request $request, Media $media): Response
+    {
+        $this->requireCsrfToken($request);
+        $this->denyAccessUnlessGranted(MediaVoter::EDIT, $media);
+
+        $isJson = 'json' === $request->getContentTypeFormat();
+        $data = $isJson ? json_decode($request->getContent(), true) : $request->request->all();
+        $x = \is_array($data) ? ($data['x'] ?? null) : null;
+        $y = \is_array($data) ? ($data['y'] ?? null) : null;
+        if (!is_numeric($x) || !is_numeric($y) || $x < 0 || $x > 1 || $y < 0 || $y > 1) {
+            throw new BadRequestHttpException('The focal point is not valid.');
+        }
+
+        $this->mediaManager->setFocalPoint($media, (float) $x, (float) $y);
+
+        return $isJson
+            ? $this->json(['x' => $media->getFocalX(), 'y' => $media->getFocalY()])
+            : $this->redirectToRoute('admin_media_edit', ['id' => $media->getId()]);
+    }
+
+    /**
+     * Shared frame of the editing actions: check token and permission, do the work, return to the image.
+     *
+     * @param \Closure(): void $work
+     */
+    private function change(Request $request, Media $media, \Closure $work): Response
+    {
+        $this->requireCsrfToken($request);
+        $this->denyAccessUnlessGranted(MediaVoter::EDIT, $media);
+
+        try {
+            $work();
+            $this->addFlash('success', 'flash.media_changed');
+        } catch (InvalidUploadException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_media_edit', ['id' => $media->getId()]);
     }
 
     #[Route('/{id<\d+>}/delete', name: 'delete', methods: ['POST'])]

@@ -108,6 +108,7 @@ final class SiteExporter
                 'file' => 'media/'.$media->getFilename(),
                 'original_name' => $media->getOriginalName(),
                 'alt' => $media->getAlt(),
+                'focal_point' => [$media->getFocalX(), $media->getFocalY()],
             ], $this->entityManager->getRepository(Media::class)->findBy([], ['id' => 'ASC'])),
             'categories' => array_map(static fn (Category $category): array => [
                 'id' => $category->getId(),

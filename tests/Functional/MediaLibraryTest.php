@@ -24,7 +24,7 @@ final class MediaLibraryTest extends AppWebTestCase
         self::assertInstanceOf(Media::class, $media);
         self::assertMatchesRegularExpression('/^[a-f0-9]{24}\.png$/', $media->getFilename(), 'The stored name must be generated, not taken from the upload.');
         self::assertSame([2000, 1000], [$media->getWidth(), $media->getHeight()]);
-        self::assertSame(['thumb', 'medium', 'large'], array_keys($media->getVariants()));
+        self::assertSame(['thumb', 'medium', 'large', 'social'], array_keys($media->getVariants()), 'Three smaller copies, and the version cut for sharing.');
         self::assertSame(['file' => substr($media->getFilename(), 0, 24).'-thumb.png', 'width' => 400, 'height' => 200], $media->getVariants()['thumb']);
 
         foreach ([$media->getFilename(), ...array_column($media->getVariants(), 'file')] as $file) {

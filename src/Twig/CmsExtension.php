@@ -7,6 +7,7 @@ use App\Entity\Media;
 use App\Enum\MenuLocation;
 use App\Repository\MediaRepository;
 use App\Repository\SharedBlockRepository;
+use App\Service\MediaManager;
 use App\Service\MenuBuilder;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -97,13 +98,33 @@ final class CmsExtension
     }
 
     /**
+     * A style attribute that keeps the focal point of an image visible where CSS cuts it to
+     * another shape ("object-fit: cover"). Empty for images whose focal point is the middle.
+     */
+    #[AsTwigFunction('media_focus', isSafe: ['html'])]
+    public function mediaFocus(?Media $media): string
+    {
+        if (null === $media || (0.5 === $media->getFocalX() && 0.5 === $media->getFocalY())) {
+            return '';
+        }
+
+        // Two numbers and percent signs: nothing that would need escaping.
+        return ' style="object-position: '.$media->getFocusPosition().'"';
+    }
+
+    /**
      * Value for the srcset attribute listing every available size.
      */
     #[AsTwigFunction('media_srcset')]
     public function mediaSrcset(Media $media): string
     {
         $candidates = [];
-        foreach ($media->getVariants() as $variant) {
+        foreach ($media->getVariants() as $name => $variant) {
+            // The version for social networks is cut to another shape and is no smaller copy of the image.
+            if (MediaManager::SOCIAL === $name) {
+                continue;
+            }
+
             $candidates[$variant['width']] = $this->packages->getUrl($this->mediaPublicPath.'/'.$variant['file']).' '.$variant['width'].'w';
         }
         $candidates[$media->getWidth()] ??= $this->mediaUrl($media).' '.$media->getWidth().'w';

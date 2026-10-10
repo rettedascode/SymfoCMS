@@ -86,6 +86,7 @@ final class ApiSerializer
             'width' => $media->getWidth(),
             'height' => $media->getHeight(),
             'size' => $media->getSize(),
+            'focal_point' => ['x' => $media->getFocalX(), 'y' => $media->getFocalY()],
             // Smaller versions of the image; an empty object when the original is small itself.
             'variants' => (object) $variants,
         ];

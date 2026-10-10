@@ -30,3 +30,6 @@ content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine ande
 content.slug_reserved: Diese Adresse ist vom System reserviert. Bitte wähle eine andere.
 
 install.database.required: Diese Angabe wird für einen Datenbankserver benötigt.
+
+media.edit_failed: Dieses Bild kann nicht bearbeitet werden.
+media.crop_too_small: Der gewählte Ausschnitt ist zu klein.

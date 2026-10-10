@@ -224,6 +224,10 @@ final class SiteImporter
             try {
                 $media = $this->mediaManager->upload(new UploadedFile($temp, mb_substr($name, 0, 255), null, null, true), $user);
                 $media->setAlt(mb_substr($this->string($row, 'alt'), 0, 255));
+                $focus = $row['focal_point'] ?? null;
+                if (\is_array($focus) && is_numeric($focus[0] ?? null) && is_numeric($focus[1] ?? null) && [0.5, 0.5] !== [(float) $focus[0], (float) $focus[1]]) {
+                    $this->mediaManager->setFocalPoint($media, (float) $focus[0], (float) $focus[1]);
+                }
                 $this->media[(int) ($row['id'] ?? 0)] = $media;
                 $report->count('media');
             } catch (InvalidUploadException) {

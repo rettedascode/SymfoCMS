@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Image editing in the media library: crop (with fixed shapes), rotate and restore the upload. A focal point per image keeps the important spot visible in galleries, post cards and the new 1200 x 630 version used when a link is shared (see `docs/images.md`).
 - Activity log for administrators: who created, changed, published or deleted what and when, plus logins, filterable by person and content. Only the names of changed fields are stored, never values (see `docs/activity-log.md`).
 - Review workflow built on the Symfony Workflow component: authors submit posts for review, editors approve and publish them or send them back with a note. Off by default; switched on in the settings (see `docs/review-workflow.md`).
 - Two-step login with an authenticator app (TOTP) and one-time backup codes. Optional for every user, can be required for administrators in the settings, and administrators can reset it for people who lost their phone (see `docs/two-step-login.md`).

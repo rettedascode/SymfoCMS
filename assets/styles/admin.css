@@ -270,7 +270,7 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 .media-edit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px); gap: 1.5rem; align-items: start; }
 .media-edit__preview { margin: 0; }
 .media-edit__preview img { border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); max-height: 70vh; }
-.media-edit__preview figcaption { margin-top: .5rem; font-size: .9rem; overflow-wrap: anywhere; }
+.media-edit__caption { margin: .5rem 0; font-size: .9rem; overflow-wrap: anywhere; }
 
 /* ---------- Menu editor ---------- */
 
@@ -454,3 +454,31 @@ fieldset.field legend { font-weight: 600; margin-bottom: .35rem; padding: 0; }
     .audit-table td:first-child { white-space: normal; font-size: .88rem; }
     .audit-filter .field, .audit-filter select, .audit-filter input { width: 100%; }
 }
+
+/* ---------- Image editor ---------- */
+
+.image-editor__toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
+.image-editor__rotate { display: flex; gap: .4rem; }
+.image-editor__stage { position: relative; display: inline-block; max-width: 100%; line-height: 0; touch-action: none; user-select: none; cursor: crosshair; border-radius: var(--radius); }
+.image-editor__stage:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.image-editor__stage img { display: block; max-width: 100%; height: auto; max-height: 70vh; width: auto; pointer-events: none; }
+.image-editor__box { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(15, 20, 35, .55); cursor: move; }
+.image-editor__stage { overflow: hidden; }
+.image-editor__box[hidden] { display: none; }
+.image-editor__box span { position: absolute; width: 18px; height: 18px; background: #fff; border: 2px solid var(--accent); border-radius: 50%; }
+.image-editor__box [data-handle="nw"] { left: -10px; top: -10px; cursor: nwse-resize; }
+.image-editor__box [data-handle="ne"] { right: -10px; top: -10px; cursor: nesw-resize; }
+.image-editor__box [data-handle="sw"] { left: -10px; bottom: -10px; cursor: nesw-resize; }
+.image-editor__box [data-handle="se"] { right: -10px; bottom: -10px; cursor: nwse-resize; }
+.image-editor__point { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border: 3px solid #fff; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px rgba(0, 0, 0, .45); pointer-events: none; display: none; }
+.image-editor__stage[data-mode="focus"] .image-editor__point { display: block; }
+.image-editor__panel { margin-top: .75rem; }
+.image-editor__panel p { margin: 0 0 .5rem; }
+.image-editor__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.image-editor__actions select { padding: .35rem .5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); font: inherit; }
+.image-editor__previews { display: flex; gap: .75rem; align-items: flex-start; margin-bottom: .5rem; }
+.image-editor__previews img { width: 110px; height: auto; max-height: none; object-fit: cover; border-radius: 6px; }
+.image-editor .segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.image-editor .segmented button { border: 0; background: var(--surface); padding: .45rem .9rem; font: inherit; font-weight: 500; cursor: pointer; }
+.image-editor .segmented button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.image-editor__actions select { width: auto; }

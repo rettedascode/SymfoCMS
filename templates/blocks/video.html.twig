@@ -9,7 +9,7 @@
     <div class="embed" data-embed>
         {% if poster %}
             <img class="embed__poster" src="{{ media_url(poster, 'large') }}" srcset="{{ media_srcset(poster) }}"
-                 sizes="(min-width: 800px) 760px, 100vw" alt="" loading="lazy">
+                 sizes="(min-width: 800px) 760px, 100vw" alt="" loading="lazy"{{ media_focus(poster) }}>
         {% endif %}
         <div class="embed__consent">
             <button type="button" class="button button--primary embed__button"

@@ -47,6 +47,20 @@ class Media
     #[ORM\Column(type: Types::JSON)]
     private array $variants = [];
 
+    /**
+     * The most important spot of the image, from 0 (left/top) to 1 (right/bottom).
+     * Wherever the image is cut to another shape, this spot stays visible.
+     */
+    #[ORM\Column(options: ['default' => 0.5])]
+    private float $focalX = 0.5;
+
+    #[ORM\Column(options: ['default' => 0.5])]
+    private float $focalY = 0.5;
+
+    /** File of the upload as it was before it was cropped or rotated, kept so the changes can be undone. */
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $sourceFile = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?User $uploadedBy = null;
@@ -167,6 +181,49 @@ class Media
     public function getFile(string $variant = 'original'): string
     {
         return $this->variants[$variant]['file'] ?? $this->filename;
+    }
+
+    public function getFocalX(): float
+    {
+        return $this->focalX;
+    }
+
+    public function getFocalY(): float
+    {
+        return $this->focalY;
+    }
+
+    public function setFocalPoint(float $x, float $y): static
+    {
+        $this->focalX = round(max(0.0, min(1.0, $x)), 4);
+        $this->focalY = round(max(0.0, min(1.0, $y)), 4);
+
+        return $this;
+    }
+
+    /**
+     * The focal point as a value for the CSS property "object-position", e.g. "30% 65%".
+     */
+    public function getFocusPosition(): string
+    {
+        return round($this->focalX * 100, 1).'% '.round($this->focalY * 100, 1).'%';
+    }
+
+    public function getSourceFile(): ?string
+    {
+        return $this->sourceFile;
+    }
+
+    public function setSourceFile(?string $sourceFile): static
+    {
+        $this->sourceFile = $sourceFile;
+
+        return $this;
+    }
+
+    public function isAnimated(): bool
+    {
+        return 'image/gif' === $this->mimeType;
     }
 
     public function getUploadedBy(): ?User

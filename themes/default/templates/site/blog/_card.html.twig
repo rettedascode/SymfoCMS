@@ -2,7 +2,7 @@
     {% if post.coverImage %}
         <a href="{{ content_path(post) }}" tabindex="-1" aria-hidden="true">
             <img class="post-card__image" src="{{ media_url(post.coverImage, 'medium') }}" alt="" loading="lazy"
-                 width="{{ post.coverImage.width }}" height="{{ post.coverImage.height }}">
+                 width="{{ post.coverImage.width }}" height="{{ post.coverImage.height }}"{{ media_focus(post.coverImage) }}>
         </a>
     {% endif %}
     <div class="post-card__body">

@@ -8,7 +8,7 @@
                 <img src="{{ media_url(image, 'medium') }}" srcset="{{ media_srcset(image) }}"
                      sizes="(min-width: 800px) {{ (760 / data.columns)|round }}px, 50vw"
                      width="{{ image.width }}" height="{{ image.height }}"
-                     alt="{{ image.alt }}" loading="lazy">
+                     alt="{{ image.alt }}" loading="lazy"{{ media_focus(image) }}>
             </a>
         </li>
     {% endfor %}
