@@ -8,9 +8,12 @@
     </div>
 
     <div class="card card--narrow">
-        <h2>{{ 'settings.languages_heading'|trans }}</h2>
-        <p class="muted">{{ 'settings.languages_intro'|trans }}</p>
         {{ form_start(form) }}
+        <h2>{{ 'settings.site_heading'|trans }}</h2>
+        {{ form_row(form.siteName) }}
+        {{ form_row(form.siteTagline) }}
+        <h2 class="card__heading">{{ 'settings.languages_heading'|trans }}</h2>
+        <p class="muted">{{ 'settings.languages_intro'|trans }}</p>
         {{ form_row(form.locales) }}
         <h2 class="card__heading">{{ 'settings.forms_heading'|trans }}</h2>
         {{ form_row(form.retentionDays) }}

@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Name and tagline of the website are edited under "Settings". `APP_SITE_NAME` and `APP_SITE_TAGLINE` remain the defaults.
 - The public templates and stylesheet moved from `templates/site/` and `assets/styles/site.css` to `themes/default/`. Template names such as `site/page.html.twig` are unchanged.
 - Web addresses of pages, posts and categories only have to be unique within one language.
 - Existing content is assigned to the language set in `APP_LOCALE` by the migration; addresses do not change.

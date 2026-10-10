@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @extends AbstractType<array{locales: string, retentionDays: int|null}>
+ * @extends AbstractType<array{siteName: string, siteTagline: string|null, locales: string, retentionDays: int|null}>
  */
 final class SettingsType extends AbstractType
 {
@@ -28,6 +28,21 @@ final class SettingsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $builder->add('siteName', TextType::class, [
+            'label' => 'settings.site_name',
+            'help' => 'settings.site_name_help',
+            'constraints' => [new Assert\NotBlank(), new Assert\Length(max: 100)],
+            'attr' => ['maxlength' => 100],
+        ]);
+
+        $builder->add('siteTagline', TextType::class, [
+            'label' => 'settings.site_tagline',
+            'help' => 'settings.site_tagline_help',
+            'required' => false,
+            'constraints' => [new Assert\Length(max: 200)],
+            'attr' => ['maxlength' => 200],
+        ]);
+
         $builder->add('locales', TextType::class, [
             'label' => 'settings.locales',
             'help' => 'settings.locales_help',

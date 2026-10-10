@@ -8,7 +8,6 @@ use App\Entity\Content;
 use App\Entity\Media;
 use App\Entity\Post;
 use App\Twig\CmsExtension;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -24,8 +23,7 @@ final class StructuredData
         private readonly CmsExtension $cms,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
-        #[Autowire(param: 'app.site_name')]
-        private readonly string $siteName,
+        private readonly SiteInfo $site,
     ) {
     }
 
@@ -51,7 +49,7 @@ final class StructuredData
                 'datePublished' => $content->getPublishedAt()?->format(\DATE_ATOM),
                 'dateModified' => $content->getUpdatedAt()->format(\DATE_ATOM),
                 'author' => null !== $content->getAuthor() ? ['@type' => 'Person', 'name' => $content->getAuthor()->getName()] : null,
-                'publisher' => ['@type' => 'Organization', 'name' => $this->siteName],
+                'publisher' => ['@type' => 'Organization', 'name' => $this->site->name()],
                 'mainEntityOfPage' => $url,
                 'inLanguage' => $content->getLocale(),
             ]);
@@ -64,7 +62,7 @@ final class StructuredData
 
         // Breadcrumbs only make sense below the homepage.
         if ($url !== $home) {
-            $trail = [[$this->siteName, $home]];
+            $trail = [[$this->site->name(), $home]];
             if ($content instanceof Post) {
                 $trail[] = [$this->translator->trans('site.blog', [], null, $content->getLocale()), $this->siteUrls->generate('app_blog', [], $content->getLocale(), absolute: true)];
             }

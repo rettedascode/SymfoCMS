@@ -121,8 +121,8 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `APP_SECRET` | *(empty)* | Random secret used for security tokens. **Required in production.** |
 | `DATABASE_URL` | SQLite in `var/data.db` | Database connection, see below |
 | `DEFAULT_URI` | `http://localhost` | Base URL for links generated outside of web requests |
-| `APP_SITE_NAME` | `SymfoCMS` | Name shown in the header, the browser tab and the feed |
-| `APP_SITE_TAGLINE` | `A small, friendly CMS` | Default meta description |
+| `APP_SITE_NAME` | `SymfoCMS` | Name shown in the header, the browser tab and the feed, until one is entered under *Settings* |
+| `APP_SITE_TAGLINE` | `A small, friendly CMS` | Default meta description, until one is entered under *Settings* |
 | `APP_LOCALE` | `en` | Language of the website until languages are chosen under *Settings* in the admin area, and default admin language |
 | `APP_TIMEZONE` | `UTC` | Time zone for publish dates, e.g. `Europe/Berlin`. Choose it before creating content. |
 | `APP_MAX_REVISIONS` | `50` | Number of earlier versions kept for every page and post |

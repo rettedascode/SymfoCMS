@@ -585,3 +585,9 @@ theme.font.system_sans: Standard (sans serif)
 theme.font.system_serif: Standard (serif)
 flash.theme_activated: The theme is now active.
 flash.theme_reset: The colours and fonts of the theme were restored.
+
+settings.site_heading: Website
+settings.site_name: Name of the website
+settings.site_name_help: Shown in the header, in the browser tab and in search results.
+settings.site_tagline: Short description
+settings.site_tagline_help: One sentence about the website. Search engines show it for pages without a description of their own.

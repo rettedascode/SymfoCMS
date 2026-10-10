@@ -7,8 +7,7 @@ twig:
         # Lets a theme extend a template of another one: "@themes/default/templates/site/base.html.twig".
         '%kernel.project_dir%/themes': themes
     globals:
-        site_name: '%app.site_name%'
-        site_tagline: '%app.site_tagline%'
+        # "site_name" and "site_tagline" come from App\Twig\SiteGlobals.
         max_revisions: '%app.max_revisions%'
 
 when@test:

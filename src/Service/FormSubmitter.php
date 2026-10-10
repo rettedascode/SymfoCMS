@@ -40,8 +40,7 @@ final class FormSubmitter
         private readonly RateLimiterFactory $rateLimiter,
         #[Autowire(param: 'app.mail_from')]
         private readonly string $mailFrom,
-        #[Autowire(param: 'app.site_name')]
-        private readonly string $siteName,
+        private readonly SiteInfo $site,
     ) {
     }
 
@@ -190,9 +189,9 @@ final class FormSubmitter
         }
 
         $email = (new Email())
-            ->from(new Address($this->mailFrom, $this->siteName))
+            ->from(new Address($this->mailFrom, $this->site->name()))
             ->to($form->getNotifyEmail())
-            ->subject(\sprintf('[%s] %s', $this->siteName, $form->getName()))
+            ->subject(\sprintf('[%s] %s', $this->site->name(), $form->getName()))
             ->text(implode("\n", $lines));
 
         // Answering the notification should reach the person who filled in the form.
