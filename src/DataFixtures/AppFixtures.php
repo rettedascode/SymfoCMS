@@ -196,6 +196,18 @@ final class AppFixtures extends Fixture
             ->setStatus(ContentStatus::Review)
             ->setPublishedAt(null);
 
+        // A draft and a post that goes out next week, so the board and the calendar have something to move.
+        $this->createPost($manager, 'Ideas for the Summer Issue', 'ideas-for-the-summer-issue', $news, $admin, $harbour, 'now',
+            'A list of things we might write about.', [
+                ['type' => 'text', 'data' => ['content' => '<p>This post is a <strong>draft</strong>. Open the board under <em>Blog</em> and drag its card to another column to change the status.</p>']],
+            ])
+            ->setStatus(ContentStatus::Draft)
+            ->setPublishedAt(null);
+        $this->createPost($manager, 'Behind the Scenes of Our Newsletter', 'behind-the-scenes-of-our-newsletter', $news, $editor, $desk, '+6 days 09:00',
+            'How an issue comes together, from the first idea to the send button.', [
+                ['type' => 'text', 'data' => ['content' => '<p>This post is <strong>scheduled</strong>: it appears on the website by itself on its date. In the calendar under <em>Blog</em> you can drag it to another day.</p>']],
+            ]);
+
         // A contact form built with the form builder, shown on its own page, with two messages in the inbox.
         $contactForm = (new Form())
             ->setName('Contact form')

@@ -133,6 +133,28 @@ final class ReviewWorkflow
         return false;
     }
 
+    /**
+     * Gives the content another status by the step that leads there, if the current user may take one.
+     *
+     * @return bool false when no allowed step leads to that status; the content then keeps its status
+     */
+    public function moveTo(Content $content, ContentStatus $status): bool
+    {
+        if ($status === $content->getStatus()) {
+            return true;
+        }
+
+        foreach ($this->workflow->getEnabledTransitions($content) as $transition) {
+            if (\in_array($status->value, $transition->getTos(), true)) {
+                $this->apply($content, $transition->getName());
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function apply(Content $content, string $transition, string $note = ''): void
     {
         $this->workflow->apply($content, $transition);

@@ -1,0 +1,59 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'post.tab_board'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.blog'|trans }}</h1>
+        <a class="button button--primary" href="{{ path('admin_post_new', {locale: locale}) }}">+ {{ 'post.new'|trans }}</a>
+    </div>
+
+    {{ include('admin/post/_tabs.html.twig', {active: 'board', locale: locale}) }}
+
+    <p class="muted">{{ 'board.intro'|trans }}</p>
+
+    {#
+        One list per status (see board_controller.js). A card names the statuses its post may get
+        for the current user in "data-allowed"; the server checks every move again.
+    #}
+    <div class="board" data-controller="board"
+         data-board-url-value="{{ path('admin_editorial_board_move') }}"
+         data-board-csrf-value="{{ csrf_token('admin') }}"
+         data-board-i18n-value="{{ {
+             moved: 'board.moved'|trans,
+             confirm_title: 'board.confirm_title'|trans,
+             confirm_ok: 'board.confirm_ok'|trans,
+             confirm_cancel: 'board.confirm_cancel'|trans,
+         }|json_encode }}">
+        {% for status, cards in columns %}
+            <section class="board__column board__column--{{ status }}" aria-labelledby="board-{{ status }}">
+                <h2 class="board__heading" id="board-{{ status }}">
+                    {{ ('status.' ~ status)|trans }}
+                    <span class="board__count" data-board-target="count" data-status="{{ status }}">{{ cards|length }}</span>
+                </h2>
+                <ul class="board__list" data-board-target="column" data-status="{{ status }}"
+                    aria-label="{{ ('status.' ~ status)|trans }}" data-dnd-empty-hint="{{ 'board.drop_here'|trans }}">
+                    {% for card in cards %}
+                        {% set post = card.post %}
+                        {% set state = post.scheduled ? 'scheduled' : post.status.value %}
+                        <li class="board-card" data-dnd-item data-dnd-id="{{ post.id }}" data-dnd-label="{{ post.title }}" data-allowed="{{ card.allowed|join(' ') }}">
+                            {{ include('admin/_handle.html.twig', {label: post.title}) }}
+                            <div class="board-card__body">
+                                <a class="board-card__title" href="{{ path('admin_post_edit', {id: post.id}) }}">{{ post.title }}</a>
+                                <span class="board-card__meta">
+                                    <span class="badge badge--{{ state }}" data-board-badge>{{ ('status.' ~ state)|trans }}</span>
+                                    {% if post.author %}<span>{{ post.author.name }}</span>{% endif %}
+                                    {% if post.publishedAt %}<span data-board-date>{{ post.publishedAt|local_date(true) }}</span>{% endif %}
+                                </span>
+                                {% if post.reviewNote %}<span class="board-card__note">{{ post.reviewNote }}</span>{% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if status == 'published' and hidden > 0 %}
+                    <p class="muted board__more">{{ 'board.more_published'|trans({'%count%': hidden}) }} <a href="{{ path('admin_post_index', locale == default_content_locale() ? {} : {locale: locale}) }}">{{ 'board.all_posts'|trans }}</a></p>
+                {% endif %}
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

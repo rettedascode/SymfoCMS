@@ -266,6 +266,17 @@ media.delete_confirm: Dieses Bild endgültig löschen?
 post.new: Neuer Beitrag
 post.new_intro: Worum geht es in dem Beitrag? Du kannst den Titel jederzeit ändern.
 post.tab_posts: Beiträge
+post.tab_board: Board
+board.intro: Jeder Beitrag ist eine Karte in der Spalte seines Status. Ziehen Sie eine Karte in eine andere Spalte, um den Status zu ändern.
+board.drop_here: Beitrag hier ablegen
+board.moved: 'Der Beitrag ist jetzt: %status%.'
+board.more_published: '{1}Ein älterer veröffentlichter Beitrag wird hier nicht gezeigt.|]1,Inf[%count% ältere veröffentlichte Beiträge werden hier nicht gezeigt.'
+board.all_posts: Alle Beiträge
+board.confirm_title: Beitrag offline nehmen?
+board.confirm_offline: 'Besucher können „%title%“ gerade lesen. Mit dieser Änderung verschwindet der Beitrag von der Website. Fortfahren?'
+board.confirm_ok: Offline nehmen
+board.confirm_cancel: So lassen, wie es ist
+board.error.not_allowed: 'Sie können diesem Beitrag nicht den Status „%status%“ geben.'
 post.tab_categories: Kategorien
 post.empty_title: Noch keine Beiträge
 post.empty_text: Schreibe deinen ersten Blogbeitrag, um loszulegen.

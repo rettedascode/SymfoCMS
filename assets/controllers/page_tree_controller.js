@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { ask } from '../lib/confirm.js';
 import { announce, t, toast } from '../lib/dnd.js';
 import { el, format } from '../lib/dom.js';
 
@@ -103,28 +104,18 @@ export default class extends Controller {
      * @returns {Promise<boolean>}
      */
     ask({ confirm, changes }) {
-        return new Promise((resolve) => {
-            const dialog = el('dialog', { class: 'confirm-dialog', 'aria-labelledby': 'page-tree-confirm-title' },
-                el('h2', { id: 'page-tree-confirm-title', text: this.i18nValue.confirm_title }),
-                el('p', { text: confirm }),
-                el('ul', {}, ...changes.map((change) => el('li', {},
-                    el('strong', { text: change.title }),
-                    el('br'),
-                    el('code', { text: change.from }),
-                    ' → ',
-                    el('code', { text: change.to }),
-                ))),
-                el('div', { class: 'form-actions' },
-                    el('button', { type: 'button', class: 'button button--primary', 'data-confirm': 'yes', text: this.i18nValue.confirm_ok, onclick: () => dialog.close('yes') }),
-                    el('button', { type: 'button', class: 'button', 'data-confirm': 'no', text: this.i18nValue.confirm_cancel, onclick: () => dialog.close('no') }),
-                ),
-            );
-            dialog.addEventListener('close', () => {
-                dialog.remove();
-                resolve(dialog.returnValue === 'yes');
-            });
-            document.body.append(dialog);
-            dialog.showModal();
+        return ask({
+            title: this.i18nValue.confirm_title,
+            text: confirm,
+            details: changes.map((change) => el('span', {},
+                el('strong', { text: change.title }),
+                el('br'),
+                el('code', { text: change.from }),
+                ' → ',
+                el('code', { text: change.to }),
+            )),
+            ok: this.i18nValue.confirm_ok,
+            cancel: this.i18nValue.confirm_cancel,
         });
     }
 

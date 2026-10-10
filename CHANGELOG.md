@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Editorial board under Blog: posts as cards in one column per status. Dragging a card into another column changes the status, limited to the steps the review workflow allows the user; taking a public post offline asks first (see `docs/editorial-planning.md`).
 - Menu editor: the page tree stands next to the menu, and pages are dragged from it to their place in the menu, also as sub-items; a click still adds at the end.
 - Blog categories have an order of their own, arranged by dragging. It is used on the blog, in the post form and in the read API.
 - Gallery images are arranged by dragging them, with the same handles, keyboard path and undo as blocks.

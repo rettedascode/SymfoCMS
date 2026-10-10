@@ -361,6 +361,24 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 .menu-editor__custom legend, .field__title { display: block; font-weight: 600; margin-bottom: .3rem; font-size: .95rem; padding: 0; }
 .menu-editor__custom .button { justify-self: start; }
 
+/* Editorial board: one column of cards per status. */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.board__column { padding: .75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--subtle-2); }
+.board__heading { display: flex; align-items: center; gap: .5rem; margin: 0 0 .6rem; font-size: 1rem; }
+.board__count { min-width: 1.5rem; padding: 0 .4rem; border-radius: 999px; background: var(--subtle); color: var(--muted); font-size: .8rem; font-weight: 600; text-align: center; }
+.board__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; min-height: 3.5rem; border-radius: var(--radius); }
+.board__more { margin: .6rem 0 0; font-size: .88rem; }
+.board-card { display: flex; align-items: flex-start; gap: .3rem; padding: .45rem .6rem .5rem .25rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.board-card__body { display: grid; gap: .3rem; min-width: 0; flex: 1; padding-top: .3rem; }
+.board-card__title { font-weight: 600; overflow-wrap: anywhere; }
+.board-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem .6rem; color: var(--muted); font-size: .85rem; }
+.board-card__note { padding: .3rem .5rem; border-left: 3px solid var(--border-strong); color: var(--muted); font-size: .85rem; }
+/* A column that would not take the card that is being moved steps back. */
+.dnd-not-allowed.board__list, .board__list.dnd-not-allowed { opacity: .5; }
+@media (max-width: 860px) {
+    .board { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* A plain list that is arranged by dragging, e.g. the categories. */
 .list-hint { margin: 1.5rem 0 .6rem; }
 .sort-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; max-width: 52rem; }

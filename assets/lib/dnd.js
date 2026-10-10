@@ -526,6 +526,23 @@ function currentSlotIndex(item, slots) {
     return slots.findIndex((slot) => slot.list.el === item.parentElement && slot.before === next);
 }
 
+/**
+ * The slot one step before (-1) or after (1) the place of the item.
+ *
+ * In a list that cannot be sorted - the column of a board, the day of a calendar - the place of the
+ * item is none of the slots. The step then leads to the nearest slot of the lists before or after it.
+ */
+function stepFrom(item, slots, step) {
+    const index = currentSlotIndex(item, slots);
+    if (index !== -1) {
+        return slots[index + step];
+    }
+
+    const before = slots.filter((slot) => slot.list.el.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING).length;
+
+    return step < 0 ? slots[before - 1] : slots[before];
+}
+
 function place(item, slot) {
     slot.list.el.insertBefore(item, slot.before);
 }
@@ -550,8 +567,7 @@ function startCarry(item, handleElement) {
 
 function carry(step) {
     const { item } = carrying;
-    const slots = walkable(item, slotsFor(item));
-    const target = slots[currentSlotIndex(item, slots) + step];
+    const target = stepFrom(item, walkable(item, slotsFor(item)), step);
     if (!target) {
         announce(t('edge'));
 
@@ -652,7 +668,6 @@ function showMenu(item, handleElement) {
     const current = currentSlotIndex(item, slots);
     // "Move up" and "Move down" take the same steps as the arrow keys.
     const steps = walkable(item, slots);
-    const step = currentSlotIndex(item, steps);
     const moveTo = (slot) => {
         const origin = { list: item.parentElement, index: indexOf(item) };
         closeMenu();
@@ -671,9 +686,9 @@ function showMenu(item, handleElement) {
     }, icon(iconName), label);
 
     const element = el('div', { class: 'dnd-menu', role: 'menu', 'aria-label': t('menu', { item: labelOf(item) }) },
-        entry(t('move_up'), 'up', steps[step - 1]),
-        entry(t('move_down'), 'down', steps[step + 1]),
-        entry(t('move_to'), 'right', null, slots.length > 1 ? () => showDestinations(item, handleElement, slots, current, moveTo) : null),
+        entry(t('move_up'), 'up', stepFrom(item, steps, -1)),
+        entry(t('move_down'), 'down', stepFrom(item, steps, 1)),
+        entry(t('move_to'), 'right', null, slots.some((slot, index) => index !== current) ? () => showDestinations(item, handleElement, slots, current, moveTo) : null),
     );
 
     mountMenu(element, item, handleElement);

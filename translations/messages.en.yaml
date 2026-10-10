@@ -267,6 +267,17 @@ media.delete_confirm: Delete this image permanently?
 post.new: New post
 post.new_intro: What is the post about? You can change the title at any time.
 post.tab_posts: Posts
+post.tab_board: Board
+board.intro: Every post is a card in the column of its status. Drag a card into another column to change the status.
+board.drop_here: Drop a post here
+board.moved: 'The post is now: %status%.'
+board.more_published: '{1}One older published post is not shown here.|]1,Inf[%count% older published posts are not shown here.'
+board.all_posts: All posts
+board.confirm_title: Take the post offline?
+board.confirm_offline: 'Visitors can read “%title%” right now. With this change it disappears from the website. Go on?'
+board.confirm_ok: Take it offline
+board.confirm_cancel: Leave it as it is
+board.error.not_allowed: 'You cannot give this post the status “%status%”.'
 post.tab_categories: Categories
 post.empty_title: No posts yet
 post.empty_text: Write your first blog post to get started.
