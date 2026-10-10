@@ -916,3 +916,12 @@ menu.js.list_top: Oberste Ebene des Menüs
 menu.js.list_inside: 'Unterpunkte von „%title%“'
 menu.js.drop_sub_item: Hier ablegen, um einen Unterpunkt zu erstellen
 form.js.list: Felder des Formulars
+
+editor.palette: Blöcke
+editor.palette_hint: Ziehen Sie einen Block in die Seite oder klicken Sie ihn an, um ihn am Ende einzufügen.
+editor.palette_add: '„%type%“ hinzufügen: in die Seite ziehen oder klicken, um am Ende einzufügen'
+editor.palette_added: '„%type%“ wurde am Ende der Seite eingefügt.'
+editor.drop_images: Bilder hier ablegen
+editor.dropped_image: Das Bild wurde als neuer Block eingefügt.
+editor.dropped_gallery: Die Bilder wurden als Galerie eingefügt.
+dnd.not_allowed: Dort kann es nicht abgelegt werden. Nichts wurde verschoben.

@@ -98,3 +98,14 @@ public function move(Request $request, TreeMover $mover): JsonResponse
 The classes are in `assets/styles/dnd.css`: `dnd-handle`, `dnd-placeholder` (the landing spot), `dnd-preview` (the copy at the pointer), `dnd-rejects` and `dnd-not-allowed`, `dnd-carried` (picked up with the keyboard). With the system setting "reduce motion", lists do not animate and the preview is not tilted.
 
 Interface text lives under `dnd.` in the translation files and reaches the browser through the `<script id="dnd-i18n">` element of the admin layout.
+
+### Testing
+
+What happens in the browser – dragging, the keyboard path, announcements, file drops – is tested with Symfony Panther in `tests/Browser/`:
+
+```bash
+vendor/bin/bdi detect drivers   # once: downloads the driver for the installed Chrome into ./drivers
+composer test:browser
+```
+
+`App\Tests\Browser\BrowserTestCase` offers `drag()`, `press()` and `announcement()` for new tests. Without a browser the tests are skipped.

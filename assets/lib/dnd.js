@@ -44,6 +44,8 @@ let liveRegion = null;
 let activeToast = null;
 let toastTimer = null;
 let suppressClickUntil = 0;
+// True while the pointer is over a list that refuses the dragged item: letting go there cancels the drag.
+let overRejectingList = false;
 
 export const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
@@ -176,6 +178,7 @@ class DragList {
             scrollSpeed: 18,
             onStart: () => {
                 closeMenu();
+                overRejectingList = false;
                 document.documentElement.classList.add('dnd-dragging');
             },
             onMove: (event) => this.onPointerMove(event),
@@ -226,9 +229,12 @@ class DragList {
             // Shows "not here": the list is marked and the cursor changes.
             event.to.classList.add('dnd-rejects');
             document.documentElement.classList.add('dnd-not-allowed');
+            overRejectingList = true;
 
             return false;
         }
+
+        overRejectingList = false;
 
         return true;
     }
@@ -238,6 +244,21 @@ class DragList {
         clearRejection();
         // The browser sends a click to the handle after a drag; that must not open the menu.
         suppressClickUntil = Date.now() + 300;
+        const cancelled = overRejectingList;
+        overRejectingList = false;
+
+        if (cancelled) {
+            // Dropped on "not allowed": everything stays as it was, wherever the item passed on its way.
+            if (event.clone?.isConnected) {
+                event.clone.replaceWith(event.item);
+            } else {
+                const siblings = items(event.from).filter((sibling) => sibling !== event.item);
+                event.from.insertBefore(event.item, siblings[event.oldDraggableIndex] ?? null);
+            }
+            announce(t('not_allowed'));
+
+            return;
+        }
 
         if (event.pullMode === 'clone') {
             // The palette keeps its own item; the target only learns where something was dropped.

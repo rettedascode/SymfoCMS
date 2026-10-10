@@ -109,3 +109,36 @@ jobs:
 
       - name: PHPUnit
         run: php bin/phpunit
+
+  browser:
+    name: Browser tests (Panther, Chrome)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: ctype, iconv, intl, gd, exif, fileinfo, pdo_sqlite, zip
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      # Downloads the driver that matches the Chrome of the runner into ./drivers.
+      - name: Install the browser driver
+        run: vendor/bin/bdi detect drivers
+
+      - name: PHPUnit (browser tests)
+        run: php bin/phpunit --testsuite browser
+        env:
+          PANTHER_NO_SANDBOX: 1
+          PANTHER_CHROME_ARGUMENTS: '--disable-dev-shm-usage'
+
+      - name: Keep screenshots of failed browser tests
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-screenshots
+          path: var/error-screenshots
+          if-no-files-found: ignore

@@ -50,7 +50,16 @@
         <div class="editor__layout">
             <div class="editor__main">
                 {{ form_row(form.name) }}
-                <div class="blocks" data-editor-target="list"></div>
+                <div class="blocks-area">
+                        {# Block types to drag into the page; filled by the editor controller. #}
+                        <aside class="palette" aria-label="{{ 'editor.palette'|trans }}">
+                            <h2 class="palette__heading">{{ 'editor.palette'|trans }}</h2>
+                            <p class="palette__hint">{{ 'editor.palette_hint'|trans }}</p>
+                            <ul class="palette__list" data-editor-target="palette" data-controller="palette" data-palette-group-value="blocks"
+                                data-action="palette:add->editor#paletteAdd" aria-label="{{ 'editor.palette'|trans }}"></ul>
+                        </aside>
+                        <div class="blocks" data-editor-target="list"></div>
+                    </div>
                 <noscript><p class="flash flash--error">{{ 'editor.needs_javascript'|trans }}</p></noscript>
             </div>
 

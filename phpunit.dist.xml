@@ -9,6 +9,7 @@
          failOnWarning="true"
          bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
+         defaultTestSuite="main"
 >
     <php>
         <ini name="display_errors" value="1" />
@@ -17,9 +18,14 @@
         <server name="SHELL_VERBOSITY" value="-1" />
     </php>
 
+    <!-- "main" runs by default. The browser tests need Chrome and take longer: composer test:browser -->
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="main">
+            <directory>tests/Unit</directory>
+            <directory>tests/Functional</directory>
+        </testsuite>
+        <testsuite name="browser">
+            <directory>tests/Browser</directory>
         </testsuite>
     </testsuites>
 
@@ -40,5 +46,6 @@
     </source>
 
     <extensions>
+        <bootstrap class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
 </phpunit>

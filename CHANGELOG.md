@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Block palette in the page editor: every block type can be dragged to any position of the page or a column; clicking one still adds it at the end.
+- Image files dropped from the desktop into the editor are uploaded and become an image block at that position, several at once a gallery. Progress is shown in place, and files that are too large or of the wrong type are refused with a clear message.
+- Browser tests with Symfony Panther (`composer test:browser`) for dragging, the keyboard path and file drops.
 - One shared drag-and-drop layer for the whole admin area (see `docs/drag-and-drop.md`): handles on every movable item, a preview and a marked landing spot, a "not allowed" state, automatic scrolling, touch support, moving with the keyboard (Space, arrow keys, Escape) with screen reader announcements, and a menu with "Move up", "Move down" and "Move to …".
 - Undo and redo (Ctrl+Z, Ctrl+Shift+Z) for structural changes in the page editor, the menu editor and the form builder.
 - Upload progress and clear messages for files that are too large or of the wrong type when dropping files into the media library.

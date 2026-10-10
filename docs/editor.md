@@ -69,3 +69,22 @@ Admins can turn any page into a template: open the page, switch to the **Setting
 - New block types and their fields: [Extending SymfoCMS](extensions.md).
 - The click-to-load behaviour lives in `assets/site.js`: any element with a `data-embed-src` attribute inside a `data-embed` container is replaced by an `<iframe>` when clicked. Block templates of your own can use the same markup (see `templates/blocks/video.html.twig`).
 - Syntax highlighting is done on the server by `App\Service\CodeHighlighter`, so the website needs no JavaScript for it.
+
+## Arranging blocks by dragging
+
+Next to the page is the **palette** with all block types.
+
+- **Drag** a block type into the page: a marked gap shows where the block will be created. It can also be dropped into a column.
+- **Click** a block type (or press Enter on it) to add it at the end of the page.
+- Blocks that are already on the page are moved by their handle – the six dots – with the mouse, a finger or the keyboard. See [drag and drop](drag-and-drop.md) for all the ways, including undo with Ctrl+Z.
+
+On a phone the palette is a strip above the page that scrolls sideways.
+
+### Dropping images from the desktop
+
+Drag image files from a folder of your computer into the editor. A line shows where they will go.
+
+- **One image** becomes an image block at that place.
+- **Several images** dropped together become a gallery.
+
+The upload progress is shown right where the block will appear. Files that are too large or not an image (JPEG, PNG, GIF, WebP) are named in a message and left out; the others are still added.

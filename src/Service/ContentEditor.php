@@ -48,6 +48,7 @@ final class ContentEditor
         private readonly SharedBlockRepository $sharedBlocks,
         private readonly FormRepository $forms,
         private readonly Security $security,
+        private readonly MediaManager $mediaManager,
     ) {
     }
 
@@ -70,6 +71,11 @@ final class ContentEditor
             'i18n' => $this->translations('editor.'),
             'csrf' => $this->csrfTokenManager->getToken(AdminController::CSRF_ID)->getValue(),
             'locale' => $this->translator->getLocale(),
+            // What may be dropped into the editor from the desktop; the upload itself checks again.
+            'upload' => [
+                'maxBytes' => $this->mediaManager->maxUploadMb() * 1024 * 1024,
+                'types' => array_keys(MediaManager::MIME_TYPES),
+            ],
             'urls' => [
                 'preview' => $this->urlGenerator->generate('admin_preview'),
                 'mediaList' => $this->urlGenerator->generate('admin_media_list'),

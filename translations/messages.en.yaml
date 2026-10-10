@@ -917,3 +917,12 @@ menu.js.list_top: Top level of the menu
 menu.js.list_inside: 'Sub-items of “%title%”'
 menu.js.drop_sub_item: Drop here to make a sub-item
 form.js.list: Fields of the form
+
+editor.palette: Blocks
+editor.palette_hint: Drag a block into the page, or click it to add it at the end.
+editor.palette_add: 'Add “%type%”: drag it into the page or click to add it at the end'
+editor.palette_added: '“%type%” was added at the end of the page.'
+editor.drop_images: Drop images here
+editor.dropped_image: The image was added as a new block.
+editor.dropped_gallery: The images were added as a gallery.
+dnd.not_allowed: It cannot be dropped there. Nothing was moved.

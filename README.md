@@ -279,6 +279,7 @@ Administrators choose a theme under **Design** and set the logo, colours and fon
 ```bash
 composer check       # everything the CI runs: composer validate, PHP-CS-Fixer, PHPStan, PHPUnit
 composer test        # PHPUnit only
+composer test:browser  # tests in a real browser (drag and drop, keyboard); needs Chrome and "vendor/bin/bdi detect drivers" once
 composer stan        # PHPStan only
 composer cs-fix      # fix coding standard violations
 ```
@@ -295,6 +296,7 @@ templates/blocks/   One template per block type
 themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
+tests/Browser/      Tests that drive a real browser with Symfony Panther
 examples/           Example extension (a block type in its own bundle)
 docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, drag and drop, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```

@@ -33,4 +33,6 @@
 *.db-journal
 *.sqlite
 /phpstan.neon
+# Browser drivers for the Panther tests (vendor/bin/bdi detect drivers)
+/drivers/
 ###< symfocms ###

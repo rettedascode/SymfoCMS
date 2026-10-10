@@ -1,8 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 import { renderField } from '../lib/block_fields.js';
-import { announce, createDragList, focusHandle, handle, hideToast, t, toast } from '../lib/dnd.js';
+import { announce, createDragList, focusHandle, handle, hideToast, t, toast, watchFileDrops } from '../lib/dnd.js';
 import { el, format } from '../lib/dom.js';
 import { History, moveStep } from '../lib/history.js';
+import { checkFiles, uploadFiles } from '../lib/upload.js';
 import { icon } from '../lib/icons.js';
 
 const PREVIEW_DELAY = 350;
@@ -24,7 +25,7 @@ const AUTOSAVE_DELAY = 2500;
  * between the page and columns. Structural changes can be undone with Ctrl+Z.
  */
 export default class extends Controller {
-    static targets = ['form', 'title', 'input', 'list', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
+    static targets = ['form', 'title', 'input', 'list', 'palette', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
     static values = { config: Object, unsaved: Boolean };
 
     connect() {
@@ -48,6 +49,7 @@ export default class extends Controller {
         }
 
         this.render();
+        this.renderPalette();
         this.refreshPreview();
         this.setStatus(this.dirty ? 'unsaved' : 'saved');
         this.openPanelWithErrors();
@@ -73,6 +75,14 @@ export default class extends Controller {
         // A block that was dragged, carried with the keyboard or moved through the menu.
         this.onDndMove = (event) => this.blockMoved(event.detail);
         this.element.addEventListener('dnd:move', this.onDndMove);
+        // A block type dragged out of the palette.
+        this.onDndInsert = (event) => this.paletteDropped(event.detail);
+        this.element.addEventListener('dnd:insert', this.onDndInsert);
+        // Image files dragged in from the desktop.
+        this.stopWatchingFiles = watchFileDrops(this.element, {
+            onOver: (over, event) => this.filesHover(over, event),
+            onFiles: (files, event) => this.filesDropped(files, event),
+        });
         this.unbindHistoryKeys = this.history.bindKeys(document, {
             onUndo: () => announce(t('undone')),
             onRedo: () => announce(t('redone')),
@@ -88,6 +98,8 @@ export default class extends Controller {
         document.removeEventListener('click', this.onDocumentClick);
         document.removeEventListener('keydown', this.onKeydown);
         this.element.removeEventListener('dnd:move', this.onDndMove);
+        this.element.removeEventListener('dnd:insert', this.onDndInsert);
+        this.stopWatchingFiles();
         this.unbindHistoryKeys();
         hideToast();
         clearTimeout(this.previewTimer);
@@ -328,6 +340,149 @@ export default class extends Controller {
             group: 'blocks',
             accept: nested ? ':not([data-layout="true"])' : null,
         }));
+    }
+
+    // ----- Palette -------------------------------------------------------
+
+    /** The block types as things to drag into the page (see palette_controller.js). */
+    renderPalette() {
+        if (!this.hasPaletteTarget) {
+            return;
+        }
+
+        this.paletteTarget.replaceChildren(...this.config.types.map((type) => el('li', {
+            class: 'palette__item',
+            'data-dnd-item': true,
+            'data-dnd-label': type.label,
+            'data-palette-type': type.type,
+            // Lets columns refuse layout blocks, exactly like for blocks that are moved.
+            'data-layout': String(type.layout),
+        }, el('button', {
+            type: 'button',
+            class: 'palette__button',
+            'data-dnd-handle': true,
+            title: format(this.i18n.palette_add, { type: type.label }),
+        }, el('span', { class: 'block-menu__icon', 'aria-hidden': 'true', text: type.icon }), el('span', { text: type.label })))));
+    }
+
+    /** Clicking a block type (or pressing Enter on it) adds it at the end of the page. */
+    paletteAdd(event) {
+        this.insert(this.blocks, this.blocks.length, event.detail.type);
+        announce(format(this.i18n.palette_added, { type: this.types.get(event.detail.type).label }));
+    }
+
+    /** A block type was dropped somewhere in the page or in a column. */
+    paletteDropped(detail) {
+        const list = this.lists.get(detail.to);
+        const typeName = detail.source.dataset.paletteType;
+        if (!list || !this.types.has(typeName)) {
+            return;
+        }
+
+        this.insert(list, Math.min(detail.index, list.length), typeName);
+    }
+
+    // ----- Image files from the desktop -----------------------------------
+
+    /**
+     * Where dropped files would go: the list of blocks under the pointer and the position in it.
+     */
+    dropTarget(event) {
+        const under = document.elementFromPoint(event.clientX, event.clientY);
+        const items = under?.closest?.('.blocks__items') ?? this.listTarget.querySelector(':scope > .blocks__items');
+        if (!items || !this.element.contains(items)) {
+            return null;
+        }
+
+        const blocks = [...items.children].filter((child) => child.matches('.block'));
+        const before = blocks.find((block) => {
+            const bounds = block.getBoundingClientRect();
+
+            return event.clientY < bounds.top + bounds.height / 2;
+        }) ?? null;
+
+        return { items, before, index: before ? blocks.indexOf(before) : blocks.length };
+    }
+
+    /** While files hover, a line shows where the new block will appear. */
+    filesHover(over, event) {
+        this.element.classList.toggle('editor--files-over', over);
+        const target = over ? this.dropTarget(event) : null;
+        if (!target) {
+            this.dropLine?.remove();
+
+            return;
+        }
+
+        this.dropLine ??= el('div', { class: 'blocks__drop-line', 'aria-hidden': 'true' }, el('span', { text: this.i18n.drop_images }));
+        if (this.dropLine.parentElement !== target.items || this.dropLine.nextElementSibling !== target.before) {
+            target.items.insertBefore(this.dropLine, target.before);
+        }
+    }
+
+    /**
+     * One image becomes an image block, several become a gallery - at the place they were dropped.
+     */
+    async filesDropped(files, event) {
+        const target = this.dropTarget(event);
+        this.dropLine?.remove();
+        this.element.classList.remove('editor--files-over');
+        const list = target ? this.lists.get(target.items) : null;
+        if (!list) {
+            return;
+        }
+
+        const { accepted, rejected } = checkFiles(files, {
+            maxBytes: this.config.upload.maxBytes,
+            types: this.config.upload.types,
+            messages: { too_large: t('file_too_large'), wrong_type: t('file_wrong_type') },
+        });
+        const errors = rejected.map(({ error }) => error);
+
+        // The progress is shown right where the block will be.
+        const label = el('span');
+        const bar = el('progress', { max: '100', value: '0' });
+        const placeholder = el('div', { class: 'block block--uploading', role: 'status' }, label, bar);
+        if (accepted.length > 0) {
+            target.items.insertBefore(placeholder, target.before);
+        }
+
+        const uploaded = await uploadFiles(accepted, {
+            url: this.config.urls.mediaUpload,
+            csrf: this.config.csrf,
+            fallbackError: t('upload_failed'),
+            onProgress: ({ file, index, total, fraction }) => {
+                label.textContent = t('uploading', { name: file.name, current: String(index + 1), total: String(total) });
+                bar.value = Math.round(((index + fraction) / total) * 100);
+            },
+            onResult: ({ file, error }) => {
+                if (error) {
+                    errors.push(`${file.name}: ${error}`);
+                }
+            },
+        });
+        placeholder.remove();
+
+        if (uploaded.length > 0) {
+            uploaded.forEach((media) => { this.media[media.id] = media; });
+            const block = uploaded.length === 1 ? this.newBlock('image') : this.newBlock('gallery');
+            if (uploaded.length === 1) {
+                block.data.image = uploaded[0].id;
+            } else {
+                block.data.images = uploaded.map((media) => media.id);
+            }
+
+            // The list may have changed while the files travelled: stay inside it.
+            this.addBlock(list, Math.min(target.index, list.length), block);
+            this.focusNewBlock(block);
+            this.structureChanged();
+            announce(this.i18n[uploaded.length === 1 ? 'dropped_image' : 'dropped_gallery']);
+        }
+
+        if (errors.length > 0) {
+            toast(errors.join(' '), { type: 'error', duration: 12000 });
+            announce(errors.join(' '));
+        }
     }
 
     /** The drag-and-drop layer has moved a block on screen: the data follows. */
