@@ -33,7 +33,7 @@ jobs:
       - name: Lint container, templates and translations
         run: |
           php bin/console lint:container
-          php bin/console lint:twig templates
+          php bin/console lint:twig templates themes
           php bin/console lint:yaml config translations
 
       - name: PHP-CS-Fixer (check only)

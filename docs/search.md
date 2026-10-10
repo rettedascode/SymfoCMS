@@ -35,5 +35,5 @@ php bin/console app:search:reindex
 - `App\Service\SearchIndexer` turns blocks into plain text using the field definitions of each block type. Text, textarea, rich text and code fields are indexed, also inside item lists and nested blocks. A custom block type is searchable without any extra code.
 - `App\EventSubscriber\SearchIndexSubscriber` is a Doctrine listener, so content written by your own code, fixtures or imports is indexed as well.
 - `App\Service\Search` runs the queries. Matching uses `LIKE` on lower-cased text; there is no stemming or typo tolerance. For large sites, replace this service with one that talks to a search engine.
-- The header form is the Twig block `search` in `templates/site/base.html.twig`; override it with an empty block to remove the field.
+- The header form is the Twig block `search` in `themes/default/templates/site/base.html.twig`; override it with an empty block to remove the field.
 - The address `/search` is reserved, so a page cannot use the slug `search`.

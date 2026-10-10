@@ -208,7 +208,7 @@ final class PageEditingTest extends AppWebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextSame('h1', 'Preview title');
         self::assertSelectorTextSame('h3.block-heading', 'Fresh heading');
-        self::assertSelectorExists('link[rel="stylesheet"][href*="site"]');
+        self::assertSelectorExists('link[rel="stylesheet"][href*="themes/default/assets/theme"]');
     }
 
     public function testAuthorsCannotManagePages(): void

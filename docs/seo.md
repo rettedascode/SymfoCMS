@@ -29,6 +29,6 @@ Drafts and scheduled posts are marked `noindex` and carry no structured data, ev
 
 ## For developers
 
-- Meta tags live in `templates/site/base.html.twig`. A page template sets `meta_description`, `canonical_url`, `share_image` and `translatable` before the layout renders.
+- Meta tags live in `themes/default/templates/site/base.html.twig`. A page template sets `meta_description`, `canonical_url`, `share_image` and `translatable` before the layout renders.
 - `App\Service\StructuredData` builds the JSON-LD objects; the Twig function `structured_data(content, blocks)` prints them.
 - Any block type whose data contains an item list with the fields `question` and `answer` contributes to the FAQ data.

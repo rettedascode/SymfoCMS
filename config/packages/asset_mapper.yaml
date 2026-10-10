@@ -2,7 +2,12 @@ framework:
     asset_mapper:
         # The paths to make available to the asset mapper.
         paths:
-            - assets/
+            assets/: ''
+            # Stylesheets, fonts and images of the themes: "themes/<theme>/assets/...".
+            themes/: themes
+        excluded_patterns:
+            - '*/themes/*/templates/*'
+            - '*/themes/*/theme.json'
         missing_import_mode: strict
 
 when@prod:

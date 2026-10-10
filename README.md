@@ -257,7 +257,7 @@ The language then appears in the user settings.
 
 ## Changing the design
 
-The public theme is `assets/styles/site.css` and the templates in `templates/site/` and `templates/blocks/`. Colours, fonts and widths are CSS custom properties at the top of the stylesheet. In development changes show up on reload; in production run `php bin/console asset-map:compile` after changing assets.
+The public design lives in `themes/default/`: the stylesheet `assets/theme.css` and the templates in `templates/site/`. The markup of the blocks is in `templates/blocks/`. Colours, fonts and widths are CSS custom properties at the top of the stylesheet. In development changes show up on reload; in production run `php bin/console asset-map:compile` after changing assets.
 
 ## Development
 
@@ -271,13 +271,13 @@ composer cs-fix      # fix coding standard violations
 Where things live:
 
 ```text
-assets/             Stimulus controllers, the editor, and the admin and public stylesheets
+assets/             Stimulus controllers, the editor and the admin stylesheets
 src/Block/          Block system: field definitions, normalizer, renderer and the block types
 src/Controller/     Admin/ for the admin area, Site/ for the public website
 src/Security/       Voters and the user checker
 src/Service/        Media handling, menus, slugs, editor configuration
 templates/blocks/   One template per block type
-templates/site/     Public theme
+themes/default/     Public theme: templates and stylesheet
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)

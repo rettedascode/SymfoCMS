@@ -1,6 +1,11 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['admin/form_theme.html.twig']
+    paths:
+        # The templates of the default theme are the fallback for every other theme.
+        '%kernel.project_dir%/themes/default/templates': ~
+        # Lets a theme extend a template of another one: "@themes/default/templates/site/base.html.twig".
+        '%kernel.project_dir%/themes': themes
     globals:
         site_name: '%app.site_name%'
         site_tagline: '%app.site_tagline%'

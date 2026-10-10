@@ -62,5 +62,5 @@ Forms are protected without third-party services, cookies banners or puzzles for
 
 - A form's fields are a JSON list of `{id, type, label, required, options}`; `App\Service\FormDefinition` validates what the builder sends.
 - `App\Service\FormSubmitter` checks spam, validates, stores and notifies. `App\Service\SpamGuard` holds the honeypot and timing checks.
-- The public markup is `templates/site/_form.html.twig`; a theme can restyle it through the `.site-form` classes.
+- The public markup is `themes/default/templates/site/_form.html.twig`; a theme can restyle it through the `.site-form` classes.
 - Block types of your own can show a form with `Field::form()` and `render_form(data.name)`.
