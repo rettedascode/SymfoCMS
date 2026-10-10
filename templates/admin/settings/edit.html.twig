@@ -19,4 +19,10 @@
         </div>
         {{ form_end(form) }}
     </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'redirect.title'|trans }}</h2>
+        <p class="muted">{{ 'redirect.settings_hint'|trans }}</p>
+        <a class="button" href="{{ path('admin_redirect_index') }}">{{ 'redirect.manage'|trans }}</a>
+    </div>
 {% endblock %}

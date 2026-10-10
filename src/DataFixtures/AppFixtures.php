@@ -10,6 +10,7 @@ use App\Entity\MenuItem;
 use App\Entity\Page;
 use App\Entity\PageTemplate;
 use App\Entity\Post;
+use App\Entity\Redirect;
 use App\Entity\Revision;
 use App\Entity\SharedBlock;
 use App\Entity\User;
@@ -202,6 +203,9 @@ final class AppFixtures extends Fixture
                 ['type' => 'form', 'data' => ['form' => $contactForm->getId()]],
             ]);
         $manager->persist($contact);
+
+        // A redirect: the old address "/get-in-touch" leads to the contact page.
+        $manager->persist((new Redirect())->setSource('/get-in-touch')->setTarget('/contact'));
 
         // German versions. Sharing the translation group is what links them to the English originals.
         $startseite = (new Page())

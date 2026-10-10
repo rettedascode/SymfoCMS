@@ -19,6 +19,11 @@ form.choice_invalid: Bitte wähle eine der Möglichkeiten.
 form.too_long: Dieser Text ist zu lang.
 form.too_fast: Das ging sehr schnell. Bitte prüfe deine Angaben und sende das Formular noch einmal.
 form.rate_limited: Du hast dieses Formular mehrfach gesendet. Bitte warte ein paar Minuten und versuche es dann erneut.
+redirect.source_invalid: 'Die alte Adresse muss eine Adresse auf dieser Website sein, etwa „/alte-seite“. Startseite und Verwaltung können nicht weitergeleitet werden.'
+redirect.target_invalid: 'Das Ziel muss ein Pfad wie „/neue-seite“ oder eine Webadresse sein, die mit https:// beginnt.'
+redirect.same: Alte und neue Adresse sind identisch.
+redirect.duplicate: Für diese alte Adresse gibt es bereits eine Weiterleitung. Ändere stattdessen diese.
+redirect.loop: Das würde Besucher im Kreis schicken, weil die neue Adresse bereits zurück zur alten weiterleitet.
 content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte prüfe die unten markierten Felder.
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.

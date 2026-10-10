@@ -321,6 +321,23 @@ menu.js.blog_label: Blog
 nav.settings: Settings
 nav.forms: Forms
 
+redirect.title: Redirects
+redirect.intro: A redirect sends visitors who open an old address on to a new one, so links and bookmarks keep working. When you change the address of a published page or post, the redirect is created for you.
+redirect.add: Add a redirect
+redirect.edit: Change redirect
+redirect.source: Old address
+redirect.target: New address
+redirect.help: 'The old address is a path on this website, such as "/old-page". The new address is a path as well, or a complete web address starting with https://.'
+redirect.origin: Created
+redirect.origin_automatic: automatically
+redirect.origin_manual: by hand
+redirect.empty_title: No redirects yet
+redirect.empty_text: They appear here as soon as the address of a published page changes, or when you add one above.
+redirect.delete_confirm: 'Delete the redirect from "%source%"? Visitors of this address will see "Page not found" again.'
+redirect.settings_hint: Redirects send visitors from old addresses to new ones.
+redirect.manage: Manage redirects
+flash.redirect_deleted: The redirect has been deleted.
+
 form.new: New form
 form.edit: Edit form
 form.name: Name of the form

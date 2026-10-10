@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Redirects: a 301 redirect is created automatically when the address of a published page or post changes; admins can add, change and delete redirects. Loops are refused and chains are flattened (see `docs/redirects.md`).
 - Form builder: forms made of text, email, long text, selection, checkbox and consent fields, placed on pages with the new form block (see `docs/forms.md`).
 - Inbox for form submissions with read/unread state, CSV export and deletion; optional email notification per form through Symfony Mailer (`MAILER_DSN`, `APP_MAIL_FROM`).
 - Spam protection without third-party services: honeypot, minimum fill time and rate limiting.

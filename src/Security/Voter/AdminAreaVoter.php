@@ -19,6 +19,7 @@ final class AdminAreaVoter extends Voter
     public const MANAGE_SHARED_BLOCKS = 'SHARED_BLOCK_MANAGE';
     public const MANAGE_TEMPLATES = 'TEMPLATE_MANAGE';
     public const MANAGE_FORMS = 'FORM_MANAGE';
+    public const MANAGE_REDIRECTS = 'REDIRECT_MANAGE';
 
     private const REQUIRED_ROLE = [
         self::MANAGE_MENUS => 'ROLE_ADMIN',
@@ -27,6 +28,7 @@ final class AdminAreaVoter extends Voter
         self::MANAGE_SHARED_BLOCKS => 'ROLE_EDITOR',
         self::MANAGE_TEMPLATES => 'ROLE_ADMIN',
         self::MANAGE_FORMS => 'ROLE_EDITOR',
+        self::MANAGE_REDIRECTS => 'ROLE_ADMIN',
     ];
 
     public function __construct(private readonly AccessDecisionManagerInterface $decisionManager)

@@ -19,6 +19,11 @@ form.choice_invalid: Please choose one of the options.
 form.too_long: This text is too long.
 form.too_fast: That was very quick. Please check your details and send the form again.
 form.rate_limited: You have sent this form several times. Please wait a few minutes and try again.
+redirect.source_invalid: 'The old address must be an address on this website, such as "/old-page". The homepage and the admin area cannot be redirected.'
+redirect.target_invalid: 'The destination must be a path such as "/new-page" or a web address starting with https://.'
+redirect.same: Old and new address are the same.
+redirect.duplicate: There is already a redirect for this old address. Change that one instead.
+redirect.loop: This would send visitors in a circle, because the new address is already redirected back to the old one.
 content.blocks_invalid: Some blocks need your attention. Please check the fields marked below.
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.

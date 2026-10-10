@@ -1,0 +1,69 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'redirect.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'redirect.title'|trans }}</h1>
+        <a class="button" href="{{ path('admin_settings') }}">← {{ 'nav.settings'|trans }}</a>
+    </div>
+
+    <p class="muted">{{ 'redirect.intro'|trans }}</p>
+
+    <div class="card">
+        <h2>{{ (editing ? 'redirect.edit' : 'redirect.add')|trans }}</h2>
+        {% if error %}
+            <div class="flash flash--error" role="alert">{{ error|trans({}, 'validators') }}</div>
+        {% endif %}
+        <form method="post" class="inline-form inline-form--top">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+            <div class="field">
+                <label for="redirect-source">{{ 'redirect.source'|trans }}</label>
+                <input type="text" id="redirect-source" name="source" value="{{ source }}" placeholder="/old-address" required maxlength="255" autocomplete="off">
+            </div>
+            <div class="field">
+                <label for="redirect-target">{{ 'redirect.target'|trans }}</label>
+                <input type="text" id="redirect-target" name="target" value="{{ target }}" placeholder="/new-address" required maxlength="500" autocomplete="off">
+            </div>
+            <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
+            {% if editing %}<a class="button" href="{{ path('admin_redirect_index') }}">{{ 'action.cancel'|trans }}</a>{% endif %}
+        </form>
+        <p class="field__help">{{ 'redirect.help'|trans }}</p>
+    </div>
+
+    {% if redirects is empty %}
+        <div class="empty table-wrap--spaced">
+            <h2>{{ 'redirect.empty_title'|trans }}</h2>
+            <p>{{ 'redirect.empty_text'|trans }}</p>
+        </div>
+    {% else %}
+        <div class="table-wrap table-wrap--spaced">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'redirect.source'|trans }}</th>
+                    <th scope="col">{{ 'redirect.target'|trans }}</th>
+                    <th scope="col">{{ 'redirect.origin'|trans }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'label.actions'|trans }}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for redirect in redirects %}
+                    <tr>
+                        <th scope="row">{{ redirect.source }}</th>
+                        <td>→ {{ redirect.target }}</td>
+                        <td class="muted">{{ (redirect.automatic ? 'redirect.origin_automatic' : 'redirect.origin_manual')|trans }}</td>
+                        <td class="table__actions">
+                            <a class="button button--small" href="{{ path('admin_redirect_index', {edit: redirect.id}) }}">{{ 'action.edit'|trans }}</a>
+                            <form method="post" action="{{ path('admin_redirect_delete', {id: redirect.id}) }}" data-controller="confirm" data-confirm-message-value="{{ 'redirect.delete_confirm'|trans({'%source%': redirect.source}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                <button class="button button--small button--danger">{{ 'action.delete'|trans }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

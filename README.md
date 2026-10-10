@@ -41,6 +41,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Blog posts with excerpt, cover image, category, author and publish date (a date in the future schedules the post)
 - Blog overview with pagination, category pages and an RSS feed
 - Drafts and scheduled posts can be previewed by logged-in users only
+- [Redirects](docs/redirects.md): changing the address of a published page creates a 301 redirect automatically; admins manage redirects by hand, loops and chains are prevented
 - Menu editor for the main and the footer navigation: link pages, posts or any URL, reorder by drag and drop, one level of dropdowns
 - [Form builder](docs/forms.md): contact and sign-up forms with an inbox, email notification, CSV export and spam protection that needs no third-party service
 - Media library: upload several images by drag and drop, automatic resized versions, alt text per image
@@ -168,7 +169,7 @@ php bin/console doctrine:migrations:migrate -n
 | Forms and their inbox | ✔ | ✔ | use only |
 | Page templates | use, save, delete | use | – |
 | Menus | ✔ | – | – |
-| Settings (languages, retention of form messages) | ✔ | – | – |
+| Settings (languages, retention of form messages, redirects) | ✔ | – | – |
 | Users | ✔ | – | – |
 
 Every user can change their own name, language and password under their name at the bottom of the sidebar.
@@ -278,7 +279,7 @@ templates/site/     Public theme
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: the editor, forms, extensions, multilingual websites
+docs/               Guides: the editor, forms, redirects, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

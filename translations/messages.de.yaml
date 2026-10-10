@@ -320,6 +320,23 @@ menu.js.blog_label: Blog
 nav.settings: Einstellungen
 nav.forms: Formulare
 
+redirect.title: Weiterleitungen
+redirect.intro: Eine Weiterleitung schickt Besucher, die eine alte Adresse öffnen, zur neuen weiter, damit Links und Lesezeichen weiter funktionieren. Wenn du die Adresse einer veröffentlichten Seite oder eines Beitrags änderst, wird die Weiterleitung automatisch angelegt.
+redirect.add: Weiterleitung hinzufügen
+redirect.edit: Weiterleitung ändern
+redirect.source: Alte Adresse
+redirect.target: Neue Adresse
+redirect.help: 'Die alte Adresse ist ein Pfad auf dieser Website, etwa „/alte-seite“. Die neue Adresse ist ebenfalls ein Pfad oder eine vollständige Webadresse, die mit https:// beginnt.'
+redirect.origin: Angelegt
+redirect.origin_automatic: automatisch
+redirect.origin_manual: von Hand
+redirect.empty_title: Noch keine Weiterleitungen
+redirect.empty_text: Sie erscheinen hier, sobald sich die Adresse einer veröffentlichten Seite ändert oder du oben eine hinzufügst.
+redirect.delete_confirm: 'Weiterleitung von „%source%“ löschen? Besucher dieser Adresse sehen dann wieder „Seite nicht gefunden“.'
+redirect.settings_hint: Weiterleitungen schicken Besucher von alten Adressen zu neuen.
+redirect.manage: Weiterleitungen verwalten
+flash.redirect_deleted: Die Weiterleitung wurde gelöscht.
+
 form.new: Neues Formular
 form.edit: Formular bearbeiten
 form.name: Name des Formulars

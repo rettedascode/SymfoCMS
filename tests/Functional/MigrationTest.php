@@ -52,6 +52,7 @@ final class MigrationTest extends AppWebTestCase
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM shared_blocks'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM page_templates'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM forms'));
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM redirects'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM form_submissions'));
 
         // The result is exactly the schema the application expects (the command fails otherwise) ...

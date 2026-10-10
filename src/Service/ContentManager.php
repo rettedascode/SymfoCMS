@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Content;
+use App\Entity\Page;
 use App\Enum\ContentStatus;
 use App\Event\ContentDeletedEvent;
 use App\Event\ContentPublishedEvent;
@@ -22,7 +23,34 @@ final class ContentManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly SiteUrls $siteUrls,
+        private readonly RedirectManager $redirects,
     ) {
+    }
+
+    /**
+     * The public address the content has in the database right now, before the
+     * current edit is stored. Null when it is new or not visible to visitors.
+     */
+    private function storedPublicPath(Content $content): ?string
+    {
+        if (null === $content->getId()) {
+            return null;
+        }
+
+        $original = $this->entityManager->getUnitOfWork()->getOriginalEntityData($content);
+        if (!\is_string($original['slug'] ?? null) || !($original['status'] ?? null) instanceof ContentStatus) {
+            return null;
+        }
+
+        // A detached copy carrying the stored values answers "where was it?" without touching the real entity.
+        $stored = clone $content;
+        $stored->setSlug($original['slug'])->setStatus($original['status']);
+        if ($stored instanceof Page) {
+            $stored->setHomepage((bool) ($original['homepage'] ?? false));
+        }
+
+        return $stored->isPublic() ? $this->siteUrls->content($stored) : null;
     }
 
     /**
@@ -43,9 +71,15 @@ final class ContentManager
         $this->eventDispatcher->dispatch($saving);
 
         $content->setBlocks($saving->getBlocks())->setAutosave(null);
+        $previousPath = $this->storedPublicPath($content);
 
         $this->entityManager->persist($content);
         $this->entityManager->flush();
+
+        // Links and bookmarks to the old address keep working when the address of public content changes.
+        if (null !== $previousPath && $content->isPublic()) {
+            $this->redirects->addAutomatic($previousPath, $this->siteUrls->content($content));
+        }
 
         $this->eventDispatcher->dispatch(new ContentSavedEvent($content, $isNew));
 
