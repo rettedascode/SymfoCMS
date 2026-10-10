@@ -90,6 +90,8 @@ final class AppFixtures extends Fixture
             ->setStatus(ContentStatus::Published)
             ->setHomepage(true)
             ->setMetaDescription('SymfoCMS is a small, friendly content management system with a simple block editor.')
+            // The picture shown when somebody shares the link.
+            ->setShareImage($harbour)
             ->setBlocks([
                 ['type' => 'text', 'data' => ['content' => '<p>This is your new website. Everything you see here is built from <strong>blocks</strong> – headings, text, images, buttons and more – that you can add, move and remove with a few clicks.</p>']],
                 ['type' => 'image', 'data' => ['image' => $harbour->getId(), 'alt' => '', 'caption' => 'Images come from the media library and are resized automatically.']],

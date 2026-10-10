@@ -305,6 +305,14 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
     .menu-item__target { display: none; }
 }
 
+.seo-preview { margin: 0 0 .5rem; }
+.seo-preview__label { margin: 0 0 .4rem; font-weight: 600; font-size: .95rem; }
+.seo-preview__result { display: grid; gap: .15rem; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; font-family: Arial, sans-serif; overflow-wrap: anywhere; }
+.seo-preview__url { font-size: .82rem; color: #4d5156; }
+.seo-preview__title { font-size: 1.15rem; line-height: 1.3; color: #1a0dab; }
+.seo-preview__description { font-size: .88rem; line-height: 1.45; color: #4d5156; }
+.seo-preview__hint--warning { color: var(--warning); font-weight: 600; }
+
 /* ---------- Form builder and inbox ---------- */
 
 .form-builder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 1.5rem; align-items: start; }

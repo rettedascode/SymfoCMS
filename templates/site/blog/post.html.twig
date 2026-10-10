@@ -5,7 +5,9 @@
 {% set translatable = post %}
 {% set switch_route = 'app_blog' %}
 {% set og_type = 'article' %}
-{% set og_image = post.coverImage ? absolute_url(media_url(post.coverImage, 'large')) : null %}
+{# Without a share image of its own, a post is shared with its cover image. #}
+{% set share_image = post.shareImage ?: post.coverImage %}
+{% set structured_blocks = blocks %}
 {% set is_draft = not post.public %}
 {% set noindex = not post.public %}
 {% set edit_url = is_granted('POST_EDIT', post) ? path('admin_post_edit', {id: post.id}) : null %}

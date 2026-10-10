@@ -70,6 +70,11 @@ abstract class Content
     #[Assert\Length(max: 320)]
     protected ?string $metaDescription = null;
 
+    /** Image shown when the content is shared on social networks and in messengers. */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    protected ?Media $shareImage = null;
+
     #[ORM\Column]
     protected \DateTimeImmutable $createdAt;
 
@@ -201,6 +206,18 @@ abstract class Content
     public function setSeoTitle(?string $seoTitle): static
     {
         $this->seoTitle = '' === trim((string) $seoTitle) ? null : trim((string) $seoTitle);
+
+        return $this;
+    }
+
+    public function getShareImage(): ?Media
+    {
+        return $this->shareImage;
+    }
+
+    public function setShareImage(?Media $shareImage): static
+    {
+        $this->shareImage = $shareImage;
 
         return $this;
     }

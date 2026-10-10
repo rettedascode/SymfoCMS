@@ -3,6 +3,8 @@
 {% set meta_description = page.metaDescription %}
 {% set canonical_url = content_url(page) %}
 {% set translatable = page %}
+{% set share_image = page.shareImage %}
+{% set structured_blocks = blocks %}
 {% set is_draft = not page.public %}
 {% set noindex = not page.public %}
 {% set edit_url = is_granted('PAGE_MANAGE') ? path('admin_page_edit', {id: page.id}) : null %}

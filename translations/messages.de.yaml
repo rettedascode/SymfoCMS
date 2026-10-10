@@ -80,6 +80,14 @@ content.slug_help: 'Der letzte Teil des Links, zum Beispiel „ueber-uns“. Lee
 content.seo_title: Titel für Suchmaschinen
 content.seo_title_help: Erscheint in Suchergebnissen und im Browser-Tab. Leer lassen, um den Titel zu verwenden.
 content.meta_description: Beschreibung für Suchmaschinen
+content.share_image: Bild zum Teilen
+content.share_image_help: Erscheint, wenn jemand den Link in sozialen Netzwerken oder in einem Messenger teilt. Am besten eignen sich breite Bilder mit etwa 1200 × 630 Pixeln.
+seo.preview: So erscheint es ungefähr in Suchergebnissen
+seo.title_label: Titel
+seo.description_label: Beschreibung
+seo.length: '%count% von etwa %limit% Zeichen'
+seo.too_long: das Ende wird vermutlich abgeschnitten
+seo.share_heading: Teilen
 content.meta_description_help: Ein oder zwei Sätze, die den Inhalt zusammenfassen. Suchmaschinen zeigen sie oft unter dem Titel an.
 
 page.new: Neue Seite

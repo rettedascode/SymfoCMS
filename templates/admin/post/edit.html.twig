@@ -7,6 +7,7 @@
 {% set edit_route = 'admin_post_edit' %}
 {% set translate_route = 'admin_post_translate' %}
 {% set revision_route = 'admin_post_revision' %}
+{% set seo_base_url = site_url('app_blog_post', {slug: 'slug-placeholder'}, post.locale)|replace({'slug-placeholder': ''}) %}
 
 {% block settings_main %}
     {{ form_row(form.excerpt) }}

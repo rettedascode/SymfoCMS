@@ -80,6 +80,26 @@
                         {{ form_row(form.seoTitle) }}
                         {{ form_row(form.metaDescription) }}
 
+                        {# Updates while typing; see assets/controllers/seo_preview_controller.js #}
+                        <div class="seo-preview" data-controller="seo-preview"
+                             data-seo-preview-site-name-value="{{ site_name }}"
+                             data-seo-preview-base-url-value="{{ seo_base_url }}"
+                             data-seo-preview-fallback-description-value="{{ site_tagline }}"
+                             data-seo-preview-length-value="{{ 'seo.length'|trans }}"
+                             data-seo-preview-too-long-value="{{ 'seo.too_long'|trans }}">
+                            <p class="seo-preview__label">{{ 'seo.preview'|trans }}</p>
+                            <div class="seo-preview__result" aria-live="off">
+                                <span class="seo-preview__url" data-seo-preview-target="url"></span>
+                                <span class="seo-preview__title" data-seo-preview-target="title"></span>
+                                <span class="seo-preview__description" data-seo-preview-target="description"></span>
+                            </div>
+                            <p class="field__help">{{ 'seo.title_label'|trans }}: <span data-seo-preview-target="titleHint"></span></p>
+                            <p class="field__help">{{ 'seo.description_label'|trans }}: <span data-seo-preview-target="descriptionHint"></span></p>
+                        </div>
+
+                        <h2 class="card__heading">{{ 'seo.share_heading'|trans }}</h2>
+                        {{ form_row(form.shareImage) }}
+
                         {# Only on multilingual sites: the other language versions of this content. #}
                         {% if translations is not empty %}
                             <h2 class="card__heading">{{ 'language.translations_heading'|trans }}</h2>

@@ -81,6 +81,14 @@ content.slug_help: 'The last part of the link, for example "about-us". Leave emp
 content.seo_title: Title for search engines
 content.seo_title_help: Shown in search results and in the browser tab. Leave empty to use the title.
 content.meta_description: Description for search engines
+content.share_image: Image for sharing
+content.share_image_help: Shown when somebody shares the link on social networks or in a messenger. Wide images of about 1200 × 630 pixels work best.
+seo.preview: This is roughly how it appears in search results
+seo.title_label: Title
+seo.description_label: Description
+seo.length: '%count% of about %limit% characters'
+seo.too_long: the end will probably be cut off
+seo.share_heading: Sharing
 content.meta_description_help: One or two sentences that summarise the content. Search engines often show them below the title.
 
 page.new: New page

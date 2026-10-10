@@ -49,6 +49,10 @@ final class ContentType extends AbstractType
                 'help' => 'content.seo_title_help',
                 'required' => false,
             ])
+            ->add('shareImage', MediaPickerType::class, [
+                'label' => 'content.share_image',
+                'help' => 'content.share_image_help',
+            ])
             ->add('metaDescription', TextareaType::class, [
                 'label' => 'content.meta_description',
                 'help' => 'content.meta_description_help',
