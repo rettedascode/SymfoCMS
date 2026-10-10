@@ -22,6 +22,7 @@ Every item that can be moved has a **handle** – the six dots at its left edge.
 | Blog → Categories | Categories, into the order they have on the blog |
 | Blog → Board | Posts as cards from one status to another ([planning](editorial-planning.md)) |
 | Blog → Calendar | Posts from one day to another, which changes their publish date |
+| Start | The widgets of the [start page](dashboard.md), and their right edge to change the width |
 | Forms | Field types into the form, fields next to each other, the choices of a selection field |
 | Media | Files from the desktop into the library; the crop frame and the focal point of an [image](images.md) |
 

@@ -53,6 +53,9 @@ final class MigrationTest extends AppWebTestCase
         // Categories that existed before they could be arranged share the first place.
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM categories WHERE position <> 0'));
 
+        // Nobody has arranged their start page yet.
+        self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM users WHERE dashboard_layout IS NOT NULL'));
+
         // Tables added by later migrations exist and start empty.
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM revisions'));
         self::assertSame(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM shared_blocks'));

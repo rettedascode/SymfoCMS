@@ -265,6 +265,31 @@ media.delete_confirm: Dieses Bild endgültig löschen?
 
 post.new: Neuer Beitrag
 post.new_intro: Worum geht es in dem Beitrag? Du kannst den Titel jederzeit ändern.
+nav.dashboard: Start
+dashboard.welcome: 'Hallo %name%'
+dashboard.intro: Ziehen Sie die Kästen am Griff, um diese Seite anzuordnen, und ziehen Sie am rechten Rand eines Kastens, um ihn breiter oder schmaler zu machen. Die Anordnung gilt nur für Sie.
+dashboard.list: Startseite
+dashboard.saved: Die Anordnung wurde gespeichert.
+dashboard.resize: 'Breite von „%widget%“'
+dashboard.resize_hint: Ziehen Sie, um die Breite zu ändern. Die Pfeiltasten nach links und rechts gehen auch.
+dashboard.size_2: Ein Drittel
+dashboard.size_3: Die Hälfte
+dashboard.size_4: Zwei Drittel
+dashboard.size_6: Volle Breite
+dashboard.widget.recent: Letzte Änderungen
+dashboard.widget.drafts: Meine Entwürfe
+dashboard.widget.scheduled: Geplante Beiträge
+dashboard.widget.submissions: Neue Formular-Einsendungen
+dashboard.empty.recent: Es wurde noch nichts geändert.
+dashboard.empty.drafts: Sie haben im Moment keine Entwürfe.
+dashboard.empty.scheduled: Kein Beitrag ist geplant.
+dashboard.empty.submissions: Keine neuen Einsendungen.
+dashboard.more.recent: Alle Beiträge
+dashboard.more.drafts: Zum Board
+dashboard.more.scheduled: Zum Kalender
+dashboard.more.submissions: Alle Formulare
+dashboard.kind_page: Seite
+dashboard.kind_post: Beitrag
 post.tab_posts: Beiträge
 post.tab_board: Board
 post.tab_calendar: Kalender

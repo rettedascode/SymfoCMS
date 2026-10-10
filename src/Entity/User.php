@@ -60,9 +60,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $backupCodes = null;
 
+    /** @var array<mixed>|null the widgets of the start page in the order and width the user chose: [{id, size}, ...] */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $dashboardLayout = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return array<mixed>|null null as long as the user has not arranged anything; read it through App\Dashboard\Dashboard
+     */
+    public function getDashboardLayout(): ?array
+    {
+        return $this->dashboardLayout;
+    }
+
+    /**
+     * @param list<array{id: string, size: int}>|null $layout
+     */
+    public function setDashboardLayout(?array $layout): static
+    {
+        $this->dashboardLayout = $layout;
+
+        return $this;
     }
 
     public function getId(): ?int

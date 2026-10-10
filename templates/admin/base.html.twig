@@ -33,10 +33,11 @@
         </form>
         <nav aria-label="{{ 'admin.navigation'|trans }}">
             <ul class="sidebar__nav">
+                <li><a href="{{ path('admin_dashboard') }}" {% if route == 'admin_dashboard' %}aria-current="page"{% endif %}><span aria-hidden="true">⌂</span> {{ 'nav.dashboard'|trans }}</a></li>
                 {% if is_granted('PAGE_MANAGE') %}
                     <li><a href="{{ path('admin_page_index') }}" {% if route starts with 'admin_page_' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span> {{ 'nav.pages'|trans }}</a></li>
                 {% endif %}
-                <li><a href="{{ path('admin_post_index') }}" {% if route starts with 'admin_post_' or route starts with 'admin_category_' %}aria-current="page"{% endif %}><span aria-hidden="true">✎</span> {{ 'nav.blog'|trans }}</a></li>
+                <li><a href="{{ path('admin_post_index') }}" {% if route starts with 'admin_post_' or route starts with 'admin_category_' or route starts with 'admin_editorial_' %}aria-current="page"{% endif %}><span aria-hidden="true">✎</span> {{ 'nav.blog'|trans }}</a></li>
                 <li><a href="{{ path('admin_media_index') }}" {% if route starts with 'admin_media_' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span> {{ 'nav.media'|trans }}</a></li>
                 {% if is_granted('FORM_MANAGE') %}
                     <li><a href="{{ path('admin_form_index') }}" {% if route starts with 'admin_form_' %}aria-current="page"{% endif %}><span aria-hidden="true">✉</span> {{ 'nav.forms'|trans }}</a></li>

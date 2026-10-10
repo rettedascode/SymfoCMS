@@ -1,0 +1,83 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.dashboard'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'dashboard.welcome'|trans({'%name%': app.user.name}) }}</h1>
+    </div>
+    <p class="muted">{{ 'dashboard.intro'|trans }}</p>
+
+    {#
+        The widgets are one drag list (see dashboard_controller.js). "--span" is the width of a widget
+        in columns of the grid; the line at its right edge changes it. Every change is stored for the user.
+    #}
+    <div class="dashboard" data-controller="dashboard"
+         data-dashboard-url-value="{{ path('admin_dashboard_layout') }}"
+         data-dashboard-csrf-value="{{ csrf_token('admin') }}"
+         data-dashboard-sizes-value="{{ sizes|json_encode }}"
+         data-dashboard-i18n-value="{{ {
+             saved: 'dashboard.saved'|trans,
+             size_2: 'dashboard.size_2'|trans,
+             size_3: 'dashboard.size_3'|trans,
+             size_4: 'dashboard.size_4'|trans,
+             size_6: 'dashboard.size_6'|trans,
+         }|json_encode }}"
+         aria-label="{{ 'dashboard.list'|trans }}">
+        {% for widget in widgets %}
+            {% set title = ('dashboard.widget.' ~ widget.id)|trans %}
+            <section class="widget" data-dnd-item data-dnd-id="{{ widget.id }}" data-dnd-label="{{ title }}" data-size="{{ widget.size }}" style="--span: {{ widget.size }}" aria-labelledby="widget-{{ widget.id }}">
+                <header class="widget__header">
+                    {{ include('admin/_handle.html.twig', {label: title}) }}
+                    <h2 class="widget__title" id="widget-{{ widget.id }}">{{ title }}</h2>
+                    {% if widget.id == 'submissions' and widget.content.unread > 0 %}<span class="badge badge--review">{{ widget.content.unread }}</span>{% endif %}
+                </header>
+
+                <div class="widget__body">
+                    {% set entries = widget.content.entries %}
+                    {% if entries is empty %}
+                        <p class="muted widget__empty">{{ ('dashboard.empty.' ~ widget.id)|trans }}</p>
+                    {% elseif widget.id == 'submissions' %}
+                        <ul class="widget__list">
+                            {% for submission in entries %}
+                                <li>
+                                    <a href="{{ path('admin_form_submission', {id: submission.id}) }}">{{ submission.form.name }}</a>
+                                    <span class="muted">{{ submission.createdAt|local_date(true) }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <ul class="widget__list">
+                            {% for entry in entries %}
+                                {% set is_post = entry.publishedAt is defined %}
+                                {% set state = is_post and entry.scheduled ? 'scheduled' : entry.status.value %}
+                                <li>
+                                    <a href="{{ path(is_post ? 'admin_post_edit' : 'admin_page_edit', {id: entry.id}) }}">{{ entry.title }}</a>
+                                    <span class="muted">
+                                        {% if widget.id == 'recent' %}{{ (is_post ? 'dashboard.kind_post' : 'dashboard.kind_page')|trans }} · {{ entry.updatedAt|local_date(true) }}
+                                        {% elseif widget.id == 'scheduled' %}{{ entry.publishedAt|local_date(true) }}
+                                        {% else %}{{ entry.updatedAt|local_date(true) }}{% endif %}
+                                    </span>
+                                    {% if widget.id != 'scheduled' %}<span class="badge badge--{{ state }}">{{ ('status.' ~ state)|trans }}</span>{% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <footer class="widget__footer">
+                    {% if widget.id == 'submissions' %}<a href="{{ path('admin_form_index') }}">{{ 'dashboard.more.submissions'|trans }}</a>
+                    {% elseif widget.id == 'scheduled' %}<a href="{{ path('admin_editorial_calendar') }}">{{ 'dashboard.more.scheduled'|trans }}</a>
+                    {% elseif widget.id == 'drafts' %}<a href="{{ path('admin_editorial_board') }}">{{ 'dashboard.more.drafts'|trans }}</a>
+                    {% else %}<a href="{{ path('admin_post_index') }}">{{ 'dashboard.more.recent'|trans }}</a>{% endif %}
+                </footer>
+
+                {# The right edge of the widget: drag it, or use the arrow keys, to make the widget wider or narrower. #}
+                <div class="widget__resize" role="separator" tabindex="0" aria-orientation="vertical"
+                     aria-label="{{ 'dashboard.resize'|trans({'%widget%': title}) }}" title="{{ 'dashboard.resize_hint'|trans }}"
+                     aria-valuemin="{{ sizes|first }}" aria-valuemax="{{ sizes|last }}" aria-valuenow="{{ widget.size }}"
+                     aria-valuetext="{{ ('dashboard.size_' ~ widget.size)|trans }}" data-dashboard-target="resize"></div>
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

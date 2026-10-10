@@ -89,11 +89,11 @@ final class InstallerTest extends AppWebTestCase
 
         // The administrator is logged in and sees the admin area in the chosen language.
         $this->client->followRedirect();
-        $this->client->followRedirect();
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.flash--success', 'Willkommen');
         self::assertSelectorTextSame('.sidebar__brand', 'Bäckerei Sonne');
-        self::assertSelectorTextContains('.page-tree', 'Willkommen');
+        self::assertSelectorExists('.dashboard .widget');
+        self::assertSelectorTextContains('[data-dnd-id="recent"]', 'Willkommen');
 
         $admin = $this->em()->getRepository(User::class)->findOneBy(['email' => 'grace@example.com']);
         self::assertInstanceOf(User::class, $admin);

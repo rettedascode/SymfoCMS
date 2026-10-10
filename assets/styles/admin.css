@@ -361,6 +361,39 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 .menu-editor__custom legend, .field__title { display: block; font-weight: 600; margin-bottom: .3rem; font-size: .95rem; padding: 0; }
 .menu-editor__custom .button { justify-self: start; }
 
+/* Start page: widgets in a grid of six columns; "--span" is how many of them a widget takes. */
+.dashboard { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; align-items: stretch; }
+.widget { position: relative; grid-column: span var(--span, 3); display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.widget__header { display: flex; align-items: center; gap: .3rem; padding: .35rem .9rem .35rem .3rem; border-bottom: 1px solid var(--border); }
+.widget__title { flex: 1; min-width: 0; margin: 0; font-size: 1rem; }
+.widget__body { flex: 1; padding: .5rem .9rem; }
+.widget__empty { margin: .6rem 0; }
+.widget__list { list-style: none; margin: 0; padding: 0; }
+.widget__list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .6rem; padding: .45rem 0; border-bottom: 1px solid var(--border); }
+.widget__list li:last-child { border-bottom: 0; }
+.widget__list a { font-weight: 600; overflow-wrap: anywhere; }
+.widget__list .muted { font-size: .85rem; }
+.widget__list .badge { margin-left: auto; }
+.widget__footer { padding: .5rem .9rem .7rem; font-size: .9rem; }
+/* The right edge: a line to drag for the width. */
+.widget__resize { position: absolute; top: .6rem; bottom: .6rem; right: -.55rem; width: 1rem; cursor: col-resize; touch-action: none; border-radius: 4px; outline-offset: -2px; }
+.widget__resize::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; margin-left: -2px; border-radius: 2px; background: transparent; transition: background-color .12s; }
+.widget:hover > .widget__resize::before { background: var(--border-strong); }
+.widget__resize:hover::before, .widget__resize:focus-visible::before, .widget.is-resizing > .widget__resize::before { background: var(--accent); }
+.widget.is-resizing > .widget__resize::after, .widget__resize:focus-visible::after {
+    content: attr(data-label); position: absolute; top: 50%; right: 1rem; transform: translateY(-50%); z-index: 3;
+    padding: .15rem .55rem; border-radius: 999px; white-space: nowrap; font-size: .78rem; font-weight: 600;
+    background: var(--accent); color: var(--on-accent);
+}
+.widget__resize:not([data-label])::after { content: none; }
+.widget.is-resizing { border-color: var(--accent); }
+@media (max-width: 860px) {
+    /* On a narrow screen every widget takes the whole width; there is nothing to resize. */
+    .dashboard { grid-template-columns: minmax(0, 1fr); }
+    .widget { grid-column: auto; }
+    .widget__resize { display: none; }
+}
+
 /* Editorial board: one column of cards per status. */
 .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
 .board__column { padding: .75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--subtle-2); }

@@ -28,7 +28,6 @@ final class LoginTest extends AppWebTestCase
 
         self::assertResponseRedirects('/admin');
         $this->client->followRedirect();
-        $this->client->followRedirect();
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.sidebar');
     }

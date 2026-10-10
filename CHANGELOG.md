@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Start page for the admin area: widgets for recent changes, my drafts, scheduled posts and new form submissions. Every user arranges them by dragging and changes their width at the right edge; the layout is stored per user (see `docs/dashboard.md`).
 - Editorial calendar under Blog: a month with every post on the day of its publish date. Dragging a post to another day changes the date and keeps the time; moving a public post into the future asks first, because it takes the post offline until then (see `docs/editorial-planning.md`).
 - Editorial board under Blog: posts as cards in one column per status. Dragging a card into another column changes the status, limited to the steps the review workflow allows the user; taking a public post offline asks first (see `docs/editorial-planning.md`).
 - Menu editor: the page tree stands next to the menu, and pages are dragged from it to their place in the menu, also as sub-items; a click still adds at the end.
@@ -83,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- After logging in, people land on the new start page instead of the list of pages or posts.
 - The block "Two columns" is now called "Columns". Existing content keeps working unchanged.
 - Blocks, menu entries and form fields are moved through the shared drag-and-drop layer. The separate "move up", "move down", "indent" and "outdent" buttons were replaced by the menu on the handle.
 - Name and tagline of the website are edited under "Settings". `APP_SITE_NAME` and `APP_SITE_TAGLINE` remain the defaults.

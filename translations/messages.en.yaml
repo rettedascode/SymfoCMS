@@ -266,6 +266,31 @@ media.delete_confirm: Delete this image permanently?
 
 post.new: New post
 post.new_intro: What is the post about? You can change the title at any time.
+nav.dashboard: Start
+dashboard.welcome: 'Hello %name%'
+dashboard.intro: Drag the boxes by their handle to arrange this page, and drag the right edge of a box to make it wider or narrower. The arrangement is yours alone.
+dashboard.list: Start page
+dashboard.saved: The arrangement was saved.
+dashboard.resize: 'Width of “%widget%”'
+dashboard.resize_hint: Drag to change the width. The left and right arrow keys work as well.
+dashboard.size_2: One third
+dashboard.size_3: Half
+dashboard.size_4: Two thirds
+dashboard.size_6: Full width
+dashboard.widget.recent: Recent changes
+dashboard.widget.drafts: My drafts
+dashboard.widget.scheduled: Scheduled posts
+dashboard.widget.submissions: New form submissions
+dashboard.empty.recent: Nothing has been changed yet.
+dashboard.empty.drafts: You have no drafts at the moment.
+dashboard.empty.scheduled: No post is scheduled.
+dashboard.empty.submissions: No new submissions.
+dashboard.more.recent: All posts
+dashboard.more.drafts: Open the board
+dashboard.more.scheduled: Open the calendar
+dashboard.more.submissions: All forms
+dashboard.kind_page: Page
+dashboard.kind_post: Post
 post.tab_posts: Posts
 post.tab_board: Board
 post.tab_calendar: Calendar
