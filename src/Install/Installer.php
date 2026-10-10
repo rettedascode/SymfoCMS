@@ -92,6 +92,10 @@ final class Installer
         if (0 !== $exitCode) {
             throw new \RuntimeException(trim($output->fetch()));
         }
+
+        // MySQL ends a transaction on its own whenever a table is created, which leaves the connection
+        // believing it is still inside the transactions of the migrations. A fresh connection starts clean.
+        $this->entityManager->getConnection()->close();
     }
 
     /**

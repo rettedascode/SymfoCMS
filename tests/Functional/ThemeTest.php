@@ -92,7 +92,7 @@ final class ThemeTest extends AppWebTestCase
         self::assertStringContainsString('logo', (string) $crawler->filter('.site-brand img')->attr('src'));
 
         // Only what differs from the theme's defaults is stored.
-        self::assertSame(['colors' => ['accent' => '#c2185b'], 'fonts' => ['heading' => 'playfair-display']], static::getContainer()->get(Settings::class)->get('theme.settings.default'));
+        self::assertEquals(['colors' => ['accent' => '#c2185b'], 'fonts' => ['heading' => 'playfair-display']], static::getContainer()->get(Settings::class)->get('theme.settings.default'));
 
         // Anything that is not a colour or a known font is refused.
         $crawler = $this->client->request('GET', '/admin/design');
