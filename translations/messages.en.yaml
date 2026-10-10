@@ -648,3 +648,43 @@ settings.api_enabled: Offer the content of the website as data (read API)
 settings.api_enabled_help: Other programs, such as an app, can then read your published pages, posts, menus and images. Nothing can be changed through it, and drafts stay private. Leave it off if you do not need it.
 settings.api_address: 'Address of the API:'
 settings.api_description: Description (OpenAPI)
+
+transfer.title: Export and import
+transfer.open: Open export and import
+transfer.settings_hint: Save the whole website as one file, or bring in the content of another website.
+transfer.export.heading: Export this website
+transfer.export.intro: You get one ZIP file with all pages, posts, menus, forms, settings and images. User accounts, earlier versions of pages and messages sent through forms are not included.
+transfer.export.submit: Download the export
+transfer.import.heading: Import a website
+transfer.import.intro: Choose a file that was exported from this or another SymfoCMS website.
+transfer.import.file: Export file (ZIP)
+transfer.import.file_help: 'At most %limit% MB. Larger files can be imported on the command line.'
+transfer.import.mode: What should happen with the content of this website?
+transfer.import.mode_add: Keep it and add the imported content
+transfer.import.mode_replace: Delete it and replace it with the imported website, including its settings
+transfer.import.confirm: I understand that replacing deletes all pages, posts, menus and images of this website.
+transfer.import.submit: Import
+transfer.error.no_file: Please choose a file.
+transfer.error.upload_failed: The file could not be uploaded. It may be too large.
+transfer.error.confirm: Please confirm that the content of this website may be deleted.
+transfer.error.not_a_zip: This is not a ZIP file.
+transfer.error.not_an_export: This file is not an export of a SymfoCMS website.
+transfer.error.newer_version: This export was made with a newer version. Please update this website first.
+transfer.report.heading: Import finished
+transfer.report.imported: Imported
+transfer.report.nothing: The file did not contain anything to import.
+transfer.report.issues: Not taken over
+transfer.report.issues_intro: These things could not be imported as they were. Everything else is in place.
+transfer.report.continue: To the website
+transfer.count.pages: pages
+transfer.count.posts: posts
+transfer.count.categories: categories
+transfer.count.media: images
+transfer.count.shared_blocks: shared blocks
+transfer.count.forms: forms
+transfer.count.page_templates: page templates
+transfer.count.redirects: redirects
+transfer.issue.image_missing: The image is missing in the file.
+transfer.issue.image_invalid: The image could not be read or is too large.
+transfer.issue.content_invalid: The entry has no title or no valid language and was skipped.
+transfer.issue.menu_item: The menu entry leads to something that was not imported and was left out.

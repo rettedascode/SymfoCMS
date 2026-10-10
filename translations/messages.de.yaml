@@ -647,3 +647,43 @@ settings.api_enabled: Inhalte der Website als Daten anbieten (Lese-API)
 settings.api_enabled_help: Andere Programme, etwa eine App, können dann Ihre veröffentlichten Seiten, Beiträge, Menüs und Bilder lesen. Ändern lässt sich darüber nichts, und Entwürfe bleiben privat. Lassen Sie die Option aus, wenn Sie sie nicht brauchen.
 settings.api_address: 'Adresse der API:'
 settings.api_description: Beschreibung (OpenAPI)
+
+transfer.title: Export und Import
+transfer.open: Export und Import öffnen
+transfer.settings_hint: Sichern Sie die ganze Website als eine Datei oder übernehmen Sie die Inhalte einer anderen Website.
+transfer.export.heading: Diese Website exportieren
+transfer.export.intro: Sie erhalten eine ZIP-Datei mit allen Seiten, Beiträgen, Menüs, Formularen, Einstellungen und Bildern. Benutzerkonten, frühere Versionen von Seiten und über Formulare gesendete Nachrichten sind nicht enthalten.
+transfer.export.submit: Export herunterladen
+transfer.import.heading: Eine Website importieren
+transfer.import.intro: Wählen Sie eine Datei, die aus dieser oder einer anderen SymfoCMS-Website exportiert wurde.
+transfer.import.file: Exportdatei (ZIP)
+transfer.import.file_help: 'Höchstens %limit% MB. Größere Dateien lassen sich über die Kommandozeile importieren.'
+transfer.import.mode: Was soll mit den Inhalten dieser Website geschehen?
+transfer.import.mode_add: Behalten und die importierten Inhalte hinzufügen
+transfer.import.mode_replace: Löschen und durch die importierte Website ersetzen, einschließlich ihrer Einstellungen
+transfer.import.confirm: Mir ist bewusst, dass beim Ersetzen alle Seiten, Beiträge, Menüs und Bilder dieser Website gelöscht werden.
+transfer.import.submit: Importieren
+transfer.error.no_file: Bitte wählen Sie eine Datei.
+transfer.error.upload_failed: Die Datei konnte nicht hochgeladen werden. Möglicherweise ist sie zu groß.
+transfer.error.confirm: Bitte bestätigen Sie, dass die Inhalte dieser Website gelöscht werden dürfen.
+transfer.error.not_a_zip: Das ist keine ZIP-Datei.
+transfer.error.not_an_export: Diese Datei ist kein Export einer SymfoCMS-Website.
+transfer.error.newer_version: Dieser Export stammt aus einer neueren Version. Bitte aktualisieren Sie zuerst diese Website.
+transfer.report.heading: Import abgeschlossen
+transfer.report.imported: Importiert
+transfer.report.nothing: Die Datei enthielt nichts, was importiert werden konnte.
+transfer.report.issues: Nicht übernommen
+transfer.report.issues_intro: Diese Dinge ließen sich nicht unverändert importieren. Alles andere ist vorhanden.
+transfer.report.continue: Zur Website
+transfer.count.pages: Seiten
+transfer.count.posts: Beiträge
+transfer.count.categories: Kategorien
+transfer.count.media: Bilder
+transfer.count.shared_blocks: geteilte Blöcke
+transfer.count.forms: Formulare
+transfer.count.page_templates: Seitenvorlagen
+transfer.count.redirects: Weiterleitungen
+transfer.issue.image_missing: Das Bild fehlt in der Datei.
+transfer.issue.image_invalid: Das Bild konnte nicht gelesen werden oder ist zu groß.
+transfer.issue.content_invalid: Der Eintrag hat keinen Titel oder keine gültige Sprache und wurde übersprungen.
+transfer.issue.menu_item: Der Menüeintrag führt zu etwas, das nicht importiert wurde, und wurde ausgelassen.

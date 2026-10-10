@@ -1,0 +1,60 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'transfer.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'transfer.title'|trans }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('admin_settings') }}">← {{ 'nav.settings'|trans }}</a>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="flash flash--error" role="alert">{{ error|trans }}</div>
+    {% endif %}
+
+    <div class="card card--narrow">
+        <h2>{{ 'transfer.export.heading'|trans }}</h2>
+        <p class="muted">{{ 'transfer.export.intro'|trans }}</p>
+        <form method="post" action="{{ path('admin_transfer_export') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+            <button type="submit" class="button button--primary">{{ 'transfer.export.submit'|trans }}</button>
+        </form>
+    </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'transfer.import.heading'|trans }}</h2>
+        <p class="muted">{{ 'transfer.import.intro'|trans }}</p>
+        <form method="post" action="{{ path('admin_transfer_import') }}" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+            <div class="field">
+                <label for="transfer-archive">{{ 'transfer.import.file'|trans }}</label>
+                <input type="file" id="transfer-archive" name="archive" accept=".zip,application/zip" required aria-describedby="transfer-archive-help">
+                <p class="field__help" id="transfer-archive-help">{{ 'transfer.import.file_help'|trans({'%limit%': max_upload_mb}) }}</p>
+            </div>
+            <fieldset class="field">
+                <legend>{{ 'transfer.import.mode'|trans }}</legend>
+                <div class="choices">
+                    <label class="check">
+                        <input type="radio" name="mode" value="add" checked>
+                        <span>{{ 'transfer.import.mode_add'|trans }}</span>
+                    </label>
+                    <label class="check">
+                        <input type="radio" name="mode" value="replace">
+                        <span>{{ 'transfer.import.mode_replace'|trans }}</span>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="field field--check">
+                <label class="check">
+                    <input type="checkbox" name="confirm" value="1">
+                    <span>{{ 'transfer.import.confirm'|trans }}</span>
+                </label>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="button button--primary">{{ 'transfer.import.submit'|trans }}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

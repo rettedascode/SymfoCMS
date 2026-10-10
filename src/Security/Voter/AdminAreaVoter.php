@@ -21,6 +21,7 @@ final class AdminAreaVoter extends Voter
     public const MANAGE_FORMS = 'FORM_MANAGE';
     public const MANAGE_REDIRECTS = 'REDIRECT_MANAGE';
     public const MANAGE_THEMES = 'THEME_MANAGE';
+    public const TRANSFER_SITE = 'SITE_TRANSFER';
 
     private const REQUIRED_ROLE = [
         self::MANAGE_MENUS => 'ROLE_ADMIN',
@@ -31,6 +32,7 @@ final class AdminAreaVoter extends Voter
         self::MANAGE_FORMS => 'ROLE_EDITOR',
         self::MANAGE_REDIRECTS => 'ROLE_ADMIN',
         self::MANAGE_THEMES => 'ROLE_ADMIN',
+        self::TRANSFER_SITE => 'ROLE_ADMIN',
     ];
 
     public function __construct(private readonly AccessDecisionManagerInterface $decisionManager)

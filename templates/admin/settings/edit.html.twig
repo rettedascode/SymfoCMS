@@ -1,6 +1,12 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}{{ 'nav.settings'|trans }}{% endblock %}
+{% block title %}{{ 'nav.settings'|trans }}
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'transfer.title'|trans }}</h2>
+        <p class="muted">{{ 'transfer.settings_hint'|trans }}</p>
+        <a class="button" href="{{ path('admin_transfer_index') }}">{{ 'transfer.open'|trans }}</a>
+    </div>
+{% endblock %}
 
 {% block main %}
     <div class="page-header">
@@ -32,5 +38,11 @@
         <h2>{{ 'redirect.title'|trans }}</h2>
         <p class="muted">{{ 'redirect.settings_hint'|trans }}</p>
         <a class="button" href="{{ path('admin_redirect_index') }}">{{ 'redirect.manage'|trans }}</a>
+    </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'transfer.title'|trans }}</h2>
+        <p class="muted">{{ 'transfer.settings_hint'|trans }}</p>
+        <a class="button" href="{{ path('admin_transfer_index') }}">{{ 'transfer.open'|trans }}</a>
     </div>
 {% endblock %}

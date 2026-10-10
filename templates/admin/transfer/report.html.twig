@@ -1,0 +1,38 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ heading|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ heading|trans }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('admin_transfer_index') }}">← {{ 'transfer.title'|trans }}</a>
+            <a class="button button--primary" href="{{ path('admin_dashboard') }}">{{ 'transfer.report.continue'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="card card--narrow">
+        <h2>{{ 'transfer.report.imported'|trans }}</h2>
+        {% if report.counts is empty %}
+            <p class="muted">{{ 'transfer.report.nothing'|trans }}</p>
+        {% else %}
+            <ul class="report-counts">
+                {% for what, count in report.counts %}
+                    <li data-count="{{ what }}"><strong>{{ count }}</strong> {{ ('transfer.count.' ~ what)|trans }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    {% if report.issues is not empty %}
+        <div class="card table-wrap--spaced">
+            <h2>{{ 'transfer.report.issues'|trans }} <span class="muted">({{ report.issues|length }})</span></h2>
+            <p class="muted">{{ 'transfer.report.issues_intro'|trans }}</p>
+            <ul class="report-issues">
+                {% for issue in report.issues %}
+                    <li><strong>{{ issue.subject }}</strong> – {{ issue.message|trans(issue.parameters) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

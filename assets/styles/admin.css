@@ -401,3 +401,11 @@ mark { background: #fff1a8; color: inherit; padding: 0 .1em; border-radius: 2px;
 .install__checks small { display: block; }
 .install__server { border: 0; margin: 0; padding: 0; min-width: 0; }
 .install__code { margin: 1rem 0; padding: .9rem 1rem; background: #1b2130; color: #e6e9f0; border-radius: 8px; overflow-x: auto; font-size: .85rem; }
+
+/* ---------- Export and import ---------- */
+
+.report-counts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.report-issues { margin: 0; padding-left: 1.2rem; display: grid; gap: .4rem; }
+.field input[type="file"] { display: block; width: 100%; padding: .5rem; border: 1px dashed var(--border); border-radius: 8px; background: var(--surface); }
+fieldset.field { border: 0; margin-left: 0; margin-right: 0; padding: 0; min-width: 0; }
+fieldset.field legend { font-weight: 600; margin-bottom: .35rem; padding: 0; }
