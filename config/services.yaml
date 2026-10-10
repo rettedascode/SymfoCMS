@@ -9,6 +9,7 @@ parameters:
     app.posts_per_page: 6
     app.mail_from: '%env(APP_MAIL_FROM)%'
     app.max_revisions: '%env(int:APP_MAX_REVISIONS)%'
+    app.themes_dir: '%kernel.project_dir%/themes'
     env(APP_SITE_NAME): 'SymfoCMS'
     env(APP_SITE_TAGLINE): ''
     env(APP_LOCALE): 'en'

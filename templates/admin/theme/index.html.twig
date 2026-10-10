@@ -1,0 +1,81 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'nav.design'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.design'|trans }}</h1>
+        <div class="page-header__actions">
+            <a class="button" href="{{ path('app_home') }}" target="_blank" rel="noopener">{{ 'nav.view_site'|trans }} ↗</a>
+        </div>
+    </div>
+    <p class="muted">{{ 'theme.intro'|trans }}</p>
+
+    <ul class="theme-grid">
+        {% for item in themes %}
+            {% set theme = item.theme %}
+            <li>
+                <article class="theme-card{% if theme.id == active.id %} is-active{% endif %}" data-theme="{{ theme.id }}">
+                    <h2>
+                        {{ theme.name }}
+                        {% if theme.id == active.id %}<span class="badge badge--published">{{ 'theme.active'|trans }}</span>{% endif %}
+                    </h2>
+                    {% if item.colors is not empty %}
+                        <div class="theme-card__swatches" aria-hidden="true">
+                            {% for color in item.colors %}<span style="background: {{ color }}"></span>{% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if theme.description %}<p>{{ theme.description }}</p>{% endif %}
+                    <p class="muted">
+                        {% if theme.author %}{{ 'theme.by_author'|trans({'%author%': theme.author}) }}{% endif %}
+                        {% if theme.version %} · {{ theme.version }}{% endif %}
+                        {% if theme.parent %} · {{ 'theme.based_on'|trans({'%parent%': theme.parent}) }}{% endif %}
+                    </p>
+                    {% if theme.id != active.id %}
+                        <form class="theme-card__footer" method="post" action="{{ path('admin_theme_activate', {id: theme.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                            <button type="submit" class="button button--primary">{{ 'theme.activate'|trans }}</button>
+                        </form>
+                    {% endif %}
+                </article>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="card">
+        <h2>{{ 'theme.customize'|trans }}</h2>
+        <p class="muted">{{ 'theme.customize_intro'|trans({'%theme%': active.name}) }}</p>
+
+        {{ form_start(form) }}
+        {{ form_row(form.logo) }}
+
+        {% set colors = form.children|filter((child, name) => name starts with 'color_') %}
+        {% if colors is not empty %}
+            <h3 class="card__heading">{{ 'theme.colors'|trans }}</h3>
+            <div class="theme-settings">
+                {% for field in colors %}{{ form_row(field) }}{% endfor %}
+            </div>
+        {% endif %}
+
+        {% set fonts = form.children|filter((child, name) => name starts with 'font_') %}
+        {% if fonts is not empty %}
+            <h3 class="card__heading">{{ 'theme.fonts'|trans }}</h3>
+            <p class="muted">{{ 'theme.fonts_help'|trans }}</p>
+            <div class="theme-settings">
+                {% for field in fonts %}{{ form_row(field) }}{% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="button button--primary">{{ 'action.save'|trans }}</button>
+        </div>
+        {{ form_end(form) }}
+
+        {% if has_settings %}
+            <form class="theme-reset" method="post" action="{{ path('admin_theme_reset') }}" data-controller="confirm" data-confirm-message-value="{{ 'theme.reset_confirm'|trans }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                <button type="submit" class="link-button">{{ 'theme.reset'|trans }}</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

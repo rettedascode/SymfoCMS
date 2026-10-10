@@ -1,0 +1,19 @@
+{
+    "name": "Default",
+    "description": "Clean and calm: a single column that is easy to read, with a simple header and footer.",
+    "author": "SymfoCMS",
+    "version": "1.0.0",
+    "stylesheets": ["theme.css"],
+    "settings": {
+        "colors": [
+            {"name": "accent", "label": "theme.setting.accent", "variable": "--color-accent", "default": "#2f55d4"},
+            {"name": "background", "label": "theme.setting.background", "variable": "--color-bg", "default": "#ffffff"},
+            {"name": "surface", "label": "theme.setting.surface", "variable": "--color-surface", "default": "#f6f7f9"},
+            {"name": "text", "label": "theme.setting.text", "variable": "--color-text", "default": "#1f2430"}
+        ],
+        "fonts": [
+            {"name": "body", "label": "theme.setting.body", "variable": "--font-body", "default": "system-sans"},
+            {"name": "heading", "label": "theme.setting.heading", "variable": "--font-heading", "default": "system-sans"}
+        ]
+    }
+}

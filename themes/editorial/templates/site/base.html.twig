@@ -1,0 +1,22 @@
+{#
+    The Editorial theme keeps everything of the default layout and replaces
+    the header with a centred masthead. A theme only needs the templates it
+    changes; all others are taken from the default theme.
+#}
+{% extends '@themes/default/templates/site/base.html.twig' %}
+
+{% block header %}
+<header class="site-header masthead">
+    <div class="container">
+        <div class="masthead__tools">
+            {{ block('language_switcher') }}
+            {{ block('search') }}
+        </div>
+        <div class="masthead__title">
+            {{ block('brand') }}
+            {% if site_tagline %}<p class="masthead__tagline">{{ site_tagline }}</p>{% endif %}
+        </div>
+        {{ block('navigation') }}
+    </div>
+</header>
+{% endblock %}

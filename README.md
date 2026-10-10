@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Themes](docs/themes.md): selectable in the admin area, with logo, colours and fonts as theme settings and locally served fonts; two themes included
 - [Search](docs/search.md): full-text search over published pages and posts with highlighted matches, per language, on every supported database; one search field in the admin area for pages, posts and images
 - [SEO](docs/seo.md): live preview of the search result in the editor, Open Graph and Twitter cards with a selectable share image, JSON-LD for posts, FAQs and breadcrumbs
 - Admin interface in English and German; [other languages](#adding-an-interface-language) are one translation file away
@@ -257,7 +258,7 @@ The language then appears in the user settings.
 
 ## Changing the design
 
-The public design lives in `themes/default/`: the stylesheet `assets/theme.css` and the templates in `templates/site/`. The markup of the blocks is in `templates/blocks/`. Colours, fonts and widths are CSS custom properties at the top of the stylesheet. In development changes show up on reload; in production run `php bin/console asset-map:compile` after changing assets.
+Administrators choose a theme under **Design** and set the logo, colours and fonts there. Two themes are included (`themes/default/` and `themes/editorial/`); fonts are served by the website itself. A theme is a folder with a manifest, stylesheets and the Twig templates it wants to change – see [docs/themes.md](docs/themes.md). The markup of the blocks is in `templates/blocks/`. In development changes show up on reload; in production run `php bin/console asset-map:compile` after changing assets.
 
 ## Development
 
@@ -277,11 +278,11 @@ src/Controller/     Admin/ for the admin area, Site/ for the public website
 src/Security/       Voters and the user checker
 src/Service/        Media handling, menus, slugs, editor configuration
 templates/blocks/   One template per block type
-themes/default/     Public theme: templates and stylesheet
+themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: the editor, forms, redirects, SEO, search, extensions, multilingual websites
+docs/               Guides: the editor, forms, redirects, SEO, search, themes, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

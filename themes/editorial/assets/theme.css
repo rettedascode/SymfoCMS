@@ -1,0 +1,66 @@
+/*
+ * Editorial theme. Loaded after the stylesheet of the default theme, so it
+ * only contains what is different. Colours and fonts are set in theme.json
+ * and can be changed under "Design" in the admin area.
+ */
+
+:root {
+    --color-bg: #fbf8f3;
+    --color-surface: #f1ebe1;
+    --color-text: #2a2622;
+    --color-muted: #6f665c;
+    --color-border: #ddd3c4;
+    --color-accent: #a4361f;
+    --content-width: 700px;
+    --radius: 2px;
+    --font-body: "Lora", Georgia, "Times New Roman", serif;
+    --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+}
+
+body { font-size: 1.125rem; line-height: 1.75; }
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.3rem, 6vw, 3.4rem); line-height: 1.1; }
+
+/* ---------- Masthead ---------- */
+
+.masthead { border-bottom: 0; }
+.masthead .container { display: block; padding-top: .75rem; }
+.masthead__tools { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; flex-wrap: wrap; min-height: 2.5rem; }
+.masthead__title { text-align: center; padding: 1rem 0 1.5rem; }
+.masthead .site-brand { display: inline-block; font-size: clamp(2.2rem, 7vw, 3.6rem); font-weight: 900; line-height: 1.05; letter-spacing: -.02em; padding: 0; }
+.masthead .site-brand__logo { max-height: 5rem; max-width: min(22rem, 80vw); margin: 0 auto; }
+.masthead__tagline { margin: .5rem 0 0; color: var(--color-muted); font-style: italic; }
+
+.masthead .site-nav { display: block; border-top: 1px solid var(--color-text); border-bottom: 3px double var(--color-text); }
+.masthead .site-nav__list { justify-content: center; flex-wrap: wrap; padding: .35rem 0; }
+.masthead .site-nav__list a { font-family: var(--font-heading); font-size: .95rem; letter-spacing: .08em; text-transform: uppercase; border-radius: 0; }
+.masthead .site-nav__list a:hover { background: transparent; text-decoration: underline; }
+.masthead .site-nav__sub a { text-transform: none; letter-spacing: 0; }
+.masthead .site-nav__toggle { margin: .5rem auto; }
+
+/* ---------- Content ---------- */
+
+.site-main { padding-top: 3rem; }
+.content > p:first-of-type::first-letter { font-family: var(--font-heading); font-size: 3.4em; font-weight: 700; float: left; line-height: .85; padding: .08em .1em 0 0; color: var(--color-accent); }
+
+blockquote, .block-quote { border-left: 0; text-align: center; font-family: var(--font-heading); font-style: italic; }
+
+.button { border-radius: 0; font-family: var(--font-heading); letter-spacing: .06em; text-transform: uppercase; font-size: .9rem; }
+
+.post-card, .notice, .embed-placeholder { border-radius: 0; }
+.post-meta, .search-results__meta { font-style: italic; }
+
+/* ---------- Footer ---------- */
+
+.site-footer { background: var(--color-text); color: var(--color-bg); border-top: 0; }
+.site-footer a { color: var(--color-bg); }
+.site-footer a:hover { color: var(--color-bg); text-decoration-thickness: 2px; }
+
+@media (max-width: 760px) {
+    .masthead .site-nav { border: 0; }
+    .masthead .site-nav__toggle { display: flex; }
+    .masthead .site-nav__list { border-top: 1px solid var(--color-border); }
+    .masthead .site-nav__list a { text-align: center; }
+    .masthead .site-search { margin-bottom: 0; }
+}

@@ -558,3 +558,29 @@ search.results_for: 'Suchergebnisse für „%query%“'
 search.too_short: Bitte geben Sie mindestens zwei Buchstaben ein.
 search.empty_title: Nichts gefunden
 search.empty_text: Versuchen Sie es mit einem anderen oder kürzeren Wort. Durchsucht werden Seiten, Beiträge und Bilder aller Sprachen, auch Entwürfe.
+
+nav.design: Design
+theme.intro: Das Theme bestimmt, wie Ihre Website aussieht. Ihre Seiten und Beiträge bleiben beim Wechsel unverändert.
+theme.active: Aktiv
+theme.activate: Dieses Theme verwenden
+theme.by_author: 'von %author%'
+theme.based_on: 'Baut auf „%parent%“ auf'
+theme.customize: Logo, Farben und Schriften
+theme.customize_intro: 'Diese Einstellungen gehören zum Theme „%theme%“. Das Logo bleibt bei einem Theme-Wechsel erhalten.'
+theme.logo: Logo
+theme.logo_help: Erscheint im Kopf der Website anstelle des Namens. Am besten eignet sich ein breites Bild mit transparentem Hintergrund.
+theme.colors: Farben
+theme.fonts: Schriften
+theme.fonts_help: Alle Schriften werden von Ihrer eigenen Website ausgeliefert. Es werden keine Daten an einen Schriftendienst gesendet.
+theme.reset: Zurück zu den Vorgaben des Themes
+theme.reset_confirm: Wirklich zu den ursprünglichen Farben und Schriften des Themes zurückkehren?
+theme.setting.accent: Akzentfarbe
+theme.setting.background: Hintergrund
+theme.setting.surface: Kästen und Fußbereich
+theme.setting.text: Text
+theme.setting.body: Fließtext
+theme.setting.heading: Überschriften
+theme.font.system_sans: Standard (serifenlos)
+theme.font.system_serif: Standard (mit Serifen)
+flash.theme_activated: Das Theme ist jetzt aktiv.
+flash.theme_reset: Die Farben und Schriften des Themes wurden wiederhergestellt.

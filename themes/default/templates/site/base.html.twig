@@ -34,7 +34,11 @@
     <link rel="alternate" type="application/rss+xml" title="{{ site_name }}" href="{{ site_path('app_feed') }}">
     {% block head %}{% endblock %}
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
-    <link rel="stylesheet" href="{{ asset('themes/default/assets/theme.css') }}">
+    {# The stylesheets of the active theme, then the colours and fonts chosen under "Design". #}
+    {% for stylesheet in theme_stylesheets() %}
+        <link rel="stylesheet" href="{{ stylesheet }}">
+    {% endfor %}
+    {{ theme_style() }}
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -57,9 +61,19 @@
     {% endif %}
 {% endblock %}
 
+{% block header %}
 <header class="site-header">
     <div class="container">
-        <a class="site-brand" href="{{ site_path('app_home') }}">{{ site_name }}</a>
+        {% block brand %}
+            {% set logo = theme_logo() %}
+            <a class="site-brand" href="{{ site_path('app_home') }}">
+                {% if logo %}
+                    <img class="site-brand__logo" src="{{ media_url(logo, 'medium') }}" alt="{{ site_name }}" width="{{ logo.width }}" height="{{ logo.height }}">
+                {% else %}
+                    {{ site_name }}
+                {% endif %}
+            </a>
+        {% endblock %}
         {% block navigation %}
             {% set main_menu = cms_menu('main') %}
             {% if main_menu is not empty %}
@@ -109,6 +123,7 @@
         {% endblock %}
     </div>
 </header>
+{% endblock %}
 
 <main class="site-main" id="content">
     {% block main %}
@@ -118,6 +133,7 @@
     {% endblock %}
 </main>
 
+{% block footer %}
 <footer class="site-footer">
     <div class="container">
         <p>© {{ 'now'|date('Y') }} {{ site_name }}</p>
@@ -135,6 +151,7 @@
         {% endblock %}
     </div>
 </footer>
+{% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('site.js') }}" defer></script>

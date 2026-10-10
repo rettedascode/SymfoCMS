@@ -1,0 +1,20 @@
+{
+    "name": "Editorial",
+    "description": "Like a printed magazine: a centred masthead, serif type and warm paper colours.",
+    "author": "SymfoCMS",
+    "version": "1.0.0",
+    "parent": "default",
+    "stylesheets": ["theme.css"],
+    "settings": {
+        "colors": [
+            {"name": "accent", "label": "theme.setting.accent", "variable": "--color-accent", "default": "#a4361f"},
+            {"name": "background", "label": "theme.setting.background", "variable": "--color-bg", "default": "#fbf8f3"},
+            {"name": "surface", "label": "theme.setting.surface", "variable": "--color-surface", "default": "#f1ebe1"},
+            {"name": "text", "label": "theme.setting.text", "variable": "--color-text", "default": "#2a2622"}
+        ],
+        "fonts": [
+            {"name": "body", "label": "theme.setting.body", "variable": "--font-body", "default": "lora"},
+            {"name": "heading", "label": "theme.setting.heading", "variable": "--font-heading", "default": "playfair-display"}
+        ]
+    }
+}

@@ -44,6 +44,9 @@
                 {% if is_granted('SHARED_BLOCK_MANAGE') %}
                     <li><a href="{{ path('admin_shared_block_index') }}" {% if route starts with 'admin_shared_block_' %}aria-current="page"{% endif %}><span aria-hidden="true">∞</span> {{ 'nav.shared_blocks'|trans }}</a></li>
                 {% endif %}
+                {% if is_granted('THEME_MANAGE') %}
+                    <li><a href="{{ path('admin_theme_index') }}" {% if route starts with 'admin_theme_' %}aria-current="page"{% endif %}><span aria-hidden="true">◐</span> {{ 'nav.design'|trans }}</a></li>
+                {% endif %}
                 {% if is_granted('SETTINGS_MANAGE') %}
                     <li><a href="{{ path('admin_settings') }}" {% if route == 'admin_settings' or route starts with 'admin_redirect_' %}aria-current="page"{% endif %}><span aria-hidden="true">⚙</span> {{ 'nav.settings'|trans }}</a></li>
                 {% endif %}

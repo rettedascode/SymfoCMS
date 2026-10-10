@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Themes: a theme is a folder with a manifest, stylesheets and Twig templates; administrators choose the active theme under "Design" (see `docs/themes.md`).
+- Theme settings for logo, colours and fonts, applied through CSS custom properties. Fonts (Inter, Lora, Playfair Display) are served by the website itself.
+- Second theme "Editorial" next to the default theme.
 - Search on the website: full-text search over published pages and posts with highlighted matches, per language, working on SQLite, MySQL and PostgreSQL (see `docs/search.md`).
 - Search in the admin area across pages, posts and images, limited to what the user may work on.
 - Command `app:search:reindex` to rebuild the search index.
@@ -54,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The public templates and stylesheet moved from `templates/site/` and `assets/styles/site.css` to `themes/default/`. Template names such as `site/page.html.twig` are unchanged.
 - Web addresses of pages, posts and categories only have to be unique within one language.
 - Existing content is assigned to the language set in `APP_LOCALE` by the migration; addresses do not change.
 - The demo content is bilingual (English and German).

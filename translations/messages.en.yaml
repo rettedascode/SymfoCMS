@@ -559,3 +559,29 @@ search.results_for: 'Search results for “%query%”'
 search.too_short: Please type at least two letters.
 search.empty_title: Nothing found
 search.empty_text: Try a different or a shorter word. Pages, posts and images of all languages are searched, drafts included.
+
+nav.design: Design
+theme.intro: The theme decides how your website looks. Your pages and posts stay the same when you change it.
+theme.active: Active
+theme.activate: Use this theme
+theme.by_author: 'by %author%'
+theme.based_on: 'Based on “%parent%”'
+theme.customize: Logo, colours and fonts
+theme.customize_intro: 'These settings belong to the theme “%theme%”. The logo is kept when you change the theme.'
+theme.logo: Logo
+theme.logo_help: Shown in the header instead of the name of the website. A wide image with a transparent background works best.
+theme.colors: Colours
+theme.fonts: Fonts
+theme.fonts_help: All fonts are delivered by your own website. No data is sent to a font service.
+theme.reset: Back to the theme's defaults
+theme.reset_confirm: Really go back to the original colours and fonts of the theme?
+theme.setting.accent: Accent colour
+theme.setting.background: Background
+theme.setting.surface: Boxes and footer
+theme.setting.text: Text
+theme.setting.body: Text
+theme.setting.heading: Headings
+theme.font.system_sans: Standard (sans serif)
+theme.font.system_serif: Standard (serif)
+flash.theme_activated: The theme is now active.
+flash.theme_reset: The colours and fonts of the theme were restored.
