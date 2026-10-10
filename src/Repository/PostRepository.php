@@ -74,6 +74,36 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
+     * Posts of a language whose publish date lies in the given days, earliest first - whatever their status.
+     *
+     * @param User|null $author only posts of this author, for people who only see their own
+     *
+     * @return list<Post>
+     */
+    public function findDated(string $locale, \DateTimeImmutable $from, \DateTimeImmutable $until, ?User $author = null): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.author', 'author')->addSelect('author')
+            ->where('p.locale = :locale')
+            ->andWhere('p.publishedAt >= :from')
+            ->andWhere('p.publishedAt < :until')
+            ->setParameter('locale', $locale)
+            ->setParameter('from', $from)
+            ->setParameter('until', $until)
+            ->orderBy('p.publishedAt', 'ASC')
+            ->addOrderBy('p.id', 'ASC');
+
+        if (null !== $author) {
+            $qb->andWhere('p.author = :author')->setParameter('author', $author);
+        }
+
+        /** @var list<Post> $posts */
+        $posts = $qb->getQuery()->getResult();
+
+        return $posts;
+    }
+
+    /**
      * Posts of one language for the admin list, newest first. Pass an author to limit the list to their posts.
      *
      * @return list<Post>

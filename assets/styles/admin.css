@@ -379,6 +379,42 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
     .board { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Editorial calendar: a month, one list of posts per day. */
+.calendar__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .4rem; }
+.calendar__month { margin: 0; }
+.calendar__nav { display: flex; gap: .4rem; }
+.calendar { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--border); display: grid; gap: 1px; }
+.calendar__weekdays, .calendar__week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; }
+.calendar__weekdays span { padding: .35rem .5rem; background: var(--subtle-2); color: var(--muted); font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.calendar__day { display: flex; flex-direction: column; min-height: 7.5rem; background: var(--surface); }
+.calendar__day--other { background: var(--subtle-2); }
+.calendar__day--other .calendar__number { color: var(--muted); }
+.calendar__date { display: flex; justify-content: flex-end; gap: .4rem; margin: 0; padding: .3rem .45rem 0; font-size: .85rem; font-weight: 600; }
+.calendar__weekday { display: none; color: var(--muted); }
+.calendar__day--today .calendar__number { min-width: 1.6rem; padding: 0 .35rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); text-align: center; }
+.calendar__list { list-style: none; margin: 0; padding: .3rem; display: grid; align-content: start; gap: .3rem; flex: 1; min-height: 2.5rem; }
+.calendar-post { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 0 .15rem; padding: .2rem .35rem .3rem .1rem; border: 1px solid var(--border); border-left: 3px solid var(--border-strong); border-radius: 6px; background: var(--bg); font-size: .85rem; }
+.calendar-post:not([data-dnd-item]) { padding-left: .45rem; }
+.calendar-post--published { border-left-color: var(--success, #2e9e62); }
+.calendar-post--scheduled { border-left-color: var(--accent); }
+.calendar-post .dnd-handle { width: 24px; height: 26px; grid-row: span 2; }
+.calendar-post__title { font-weight: 600; overflow-wrap: anywhere; padding-top: .15rem; }
+.calendar-post:not([data-dnd-item]) .calendar-post__title, .calendar-post:not([data-dnd-item]) .calendar-post__meta { grid-column: 1 / -1; }
+.calendar-post__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem .4rem; color: var(--muted); font-size: .78rem; }
+.calendar-post__meta .badge { font-size: .7rem; }
+/* The hint of an empty day would be in the way in so small a field: the outline is enough. */
+.dnd-dragging .calendar__list[data-dnd-empty-hint]:empty::before, .dnd-carrying .calendar__list[data-dnd-empty-hint]:empty::before { content: none; }
+@media (max-width: 860px) {
+    /* On a narrow screen the month is a list of days; days of the neighbouring months are left out. */
+    .calendar__weekdays { display: none; }
+    .calendar__week { grid-template-columns: minmax(0, 1fr); }
+    .calendar__day { min-height: 0; flex-direction: row; align-items: stretch; }
+    .calendar__day--other { display: none; }
+    .calendar__date { flex: 0 0 4.2rem; justify-content: flex-start; padding: .5rem; }
+    .calendar__weekday { display: inline; }
+    .calendar__list { min-height: 2.6rem; }
+}
+
 /* A plain list that is arranged by dragging, e.g. the categories. */
 .list-hint { margin: 1.5rem 0 .6rem; }
 .sort-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; max-width: 52rem; }

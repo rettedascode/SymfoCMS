@@ -147,6 +147,33 @@ final class CmsExtension
     /**
      * Formats a date the way readers of the current language expect it.
      */
+    /**
+     * "October 2026" in the language of the user.
+     */
+    #[AsTwigFilter('format_month')]
+    public function formatMonth(\DateTimeInterface $date): string
+    {
+        return $this->formatPattern($date, 'LLLL y', 'F Y');
+    }
+
+    /**
+     * "Mon" in the language of the user.
+     */
+    #[AsTwigFilter('format_weekday')]
+    public function formatWeekday(\DateTimeInterface $date): string
+    {
+        return $this->formatPattern($date, 'ccc', 'D');
+    }
+
+    private function formatPattern(\DateTimeInterface $date, string $pattern, string $fallback): string
+    {
+        if (!class_exists(\IntlDateFormatter::class)) {
+            return $date->format($fallback);
+        }
+
+        return (string) (new \IntlDateFormatter($this->localeAware->getLocale(), \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, $date->getTimezone(), null, $pattern))->format($date);
+    }
+
     #[AsTwigFilter('local_date')]
     public function localDate(?\DateTimeInterface $date, bool $withTime = false): string
     {

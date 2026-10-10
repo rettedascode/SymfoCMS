@@ -18,7 +18,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Planning views of the blog, arranged by dragging: the board (posts by status).
+ * Planning views of the blog, arranged by dragging: the board (posts by status)
+ * and the calendar (posts by publish date).
  *
  * Everybody sees the posts they may edit - authors their own, editors all - and
  * every change goes through the same workflow and voters as the post editor.
@@ -110,6 +111,119 @@ final class EditorialController extends AdminController
         }
 
         return $this->json($this->describe($post));
+    }
+
+    /**
+     * A month of the blog: every post on the day of its publish date. Dragging a post to another day changes the date.
+     */
+    #[Route('/calendar', name: 'calendar', methods: ['GET'])]
+    public function calendar(Request $request): Response
+    {
+        $locale = $this->locales->fromRequest($request);
+        $today = new \DateTimeImmutable('today');
+        $month = \DateTimeImmutable::createFromFormat('!Y-m', $request->query->getString('month')) ?: $today->modify('first day of this month');
+
+        // Whole weeks from Monday to Sunday, so the month has the shape of a calendar sheet.
+        $first = $month->modify('monday this week');
+        $last = $month->modify('last day of this month')->modify('sunday this week');
+        $author = $this->isGranted(PostVoter::MANAGE_ALL) ? null : $this->currentUser();
+
+        $byDay = [];
+        foreach ($this->posts->findDated($locale, $first, $last->modify('+1 day'), $author) as $post) {
+            $byDay[$post->getPublishedAt()?->format('Y-m-d')][] = ['post' => $post, 'movable' => $this->mayReschedule($post)];
+        }
+
+        $weeks = [];
+        for ($day = $first; $day <= $last; $day = $day->modify('+1 day')) {
+            $weeks[(int) floor($first->diff($day)->days / 7)][] = [
+                'date' => $day,
+                'in_month' => $day->format('Y-m') === $month->format('Y-m'),
+                'today' => $day == $today,
+                'posts' => $byDay[$day->format('Y-m-d')] ?? [],
+            ];
+        }
+
+        return $this->render('admin/post/calendar.html.twig', [
+            'weeks' => $weeks,
+            'month' => $month,
+            'previous' => $month->modify('-1 month')->format('Y-m'),
+            'next' => $month->modify('+1 month')->format('Y-m'),
+            'is_current' => $month->format('Y-m') === $today->format('Y-m'),
+            'locale' => $locale,
+        ]);
+    }
+
+    /**
+     * A post was dropped on another day: {"id": 7, "date": "2026-10-14"}. The time of day stays.
+     *
+     * Moving a post that visitors can read into the future takes it off the website until then;
+     * that needs "confirmed": true. Without it the answer is 409 with the question to ask.
+     */
+    #[Route('/calendar/move', name: 'calendar_move', methods: ['POST'])]
+    public function moveInCalendar(Request $request): JsonResponse
+    {
+        $this->requireCsrfToken($request);
+        $data = $this->body($request);
+        $date = \is_string($data['date'] ?? null) ? \DateTimeImmutable::createFromFormat('!Y-m-d', $data['date']) : false;
+        if (!\is_int($data['id'] ?? null) || false === $date || $date->format('Y-m-d') !== $data['date']) {
+            throw new BadRequestHttpException('The move needs the id of a post and a date such as 2026-10-14.');
+        }
+
+        $post = $this->posts->find($data['id']) ?? throw $this->createNotFoundException();
+        $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        if (!$this->mayReschedule($post)) {
+            return $this->json(['error' => $this->translator->trans('calendar.error.not_allowed')], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Only the day changes. A post that had no time yet goes out in the morning.
+        $current = $post->getPublishedAt();
+        $moved = null !== $current
+            ? $date->setTime((int) $current->format('H'), (int) $current->format('i'), (int) $current->format('s'))
+            : $date->setTime(9, 0);
+
+        $wasPublic = $post->isPublic();
+        if ($wasPublic && $moved > new \DateTimeImmutable() && true !== ($data['confirmed'] ?? false)) {
+            return $this->json(['confirm' => $this->translator->trans('calendar.confirm_offline', [
+                '%title%' => $post->getTitle(),
+                '%date%' => $this->formatDay($moved),
+            ])], Response::HTTP_CONFLICT);
+        }
+
+        $post->setPublishedAt($moved);
+        $this->contentManager->save($post, $post->getBlocks());
+
+        $message = match (true) {
+            $wasPublic && !$post->isPublic() => 'calendar.moved_offline',
+            !$wasPublic && $post->isPublic() => 'calendar.moved_public',
+            default => 'calendar.moved',
+        };
+
+        return $this->json($this->describe($post) + [
+            'time' => $moved->format('H:i'),
+            'message' => $this->translator->trans($message, ['%date%' => $this->formatDay($moved)]),
+        ]);
+    }
+
+    /**
+     * Changing the date of something that is published decides when - and whether - visitors see it.
+     * That is reserved for those who may publish; drafts are planned by everybody who may edit them.
+     */
+    private function mayReschedule(Post $post): bool
+    {
+        if (!$this->isGranted(PostVoter::EDIT, $post)) {
+            return false;
+        }
+
+        return ContentStatus::Published !== $post->getStatus() || $this->review->can($post, ReviewWorkflow::UNPUBLISH);
+    }
+
+    private function formatDay(\DateTimeImmutable $date): string
+    {
+        if (!class_exists(\IntlDateFormatter::class)) {
+            return $date->format('Y-m-d');
+        }
+
+        return (string) (new \IntlDateFormatter($this->translator->getLocale(), \IntlDateFormatter::LONG, \IntlDateFormatter::NONE, $date->getTimezone()))->format($date);
     }
 
     /**

@@ -268,6 +268,20 @@ post.new: New post
 post.new_intro: What is the post about? You can change the title at any time.
 post.tab_posts: Posts
 post.tab_board: Board
+post.tab_calendar: Calendar
+calendar.intro: Every post stands on the day of its publish date. Drag a post to another day to change the date; the time stays.
+calendar.months: Months
+calendar.previous: Earlier
+calendar.next: Later
+calendar.today: This month
+calendar.moved: 'Moved to %date%.'
+calendar.moved_offline: 'Moved to %date%. The post is off the website until then.'
+calendar.moved_public: 'Moved to %date%. Visitors can read the post now.'
+calendar.confirm_title: Take the post offline?
+calendar.confirm_offline: 'Visitors can read “%title%” right now. Moved to %date%, it disappears from the website until that day. Go on?'
+calendar.confirm_ok: Move and take offline
+calendar.confirm_cancel: Leave it where it was
+calendar.error.not_allowed: You cannot change the date of a published post.
 board.intro: Every post is a card in the column of its status. Drag a card into another column to change the status.
 board.drop_here: Drop a post here
 board.moved: 'The post is now: %status%.'

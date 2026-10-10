@@ -1,0 +1,67 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'post.tab_calendar'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="page-header">
+        <h1>{{ 'nav.blog'|trans }}</h1>
+        <a class="button button--primary" href="{{ path('admin_post_new', {locale: locale}) }}">+ {{ 'post.new'|trans }}</a>
+    </div>
+
+    {{ include('admin/post/_tabs.html.twig', {active: 'calendar', locale: locale, parameters: {month: month|date('Y-m')}}) }}
+
+    {% set locale_parameters = locale == default_content_locale() ? {} : {locale: locale} %}
+    <div class="calendar__bar">
+        <h2 class="calendar__month">{{ month|format_month }}</h2>
+        <nav class="calendar__nav" aria-label="{{ 'calendar.months'|trans }}">
+            <a class="button button--small" href="{{ path('admin_editorial_calendar', locale_parameters|merge({month: previous})) }}" rel="prev">← {{ 'calendar.previous'|trans }}</a>
+            {% if not is_current %}<a class="button button--small" href="{{ path('admin_editorial_calendar', locale_parameters) }}">{{ 'calendar.today'|trans }}</a>{% endif %}
+            <a class="button button--small" href="{{ path('admin_editorial_calendar', locale_parameters|merge({month: next})) }}" rel="next">{{ 'calendar.next'|trans }} →</a>
+        </nav>
+    </div>
+    <p class="muted">{{ 'calendar.intro'|trans }}</p>
+
+    {#
+        One list per day (see calendar_controller.js). Posts the current user may not move
+        carry no handle; the server checks every move again.
+    #}
+    <div class="calendar" data-controller="calendar"
+         data-calendar-url-value="{{ path('admin_editorial_calendar_move') }}"
+         data-calendar-csrf-value="{{ csrf_token('admin') }}"
+         data-calendar-i18n-value="{{ {
+             confirm_title: 'calendar.confirm_title'|trans,
+             confirm_ok: 'calendar.confirm_ok'|trans,
+             confirm_cancel: 'calendar.confirm_cancel'|trans,
+         }|json_encode }}">
+        <div class="calendar__weekdays" aria-hidden="true">
+            {% for day in weeks|first %}<span>{{ day.date|format_weekday }}</span>{% endfor %}
+        </div>
+        {% for week in weeks %}
+            <div class="calendar__week">
+                {% for day in week %}
+                    <section class="calendar__day{{ day.in_month ? '' : ' calendar__day--other' }}{{ day.today ? ' calendar__day--today' : '' }}">
+                        <h3 class="calendar__date"{% if day.today %} aria-current="date"{% endif %}>
+                            <span class="calendar__weekday">{{ day.date|format_weekday }}</span>
+                            <span class="calendar__number">{{ day.date|date('j') }}</span>
+                            <span class="visually-hidden">{{ day.date|local_date }}</span>
+                        </h3>
+                        <ul class="calendar__list" data-calendar-target="day" data-date="{{ day.date|date('Y-m-d') }}" aria-label="{{ day.date|local_date }}">
+                            {% for entry in day.posts %}
+                                {% set post = entry.post %}
+                                {% set state = post.scheduled ? 'scheduled' : post.status.value %}
+                                <li class="calendar-post calendar-post--{{ state }}" data-dnd-id="{{ post.id }}" data-dnd-label="{{ post.title }}"{% if entry.movable %} data-dnd-item{% endif %}>
+                                    {% if entry.movable %}{{ include('admin/_handle.html.twig', {label: post.title}) }}{% endif %}
+                                    <a class="calendar-post__title" href="{{ path('admin_post_edit', {id: post.id}) }}">{{ post.title }}</a>
+                                    <span class="calendar-post__meta">
+                                        <span data-calendar-time>{{ post.publishedAt|date('H:i') }}</span>
+                                        <span class="badge badge--{{ state }}" data-calendar-badge>{{ ('status.' ~ state)|trans }}</span>
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

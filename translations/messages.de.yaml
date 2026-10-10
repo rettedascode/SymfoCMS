@@ -267,6 +267,20 @@ post.new: Neuer Beitrag
 post.new_intro: Worum geht es in dem Beitrag? Du kannst den Titel jederzeit ändern.
 post.tab_posts: Beiträge
 post.tab_board: Board
+post.tab_calendar: Kalender
+calendar.intro: Jeder Beitrag steht am Tag seines Veröffentlichungsdatums. Ziehen Sie einen Beitrag auf einen anderen Tag, um das Datum zu ändern; die Uhrzeit bleibt.
+calendar.months: Monate
+calendar.previous: Früher
+calendar.next: Später
+calendar.today: Dieser Monat
+calendar.moved: 'Auf den %date% verschoben.'
+calendar.moved_offline: 'Auf den %date% verschoben. Bis dahin ist der Beitrag nicht auf der Website.'
+calendar.moved_public: 'Auf den %date% verschoben. Besucher können den Beitrag jetzt lesen.'
+calendar.confirm_title: Beitrag offline nehmen?
+calendar.confirm_offline: 'Besucher können „%title%“ gerade lesen. Auf den %date% verschoben, verschwindet der Beitrag bis zu diesem Tag von der Website. Fortfahren?'
+calendar.confirm_ok: Verschieben und offline nehmen
+calendar.confirm_cancel: Dort lassen, wo er war
+calendar.error.not_allowed: Sie können das Datum eines veröffentlichten Beitrags nicht ändern.
 board.intro: Jeder Beitrag ist eine Karte in der Spalte seines Status. Ziehen Sie eine Karte in eine andere Spalte, um den Status zu ändern.
 board.drop_here: Beitrag hier ablegen
 board.moved: 'Der Beitrag ist jetzt: %status%.'

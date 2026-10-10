@@ -1,9 +1,10 @@
 {# Variables: active ("posts", "board", "calendar" or "categories"), locale; parameters (optional) - kept when the language is switched #}
 {% set locale_parameters = locale == default_content_locale() ? {} : {locale: locale} %}
-{% set routes = {posts: 'admin_post_index', board: 'admin_editorial_board', categories: 'admin_category_index'} %}
+{% set routes = {posts: 'admin_post_index', board: 'admin_editorial_board', calendar: 'admin_editorial_calendar', categories: 'admin_category_index'} %}
 <nav class="tabs" aria-label="{{ 'nav.blog'|trans }}">
     <a href="{{ path('admin_post_index', locale_parameters) }}" {% if active == 'posts' %}aria-current="page"{% endif %}>{{ 'post.tab_posts'|trans }}</a>
     <a href="{{ path('admin_editorial_board', locale_parameters) }}" {% if active == 'board' %}aria-current="page"{% endif %}>{{ 'post.tab_board'|trans }}</a>
+    <a href="{{ path('admin_editorial_calendar', locale_parameters) }}" {% if active == 'calendar' %}aria-current="page"{% endif %}>{{ 'post.tab_calendar'|trans }}</a>
     {% if is_granted('CATEGORY_MANAGE') %}
         <a href="{{ path('admin_category_index', locale_parameters) }}" {% if active == 'categories' %}aria-current="page"{% endif %}>{{ 'post.tab_categories'|trans }}</a>
     {% endif %}
