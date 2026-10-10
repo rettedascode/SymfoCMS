@@ -542,12 +542,29 @@ fieldset.field legend { font-weight: 600; margin-bottom: .35rem; padding: 0; }
 .image-editor__stage { overflow: hidden; }
 .image-editor__box[hidden] { display: none; }
 .image-editor__box span { position: absolute; width: 18px; height: 18px; background: #fff; border: 2px solid var(--accent); border-radius: 50%; }
+/* The edges of the frame: invisible bars that are a little wider than the line, with a grip in the middle. */
+.image-editor__box [data-handle="n"], .image-editor__box [data-handle="s"] { left: 14px; right: 14px; width: auto; height: 16px; cursor: ns-resize; }
+.image-editor__box [data-handle="e"], .image-editor__box [data-handle="w"] { top: 14px; bottom: 14px; height: auto; width: 16px; cursor: ew-resize; }
+.image-editor__box [data-handle="n"], .image-editor__box [data-handle="e"], .image-editor__box [data-handle="s"], .image-editor__box [data-handle="w"] { background: none; border: 0; border-radius: 0; }
+.image-editor__box [data-handle="n"] { top: -9px; }
+.image-editor__box [data-handle="s"] { bottom: -9px; }
+.image-editor__box [data-handle="w"] { left: -9px; }
+.image-editor__box [data-handle="e"] { right: -9px; }
+.image-editor__box [data-handle="n"]::after, .image-editor__box [data-handle="s"]::after, .image-editor__box [data-handle="e"]::after, .image-editor__box [data-handle="w"]::after {
+    content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: #fff; border: 2px solid var(--accent); border-radius: 4px;
+}
+.image-editor__box [data-handle="n"]::after, .image-editor__box [data-handle="s"]::after { width: 26px; height: 8px; }
+.image-editor__box [data-handle="e"]::after, .image-editor__box [data-handle="w"]::after { width: 8px; height: 26px; }
 .image-editor__box [data-handle="nw"] { left: -10px; top: -10px; cursor: nwse-resize; }
 .image-editor__box [data-handle="ne"] { right: -10px; top: -10px; cursor: nesw-resize; }
 .image-editor__box [data-handle="sw"] { left: -10px; bottom: -10px; cursor: nesw-resize; }
 .image-editor__box [data-handle="se"] { right: -10px; bottom: -10px; cursor: nwse-resize; }
 .image-editor__point { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border: 3px solid #fff; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px rgba(0, 0, 0, .45); pointer-events: none; display: none; }
 .image-editor__stage[data-mode="focus"] .image-editor__point { display: block; }
+.image-editor__stage[data-mode="focus"] { cursor: grab; }
+.image-editor__stage[data-mode="focus"].is-dragging { cursor: grabbing; }
+.image-editor__stage.is-dragging .image-editor__point { transform: scale(1.25); }
 .image-editor__panel { margin-top: .75rem; }
 .image-editor__panel p { margin: 0 0 .5rem; }
 .image-editor__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }

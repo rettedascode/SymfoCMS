@@ -94,6 +94,10 @@ With the keyboard: pick a block up with Space; the right and left arrow keys lea
 
 Everything can be undone with Ctrl+Z. On the website – and in the editor on a narrow screen – columns stand below each other on small screens.
 
+### Images of a gallery
+
+The images of a gallery block are arranged like blocks: every image has a handle to drag it to another place, to carry it with the keyboard or to open the move menu. Ctrl+Z takes a move back.
+
 ### Outline
 
 **Outline** above the blocks opens a short list of all blocks of the page, columns with their blocks indented below them. A click on a line jumps to that block. The lines have the same handles as the blocks, so a long page can be rearranged without scrolling: by dragging, with the keyboard or through the menu of the handle. Whether the outline is open is remembered in your browser.

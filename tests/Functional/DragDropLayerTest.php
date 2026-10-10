@@ -57,6 +57,35 @@ final class DragDropLayerTest extends AppWebTestCase
         self::assertCount(1, $zone->filter('input[type="file"][multiple]'));
     }
 
+    public function testImageEditorOffersEdgesToDragAndDescribesTheMarker(): void
+    {
+        $this->loginAs(UserRole::Editor);
+        $media = $this->createMedia('harbour.png', 'Harbour');
+
+        $crawler = $this->client->request('GET', '/admin/media/'.$media->getId().'/edit');
+        self::assertResponseIsSuccessful();
+
+        // The frame is resized at its four edges and its four corners.
+        self::assertSame(['n', 'e', 's', 'w', 'nw', 'ne', 'sw', 'se'], $crawler->filter('.image-editor__box [data-handle]')->each(static fn ($handle): string => (string) $handle->attr('data-handle')));
+
+        $editor = $crawler->filter('[data-controller="image-editor"]');
+        self::assertStringContainsString('marker', (string) $editor->attr('data-image-editor-stage-focus-value'));
+        self::assertSame('Focal point: %x% % from the left, %y% % from the top.', $editor->attr('data-image-editor-point-text-value'));
+        self::assertStringContainsString('edges of the frame', $crawler->filter('[data-image-editor-target="cropPanel"]')->text());
+        self::assertStringContainsString('Drag the marker', $crawler->filter('[data-image-editor-target="focusPanel"]')->text());
+    }
+
+    public function testEditorNamesGalleryImagesThatHaveNoDescription(): void
+    {
+        $this->loginAs(UserRole::Admin);
+        $page = $this->createPage('Gallery', ContentStatus::Draft);
+
+        $config = json_decode((string) $this->client->request('GET', '/admin/pages/'.$page->getId().'/edit')->filter('[data-controller="editor"]')->attr('data-editor-config-value'), true);
+
+        // The handle of an image is named after the image; without a description it is counted.
+        self::assertSame('Image %number%', $config['i18n']['image_number']);
+    }
+
     public function testEditorsGetTheLabelsTheirListsAnnounce(): void
     {
         $this->loginAs(UserRole::Admin);

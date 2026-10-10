@@ -4,6 +4,10 @@ import { Controller } from '@hotwired/stimulus';
  * Image editing on the media page: choosing the part to keep (crop) and the
  * focal point. The browser only collects where the person clicked and
  * dragged, as fractions of the image; the server does the actual work.
+ *
+ * The frame is drawn by dragging across the image, moved by dragging its
+ * inside and resized by dragging its corners or edges. The focal point is a
+ * marker that is dragged to the important spot; the previews follow.
  * Rotating is a plain form button and needs no JavaScript.
  */
 export default class extends Controller {
@@ -19,6 +23,9 @@ export default class extends Controller {
         focalY: Number,
         saved: String,
         failed: String,
+        stageCrop: String,
+        stageFocus: String,
+        pointText: String,
     };
 
     connect() {
@@ -38,6 +45,11 @@ export default class extends Controller {
         this.cropPanelTarget.hidden = this.mode !== 'crop';
         this.focusPanelTarget.hidden = this.mode !== 'focus';
         this.stageTarget.dataset.mode = this.mode;
+        // What the arrow keys do depends on the tool, so the description of the image does too.
+        const label = this.mode === 'focus' ? this.stageFocusValue : this.stageCropValue;
+        if (label) {
+            this.stageTarget.setAttribute('aria-label', label);
+        }
         this.renderCrop();
     }
 
@@ -51,12 +63,20 @@ export default class extends Controller {
         const position = this.position(event);
 
         if (this.mode === 'focus') {
-            this.setFocus(position.x, position.y);
+            // The marker jumps under the pointer and follows it until it is let go.
+            this.drag = { type: 'focus' };
+            this.stageTarget.classList.add('is-dragging');
+            this.moveFocus(position.x, position.y);
+            this.stageTarget.setPointerCapture?.(event.pointerId);
+
             return;
         }
 
         const handle = event.target.dataset.handle;
-        if (handle && this.crop) {
+        if (handle && handle.length === 1 && this.crop) {
+            // Resize from an edge: only that side moves.
+            this.drag = { type: 'edge', side: handle };
+        } else if (handle && this.crop) {
             // Resize from a corner: the opposite corner stays where it is.
             this.drag = { type: 'resize', anchor: {
                 x: handle.includes('w') ? this.crop.x + this.crop.w : this.crop.x,
@@ -77,9 +97,17 @@ export default class extends Controller {
         }
         const position = this.position(event);
 
+        if (this.drag.type === 'focus') {
+            this.moveFocus(position.x, position.y);
+
+            return;
+        }
+
         if (this.drag.type === 'move') {
             this.crop.x = this.clamp(position.x - this.drag.dx, 0, 1 - this.crop.w);
             this.crop.y = this.clamp(position.y - this.drag.dy, 0, 1 - this.crop.h);
+        } else if (this.drag.type === 'edge') {
+            this.crop = this.dragEdge(this.drag.side, position);
         } else {
             this.crop = this.rectangle(this.drag.anchor, position);
         }
@@ -87,6 +115,14 @@ export default class extends Controller {
     }
 
     pointerUp() {
+        if (this.drag?.type === 'focus') {
+            this.drag = null;
+            this.stageTarget.classList.remove('is-dragging');
+            this.saveFocus();
+
+            return;
+        }
+
         this.drag = null;
         // A click without dragging leaves a box too small to be meant.
         if (this.crop && (this.crop.w < 0.02 || this.crop.h < 0.02)) {
@@ -99,10 +135,21 @@ export default class extends Controller {
     keyDown(event) {
         const steps = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
         const step = steps[event.key];
-        if (!step || this.mode !== 'crop') {
+        if (!step) {
             return;
         }
         event.preventDefault();
+
+        if (this.mode === 'focus') {
+            // The arrow keys move the marker, with Shift in larger steps. It is saved once the keys rest.
+            const size = event.shiftKey ? 0.1 : 0.01;
+            this.moveFocus(this.focus.x + step[0] * size, this.focus.y + step[1] * size);
+            clearTimeout(this.focusTimer);
+            this.focusTimer = setTimeout(() => this.saveFocus(), 600);
+
+            return;
+        }
+
         this.crop ??= { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
         const [dx, dy] = step.map((value) => value * 0.01);
 
@@ -166,6 +213,37 @@ export default class extends Controller {
         };
     }
 
+    /**
+     * The box after one of its edges ("n", "e", "s" or "w") was dragged to the pointer.
+     * The opposite edge stays; with a fixed shape the other direction follows.
+     */
+    dragEdge(side, position) {
+        const { x, y, w, h } = this.crop;
+        const min = 0.02;
+
+        if (this.ratio()) {
+            // rectangle() works out the other direction when the pointer is level with the anchor.
+            return {
+                n: () => this.rectangle({ x, y: y + h }, { x, y: Math.min(position.y, y + h - min) }),
+                s: () => this.rectangle({ x, y }, { x, y: Math.max(position.y, y + min) }),
+                w: () => this.rectangle({ x: x + w, y }, { x: Math.min(position.x, x + w - min), y }),
+                e: () => this.rectangle({ x, y }, { x: Math.max(position.x, x + min), y }),
+            }[side]();
+        }
+
+        if (side === 'n' || side === 's') {
+            const top = side === 'n' ? this.clamp(position.y, 0, y + h - min) : y;
+            const bottom = side === 's' ? this.clamp(position.y, y + min, 1) : y + h;
+
+            return { x, y: top, w, h: bottom - top };
+        }
+
+        const left = side === 'w' ? this.clamp(position.x, 0, x + w - min) : x;
+        const right = side === 'e' ? this.clamp(position.x, x + min, 1) : x + w;
+
+        return { x: left, y, w: right - left, h };
+    }
+
     ratio() {
         const value = this.hasAspectTarget ? this.aspectTarget.value : '';
         if (value === 'original') {
@@ -195,10 +273,10 @@ export default class extends Controller {
 
     // ----- focal point -----
 
-    setFocus(x, y) {
+    /** Moves the marker; saving waits until it is let go. */
+    moveFocus(x, y) {
         this.focus = { x: this.clamp(x, 0, 1), y: this.clamp(y, 0, 1) };
         this.renderFocus();
-        this.saveFocus();
     }
 
     renderFocus() {
@@ -207,6 +285,12 @@ export default class extends Controller {
         this.previewTargets.forEach((preview) => { preview.style.objectPosition = position; });
         this.focusXTarget.value = this.focus.x.toFixed(4);
         this.focusYTarget.value = this.focus.y.toFixed(4);
+        if (this.pointTextValue) {
+            // For screen readers: where the marker is, e.g. "40 % from the left, 25 % from the top".
+            this.pointTarget.setAttribute('aria-label', this.pointTextValue
+                .replace('%x%', String(Math.round(this.focus.x * 100)))
+                .replace('%y%', String(Math.round(this.focus.y * 100))));
+        }
     }
 
     async saveFocus() {
@@ -216,7 +300,8 @@ export default class extends Controller {
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.csrfValue, Accept: 'application/json' },
                 body: JSON.stringify(this.focus),
             });
-            this.statusTarget.textContent = response.ok ? this.savedValue : this.failedValue;
+            const where = this.pointTarget.getAttribute('aria-label');
+            this.statusTarget.textContent = response.ok ? [this.savedValue, where].filter(Boolean).join(' ') : this.failedValue;
         } catch {
             this.statusTarget.textContent = this.failedValue;
         }

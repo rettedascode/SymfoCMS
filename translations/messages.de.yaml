@@ -853,14 +853,16 @@ media.editor.focus: Fokuspunkt
 media.editor.rotate_left: Nach links drehen
 media.editor.rotate_right: Nach rechts drehen
 media.editor.stage_label: 'Bild. Ziehen Sie, um den Ausschnitt zu wählen. Mit den Pfeiltasten verschieben Sie die Auswahl, mit Umschalt und den Pfeiltasten ändern Sie ihre Größe.'
-media.editor.crop_help: Ziehen Sie über das Bild, um den Teil zu wählen, den Sie behalten möchten. Ziehen Sie an den Ecken, um ihn anzupassen.
+media.editor.crop_help: Ziehen Sie über das Bild, um den Teil zu wählen, den Sie behalten möchten. Ziehen Sie an den Ecken oder Kanten des Rahmens, um ihn anzupassen.
+media.editor.stage_focus_label: 'Bild. Ziehen Sie die Markierung auf die wichtigste Stelle. Mit den Pfeiltasten bewegen Sie sie, mit Umschalt und den Pfeiltasten in größeren Schritten.'
+media.editor.point_position: 'Fokuspunkt: %x% % von links, %y% % von oben.'
 media.editor.shape: Form
 media.editor.shape_free: Frei
 media.editor.shape_original: Wie das Bild
 media.editor.shape_square: Quadrat
 media.editor.clear: Auswahl aufheben
 media.editor.apply_crop: Bild zuschneiden
-media.editor.focus_help: Klicken Sie auf die wichtigste Stelle des Bildes, zum Beispiel ein Gesicht. Wo das Bild in einer anderen Form gezeigt wird, bleibt diese Stelle sichtbar.
+media.editor.focus_help: Ziehen Sie die Markierung auf die wichtigste Stelle des Bildes, zum Beispiel ein Gesicht. Wo das Bild in einer anderen Form gezeigt wird, bleibt diese Stelle sichtbar.
 media.editor.focus_saved: Gespeichert.
 media.editor.focus_failed: Der Fokuspunkt konnte nicht gespeichert werden.
 media.editor.restore: Alle Änderungen verwerfen und das hochgeladene Bild wiederherstellen
@@ -914,7 +916,7 @@ editor.edge_left: 'Links von „%block%“: neue Spalte'
 editor.edge_right: 'Rechts von „%block%“: neue Spalte'
 editor.edge_hint: Neue Spalte
 editor.column_divider: Breite der Spalten
-editor.column_divider_hint: Ziehen, um die Breite der Spalten zu ändern. Die Pfeiltasten gehen auch; ein Doppelklick macht die Spalten gleich breit.
+editor.column_divider_hint: Ziehen Sie, um die Breite der Spalten zu ändern. Die Pfeiltasten gehen auch; ein Doppelklick macht die Spalten gleich breit.
 editor.column_widths: '%left% % und %right% %'
 block.columns.middle: Mittlere Spalte
 block.columns.widths: Breiten
@@ -926,6 +928,7 @@ menu.js.drop_sub_item: Hier ablegen, um einen Unterpunkt zu erstellen
 form.js.list: Felder des Formulars
 
 editor.palette: Blöcke
+editor.image_number: 'Bild %number%'
 editor.outline: Gliederung
 editor.outline_hint: Alle Blöcke der Seite. Ein Klick springt zum Block, am Griff lässt er sich verschieben.
 editor.outline_list: Gliederung der Seite

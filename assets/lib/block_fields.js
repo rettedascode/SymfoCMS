@@ -1,4 +1,6 @@
-import { el, uid } from './dom.js';
+import { createDragList, focusHandle, handle } from './dnd.js';
+import { el, format, uid } from './dom.js';
+import { moveStep } from './history.js';
 import { icon } from './icons.js';
 import { openMediaPicker } from './media_picker.js';
 import { createRichText } from './richtext.js';
@@ -189,25 +191,47 @@ function images({ editor, block, field }) {
         editor.changed();
     };
 
-    return el('div', { class: 'images-field' },
-        el('ul', { class: 'images-field__list' },
-            ...ids.map((id, index) => {
-                const media = editor.media[id];
+    // The images are arranged by dragging them, like everything else (see lib/dnd.js).
+    const list = el('ul', { class: 'images-field__list', 'aria-label': field.label },
+        ...ids.map((id, index) => {
+            const media = editor.media[id];
+            const name = media ? (media.alt || media.name) : format(editor.i18n.image_number, { number: String(index + 1) });
 
-                return el('li', {},
-                    media ? el('img', { src: media.thumb, alt: media.alt || media.name }) : el('span', { class: 'images-field__missing', text: '?' }),
-                    el('span', { class: 'images-field__actions' },
-                        smallButton(editor.i18n.move_left, 'left', () => moveEntry(editor, ids, index, -1), index === 0),
-                        smallButton(editor.i18n.move_right, 'right', () => moveEntry(editor, ids, index, 1), index === ids.length - 1),
-                        smallButton(editor.i18n.remove_image, 'close', () => {
-                            ids.splice(index, 1);
-                            editor.render();
-                            editor.changed();
-                        }),
-                    ),
-                );
-            }),
-        ),
+            return el('li', { 'data-dnd-item': true, 'data-dnd-label': name },
+                media ? el('img', { src: media.thumb, alt: name }) : el('span', { class: 'images-field__missing', text: '?' }),
+                el('span', { class: 'images-field__actions' },
+                    handle(name),
+                    smallButton(editor.i18n.remove_image, 'close', () => {
+                        const [removed] = ids.splice(index, 1);
+                        editor.record({
+                            undo: () => ids.splice(Math.min(index, ids.length), 0, removed),
+                            redo: () => ids.splice(index, 1),
+                        });
+                        editor.structureChanged();
+                    }),
+                ),
+            );
+        }),
+    );
+    list.imageIds = ids;
+    // Every gallery is a group of its own: images are not dragged from one gallery into another.
+    editor.sortables.push(createDragList(list, { group: uid('images') }));
+    editor.onListMove(list, (detail) => {
+        const [moved] = ids.splice(detail.oldIndex, 1);
+        ids.splice(detail.newIndex, 0, moved);
+        editor.record(moveStep(ids, detail.oldIndex, ids, detail.newIndex));
+        if (detail.cause !== 'pointer') {
+            // After the redraw the focus is back on the handle of the image that was moved.
+            editor.focusRequest = () => {
+                const redrawn = [...editor.listTarget.querySelectorAll('.images-field__list')].find((candidate) => candidate.imageIds === ids);
+                focusHandle(redrawn?.children[detail.newIndex]);
+            };
+        }
+        setTimeout(() => editor.structureChanged());
+    });
+
+    return el('div', { class: 'images-field' },
+        list,
         el('button', { type: 'button', class: 'button', onclick: add }, editor.i18n.add_images),
     );
 }

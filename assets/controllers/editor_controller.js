@@ -54,6 +54,8 @@ export default class extends Controller {
         // Problems reported by the server, keyed by "<block path>:<field>". PHP encodes an empty map as [].
         this.errors = Array.isArray(this.config.errors) ? {} : { ...this.config.errors };
         this.lists = new WeakMap();
+        // Lists inside blocks that are arranged by dragging but hold no blocks, such as the images of a gallery.
+        this.otherLists = new WeakMap();
         // The drop areas at the edges of blocks: element => { block, side }.
         this.edges = new WeakMap();
         // The block type that puts blocks next to each other, if the website has one.
@@ -629,6 +631,13 @@ export default class extends Controller {
 
     /** The drag-and-drop layer has moved a block on screen: the data follows. */
     blockMoved(detail) {
+        const other = this.otherLists.get(detail.from);
+        if (other) {
+            other(detail);
+
+            return;
+        }
+
         const from = this.lists.get(detail.from);
         const to = this.lists.get(detail.to);
         const edge = this.edges.get(detail.to);
@@ -656,6 +665,14 @@ export default class extends Controller {
         }
         // Let the layer finish its own cleanup before the list is rebuilt.
         setTimeout(() => this.structureChanged());
+    }
+
+    /**
+     * For fields that have a list of their own to arrange (see lib/block_fields.js):
+     * the callback is told when something in that list was moved.
+     */
+    onListMove(list, callback) {
+        this.otherLists.set(list, callback);
     }
 
     /** After the next render, focus the handle of the block that was moved. */

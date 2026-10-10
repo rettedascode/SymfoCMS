@@ -152,7 +152,9 @@
 .images-field__list:empty { display: none; }
 .images-field__list li { position: relative; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg); }
 .images-field__list img, .images-field__missing { display: grid; place-items: center; width: 100%; aspect-ratio: 1; object-fit: cover; color: var(--muted); }
-.images-field__actions { display: flex; justify-content: center; background: var(--surface); border-top: 1px solid var(--border); }
+.images-field__actions { display: flex; justify-content: space-between; background: var(--surface); border-top: 1px solid var(--border); }
+.images-field__actions .dnd-handle { width: 32px; height: 30px; }
+.images-field__list li.dnd-placeholder { opacity: .45; }
 .images-field__actions .icon-button { width: 32px; height: 30px; }
 
 .items-field { display: grid; gap: .7rem; }

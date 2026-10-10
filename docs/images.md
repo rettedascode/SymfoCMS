@@ -7,7 +7,7 @@ Everybody who may change an image can edit it: editors and administrators all im
 ## Crop
 
 1. Choose **Crop** (it is selected when the page opens).
-2. Drag across the image to mark the part you want to keep. Drag inside the selection to move it, drag a corner to change its size.
+2. Drag across the image to mark the part you want to keep. Drag inside the frame to move it, drag a corner to change its size, or drag one of its four edges to move only that side. With a fixed shape the other direction follows.
 3. Under **Shape** you can fix the proportions: free, like the image, square, 4 : 3, 16 : 9 or 3 : 4.
 4. Choose **Crop image**.
 
@@ -21,7 +21,9 @@ With the keyboard: move to the image with Tab, then use the arrow keys to move t
 
 Layouts often show an image in another shape than it has: the wide picture on top of a blog card, the tiles of a gallery, the preview when a link is shared. Something has to be cut off – by default, equally on both sides.
 
-Choose **Focal point** and click the most important spot of the image, for example a face. That spot now stays in view wherever the image is cut. The three small previews show the effect at once; the point is saved with every click.
+Choose **Focal point** and drag the marker to the most important spot of the image, for example a face. That spot now stays in view wherever the image is cut. The three small previews follow while you drag; the point is saved when you let go.
+
+With the keyboard: move to the image with Tab, then use the arrow keys to move the marker, with Shift in larger steps. It is saved as soon as the keys rest, and the position is read out ("40 % from the left, 25 % from the top").
 
 ## Undo
 

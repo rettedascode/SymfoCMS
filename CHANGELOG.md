@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Gallery images are arranged by dragging them, with the same handles, keyboard path and undo as blocks.
+- Image editing: the crop frame is resized by dragging its edges as well as its corners, and the focal point is a marker that is dragged (or moved with the arrow keys) while the previews follow.
 - Columns by dragging in the page editor: a block dropped on the left or right edge of another block lands next to it, up to three in a row; dragging a block out again removes its column or dissolves the columns. The divider between columns changes their widths in snapping steps, also with the arrow keys. On small screens columns stack.
 - Outline in the page editor: all blocks of the page as a short list to jump to a block or to rearrange a long page by dragging.
 - Page tree: the list of pages is a tree in which a page dragged below another one becomes its child page, with a nested address such as `/about/team`. Siblings are reordered by dragging, collapsed branches are remembered per user, and before the address of a published page changes the admin area asks and then redirects the old addresses of the page and all its child pages (see `docs/page-tree.md`).

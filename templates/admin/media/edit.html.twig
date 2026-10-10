@@ -20,7 +20,10 @@
                      data-image-editor-focal-x-value="{{ media.focalX }}"
                      data-image-editor-focal-y-value="{{ media.focalY }}"
                      data-image-editor-saved-value="{{ 'media.editor.focus_saved'|trans }}"
-                     data-image-editor-failed-value="{{ 'media.editor.focus_failed'|trans }}">
+                     data-image-editor-failed-value="{{ 'media.editor.focus_failed'|trans }}"
+                     data-image-editor-stage-crop-value="{{ 'media.editor.stage_label'|trans }}"
+                     data-image-editor-stage-focus-value="{{ 'media.editor.stage_focus_label'|trans }}"
+                     data-image-editor-point-text-value="{{ 'media.editor.point_position'|trans }}">
                     <div class="image-editor__toolbar">
                         <div class="segmented" role="group" aria-label="{{ 'media.editor.tools'|trans }}">
                             <button type="button" data-image-editor-target="modeButton" data-mode="crop" data-action="image-editor#showMode" aria-pressed="true">{{ 'media.editor.crop'|trans }}</button>
@@ -38,9 +41,11 @@
                          data-action="pointerdown->image-editor#pointerDown pointermove->image-editor#pointerMove pointerup->image-editor#pointerUp pointercancel->image-editor#pointerUp keydown->image-editor#keyDown">
                         <img src="{{ media_url(media, 'large') }}" alt="{{ media.alt }}" width="{{ media.width }}" height="{{ media.height }}" data-image-editor-target="image" draggable="false">
                         <div class="image-editor__box" data-image-editor-target="box" hidden>
+                            {# Edges first, so the corners lie on top of them. #}
+                            <span data-handle="n"></span><span data-handle="e"></span><span data-handle="s"></span><span data-handle="w"></span>
                             <span data-handle="nw"></span><span data-handle="ne"></span><span data-handle="sw"></span><span data-handle="se"></span>
                         </div>
-                        <span class="image-editor__point" data-image-editor-target="point" aria-hidden="true"></span>
+                        <span class="image-editor__point" data-image-editor-target="point" role="img"></span>
                     </div>
 
                     <div class="image-editor__panel" data-image-editor-target="cropPanel">
