@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ app.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ 'install.title'|trans }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+</head>
+<body class="admin login">
+<main class="login__card install">
+    <p class="install__eyebrow">{{ 'install.title'|trans }}</p>
+    <ol class="install__steps" aria-label="{{ 'install.steps'|trans }}">
+        {% for number, label in {1: 'install.step.requirements', 2: 'install.step.database', 3: 'install.step.site'} %}
+            <li{% if number == step %} aria-current="step"{% endif %}{% if number < step %} class="is-done"{% endif %}>
+                <span aria-hidden="true">{{ number < step ? '✓' : number }}</span> {{ label|trans }}
+            </li>
+        {% endfor %}
+    </ol>
+    {% block main %}{% endblock %}
+</main>
+</body>
+</html>

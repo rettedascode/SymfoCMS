@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Setup wizard](docs/installation.md) in the browser: requirements check, database connection, name of the website and administrator account
 - [Themes](docs/themes.md): selectable in the admin area, with logo, colours and fonts as theme settings and locally served fonts; two themes included
 - [Search](docs/search.md): full-text search over published pages and posts with highlighted matches, per language, on every supported database; one search field in the admin area for pages, posts and images
 - [SEO](docs/seo.md): live preview of the search result in the editor, Open Graph and Twitter cards with a selectable share image, JSON-LD for posts, FAQs and breadcrumbs
@@ -129,6 +130,7 @@ Defaults live in `.env`, which is committed and contains no secrets. Put your ow
 | `MAILER_DSN` | `null://null` | How emails are sent ([forms guide](docs/forms.md#email-notifications)); the default sends nothing |
 | `APP_MAIL_FROM` | `noreply@example.com` | Sender address of emails the website sends |
 | `APP_MAX_UPLOAD_MB` | `8` | Largest accepted image. PHP's `upload_max_filesize` and `post_max_size` must allow it too. |
+| `APP_INSTALLER` | `1` | `0` switches the [setup wizard](docs/installation.md) off |
 
 ### Using MySQL or PostgreSQL
 
@@ -157,6 +159,8 @@ php bin/console doctrine:migrations:migrate -n
    php bin/console asset-map:compile
    php bin/console app:create-admin you@example.com
    ```
+
+   Instead of the two commands for the database and the administrator you can open the website and follow the [setup wizard](docs/installation.md). It appears on a website without users, asks for the database, the name of the website and the first administrator, and closes itself for good afterwards.
 
 4. Make sure the web server can write to `var/` and `public/uploads/`, and include `public/uploads/` and the database in your backups.
 
@@ -282,7 +286,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: the editor, forms, redirects, SEO, search, themes, extensions, multilingual websites
+docs/               Guides: installation, the editor, forms, redirects, SEO, search, themes, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

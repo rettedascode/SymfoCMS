@@ -1,0 +1,28 @@
+{% extends 'install/base.html.twig' %}
+
+{% set step = 1 %}
+
+{% block main %}
+    <h1>{{ 'install.requirements.heading'|trans }}</h1>
+    <p class="muted">{{ 'install.requirements.intro'|trans }}</p>
+
+    <ul class="install__checks">
+        {% for check in checks %}
+            <li class="{{ check.ok ? 'is-ok' : (check.required ? 'is-failed' : 'is-warning') }}">
+                <span aria-hidden="true">{{ check.ok ? '✓' : (check.required ? '✕' : '!') }}</span>
+                <span>
+                    {{ check.label|trans(check.parameters) }}
+                    <span class="visually-hidden">– {{ (check.ok ? 'install.check.ok' : (check.required ? 'install.check.failed' : 'install.check.optional'))|trans }}</span>
+                    {% if not check.ok and not check.required %}<small class="muted">{{ 'install.check.optional'|trans }}</small>{% endif %}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if satisfied %}
+        <a class="button button--primary button--block" href="{{ path('install_database') }}">{{ 'install.continue'|trans }}</a>
+    {% else %}
+        <div class="flash flash--error" role="alert">{{ 'install.requirements.failed'|trans }}</div>
+        <a class="button button--block" href="{{ path('install_requirements') }}">{{ 'install.check_again'|trans }}</a>
+    {% endif %}
+{% endblock %}

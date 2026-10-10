@@ -10,12 +10,16 @@ parameters:
     app.mail_from: '%env(APP_MAIL_FROM)%'
     app.max_revisions: '%env(int:APP_MAX_REVISIONS)%'
     app.themes_dir: '%kernel.project_dir%/themes'
+    # The setup wizard: where it stores the database connection and remembers that it is done.
+    app.install_env_file: '%kernel.project_dir%/.env.local'
+    app.install_lock: '%kernel.project_dir%/var/installed.lock'
     env(APP_SITE_NAME): 'SymfoCMS'
     env(APP_SITE_TAGLINE): ''
     env(APP_LOCALE): 'en'
     env(APP_MAX_UPLOAD_MB): '8'
     env(APP_MAX_REVISIONS): '50'
     env(APP_MAIL_FROM): 'noreply@example.com'
+    env(APP_INSTALLER): '1'
 
 services:
     _defaults:
@@ -27,4 +31,6 @@ services:
 
 when@test:
     parameters:
+        app.install_env_file: '%kernel.project_dir%/var/test-install/.env.local'
+        app.install_lock: '%kernel.project_dir%/var/test-install/installed.lock'
         app.media_dir: '%kernel.project_dir%/var/test-uploads'

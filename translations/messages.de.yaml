@@ -590,3 +590,54 @@ settings.site_name: Name der Website
 settings.site_name_help: Erscheint im Kopf der Website, im Browser-Tab und in Suchergebnissen.
 settings.site_tagline: Kurzbeschreibung
 settings.site_tagline_help: Ein Satz über die Website. Suchmaschinen zeigen ihn bei Seiten ohne eigene Beschreibung.
+
+install.title: Website einrichten
+install.steps: Schritte der Einrichtung
+install.step.requirements: Server
+install.step.database: Datenbank
+install.step.site: Website
+install.continue: Weiter
+install.check_again: Erneut prüfen
+install.finish: Website einrichten
+install.done: Willkommen! Ihre Website ist eingerichtet. Hier bearbeiten Sie sie.
+install.requirements.heading: Ist der Server bereit?
+install.requirements.intro: Ihre Website braucht ein paar Dinge von dem Server, auf dem sie läuft.
+install.requirements.failed: Die rot markierten Punkte müssen zuerst behoben werden. Ihr Hosting-Anbieter kann dabei helfen.
+install.check.php: 'PHP 8.3 oder neuer (installiert: %version%)'
+install.check.extension: 'PHP-Erweiterung „%name%“'
+install.check.driver: 'Ein Datenbanktreiber (einer von %drivers%)'
+install.check.writable: 'Der Ordner „%path%“ ist beschreibbar'
+install.check.ok: erfüllt
+install.check.failed: fehlt
+install.check.optional: Nicht erforderlich, aber empfohlen.
+install.database.heading: Wo sollen Ihre Inhalte gespeichert werden?
+install.database.intro: Wenn Sie unsicher sind, behalten Sie die erste Auswahl. Sie braucht keine weiteren Angaben.
+install.database.driver: Datenbank
+install.database.sqlite: Eine Datei auf diesem Server (SQLite) – empfohlen für kleine Websites
+install.database.server: Datenbankserver
+install.database.host: Server
+install.database.port: Port
+install.database.port_help: Für den üblichen Port leer lassen.
+install.database.name: Name der Datenbank
+install.database.user: Benutzer
+install.database.password: Passwort
+install.database.required: Diese Angabe wird für einen Datenbankserver benötigt.
+install.database.failed: Die Datenbank konnte nicht erreicht werden.
+install.database.works: Die Verbindung funktioniert.
+install.database.managed: Die Datenbankverbindung ist in der Konfiguration des Servers festgelegt und wird unverändert verwendet.
+install.database.not_writable: Die Verbindung funktioniert, aber die Datei „.env.local“ kann nicht geschrieben werden. Legen Sie sie im Ordner der Website mit der folgenden Zeile an und fahren Sie dann fort.
+install.site.heading: Ihre Website
+install.site.intro: Alles auf dieser Seite können Sie später ändern.
+install.site.name_help: Zum Beispiel der Name Ihres Geschäfts oder Vereins.
+install.site.locale: Sprache
+install.site.locale_help: Die Sprache, in der Ihre Website geschrieben ist. Auch der Admin-Bereich verwendet sie.
+install.site.admin_heading: Ihr Zugang
+install.site.admin_name: Ihr Name
+install.site.email: E-Mail-Adresse
+install.site.email_help: Mit dieser Adresse melden Sie sich an.
+install.site.password: Passwort
+install.site.password_help: Mindestens 8 Zeichen.
+install.site.failed: Die Website konnte nicht eingerichtet werden.
+install.homepage.title: Willkommen
+install.homepage.text: Dies ist die erste Seite von %site%. Melden Sie sich an und öffnen Sie „Seiten“, um sie zu Ihrer eigenen zu machen.
+install.homepage.menu: Startseite

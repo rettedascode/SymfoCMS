@@ -28,3 +28,5 @@ content.blocks_invalid: Einige Blöcke brauchen noch deine Aufmerksamkeit. Bitte
 content.slug_invalid: Bitte nur Kleinbuchstaben, Zahlen und Bindestriche verwenden, zum Beispiel „ueber-uns“.
 content.slug_taken: Diese Adresse wird bereits verwendet. Bitte wähle eine andere.
 content.slug_reserved: Diese Adresse ist vom System reserviert. Bitte wähle eine andere.
+
+install.database.required: Diese Angabe wird für einen Datenbankserver benötigt.

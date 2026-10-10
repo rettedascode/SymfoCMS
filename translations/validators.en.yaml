@@ -28,3 +28,5 @@ content.blocks_invalid: Some blocks need your attention. Please check the fields
 content.slug_invalid: Use only lowercase letters, numbers and hyphens, for example "about-us".
 content.slug_taken: This address is already in use. Please choose another one.
 content.slug_reserved: This address is reserved by the system. Please choose another one.
+
+install.database.required: This is needed for a database server.

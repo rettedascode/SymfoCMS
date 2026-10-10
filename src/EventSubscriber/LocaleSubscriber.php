@@ -53,7 +53,7 @@ final class LocaleSubscriber implements EventSubscriberInterface
         if (str_starts_with($path, '/admin')) {
             $user = $this->security->getUser();
             $this->useInterfaceLocale($request, $user instanceof User ? $user->getLocale() : null);
-        } elseif ('app_login' === $route) {
+        } elseif ('app_login' === $route || str_starts_with($path, '/install')) {
             $this->useInterfaceLocale($request, $request->getPreferredLanguage($this->interfaceLocales->codes()));
         } elseif (str_starts_with($route, 'app_')) {
             $this->useContentLocale($event, $request, $route);

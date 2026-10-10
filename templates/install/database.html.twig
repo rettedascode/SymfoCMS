@@ -1,0 +1,43 @@
+{% extends 'install/base.html.twig' %}
+
+{% set step = 2 %}
+
+{% block main %}
+    <h1>{{ 'install.database.heading'|trans }}</h1>
+    <p class="muted">{{ 'install.database.intro'|trans }}</p>
+
+    {% if manual %}
+        <div class="flash flash--error" role="alert">{{ 'install.database.not_writable'|trans }}</div>
+        <pre class="install__code"><code>{{ manual }}</code></pre>
+        <a class="button button--primary button--block" href="{{ path('install_site') }}">{{ 'install.continue'|trans }}</a>
+    {% else %}
+        {{ form_start(form, {attr: {'data-install-database': ''}}) }}
+        {% for error in form.vars.errors %}
+            <div class="flash flash--error" role="alert">
+                <strong>{{ 'install.database.failed'|trans }}</strong><br>{{ error.message }}
+            </div>
+        {% endfor %}
+        {{ form_row(form.driver) }}
+        <fieldset class="install__server" data-install-server>
+            <legend class="visually-hidden">{{ 'install.database.server'|trans }}</legend>
+            {{ form_row(form.host) }}
+            {{ form_row(form.port) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.user) }}
+            {{ form_row(form.password) }}
+        </fieldset>
+        <button type="submit" class="button button--primary button--block">{{ 'install.continue'|trans }}</button>
+        {{ form_end(form) }}
+
+        {# Without JavaScript all fields simply stay visible. #}
+        <script>
+            (() => {
+                const form = document.querySelector('[data-install-database]');
+                const server = form.querySelector('[data-install-server]');
+                const update = () => { server.hidden = form.querySelector('input[type=radio]:checked')?.value === 'sqlite'; };
+                form.addEventListener('change', update);
+                update();
+            })();
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'install/base.html.twig' %}
+
+{% set step = 2 %}
+
+{% block main %}
+    <h1>{{ 'install.database.heading'|trans }}</h1>
+    <p class="muted">{{ 'install.database.managed'|trans }}</p>
+    <p><strong>{{ database }}</strong></p>
+
+    {% if error %}
+        <div class="flash flash--error" role="alert">
+            <strong>{{ 'install.database.failed'|trans }}</strong><br>{{ error }}
+        </div>
+        <a class="button button--block" href="{{ path('install_database') }}">{{ 'install.check_again'|trans }}</a>
+    {% else %}
+        <div class="flash flash--success" role="status">{{ 'install.database.works'|trans }}</div>
+        <a class="button button--primary button--block" href="{{ path('install_site') }}">{{ 'install.continue'|trans }}</a>
+    {% endif %}
+{% endblock %}

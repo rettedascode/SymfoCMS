@@ -1,0 +1,23 @@
+{% extends 'install/base.html.twig' %}
+
+{% set step = 3 %}
+
+{% block main %}
+    <h1>{{ 'install.site.heading'|trans }}</h1>
+    <p class="muted">{{ 'install.site.intro'|trans }}</p>
+
+    {{ form_start(form) }}
+    {% for error in form.vars.errors %}
+        <div class="flash flash--error" role="alert">
+            <strong>{{ 'install.site.failed'|trans }}</strong><br>{{ error.message }}
+        </div>
+    {% endfor %}
+    {{ form_row(form.siteName) }}
+    {{ form_row(form.locale) }}
+    <h2 class="card__heading">{{ 'install.site.admin_heading'|trans }}</h2>
+    {{ form_row(form.adminName) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    <button type="submit" class="button button--primary button--block">{{ 'install.finish'|trans }}</button>
+    {{ form_end(form) }}
+{% endblock %}

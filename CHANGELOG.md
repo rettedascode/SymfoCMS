@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Setup wizard in the browser for new websites: requirements check, database connection (SQLite, MySQL/MariaDB, PostgreSQL), name of the website and the first administrator. It closes itself permanently once the website has a user (see `docs/installation.md`).
 - Themes: a theme is a folder with a manifest, stylesheets and Twig templates; administrators choose the active theme under "Design" (see `docs/themes.md`).
 - Theme settings for logo, colours and fonts, applied through CSS custom properties. Fonts (Inter, Lora, Playfair Display) are served by the website itself.
 - Second theme "Editorial" next to the default theme.
