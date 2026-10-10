@@ -3,10 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Security\Voter\AdminAreaVoter;
+use App\Service\ContentLocales;
 use App\Service\SiteInfo;
 use App\Service\SlugGenerator;
 use App\Transfer\SiteExporter;
 use App\Transfer\SiteImporter;
+use App\Transfer\WordPressImporter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -76,6 +78,41 @@ final class TransferController extends AdminController
                 $report = $importer->import($file->getPathname(), $replace, $this->currentUser());
 
                 return $this->render('admin/transfer/report.html.twig', ['report' => $report, 'heading' => 'transfer.report.heading']);
+            } catch (\InvalidArgumentException $exception) {
+                $error = $exception->getMessage();
+            }
+        }
+
+        return $this->render('admin/transfer/index.html.twig', [
+            'max_upload_mb' => (int) floor(UploadedFile::getMaxFilesize() / 1024 / 1024),
+            'error' => $error,
+        ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
+    }
+
+    /**
+     * Brings in the posts, pages, categories and images of a WordPress export file.
+     */
+    #[Route('/wordpress', name: 'wordpress', methods: ['POST'])]
+    public function wordpress(Request $request, WordPressImporter $importer, ContentLocales $locales): Response
+    {
+        $this->requireCsrfToken($request);
+
+        $file = $request->files->get('export');
+        $locale = (string) $request->request->get('locale', $locales->default());
+        $error = match (true) {
+            !$file instanceof UploadedFile => 'transfer.error.no_file',
+            !$file->isValid() => 'transfer.error.upload_failed',
+            !$locales->isEnabled($locale) => 'transfer.wordpress.error.locale',
+            default => null,
+        };
+
+        if (null === $error) {
+            try {
+                // Images are fetched from the old website one after the other, which takes time.
+                @set_time_limit(1800);
+                $report = $importer->import($file->getPathname(), $locale, $this->currentUser());
+
+                return $this->render('admin/transfer/report.html.twig', ['report' => $report, 'heading' => 'transfer.wordpress.report_heading']);
             } catch (\InvalidArgumentException $exception) {
                 $error = $exception->getMessage();
             }

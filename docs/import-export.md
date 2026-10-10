@@ -1,6 +1,6 @@
 # Export and import
 
-Administrators find **Export and import** at the bottom of the *Settings* page.
+Administrators find **Export and import** at the bottom of the *Settings* page. It exports the whole website, imports such an export, and [moves a website over from WordPress](#moving-from-wordpress).
 
 ## Exporting the website
 
@@ -43,8 +43,49 @@ php bin/console app:site:import /backups/website.zip --replace  # replace
 
 `app:site:export` in a nightly cron job gives you a simple content backup.
 
+## Moving from WordPress
+
+The third box on the page imports a WordPress website.
+
+1. In WordPress, open **Tools → Export**, choose **All content** and download the file.
+2. Upload that XML file under *Import from WordPress*. On a multilingual website, choose the language the content is written in.
+3. Keep the WordPress website online until the import has finished: the images are fetched from it.
+
+Nothing of the existing website is deleted. What arrives:
+
+| WordPress | Here |
+| --- | --- |
+| Posts and pages | Posts and pages. Published stays published, everything else becomes a draft, scheduled posts stay scheduled. |
+| Categories | Blog categories; a post keeps its first category |
+| Images used in the content, and featured images | Media library; the featured image becomes the cover image |
+| Excerpt, publish date, address (slug) | The same |
+| Old addresses (`/2024/05/17/hello-world/`) | Redirects to the new address |
+
+The content is converted to blocks: paragraphs and lists become text blocks, headings become headings, and images, galleries, quotes, code, separators and YouTube/Vimeo videos become the matching blocks. Columns and groups are flattened: their content follows one after the other.
+
+### What cannot be converted
+
+After the import you see a report. It names, for every post and page, what could not be taken over:
+
+- **Shortcodes of plugins** such as `[contact-form-7]` are removed.
+- **Blocks that WordPress fills in itself** (latest posts, search, calendar …) are left out.
+- **Tables** are turned into plain text, one line per row.
+- **Embeds** other than YouTube and Vimeo, audio and video files, forms and scripts are left out.
+- **Images that could not be fetched** – because the old website did not answer, or the file is not an image.
+- **Password-protected entries** are imported as drafts.
+- **Comments, tags, menus, users and other content types** (products, events …) are not imported. Posts belong to the person who runs the import.
+
+WordPress does not record which page is the front page in its export; choose the homepage in the settings of the page afterwards.
+
+For large websites, use the command line. It has no upload or time limit:
+
+```bash
+php bin/console app:wordpress:import /path/to/wordpress.xml --locale=en
+```
+
 ## For developers
 
+- `App\Transfer\WordPressImporter` reads the WXR file, `App\Transfer\WordPressContentConverter` turns the HTML of a post into blocks, and `App\Transfer\ImageDownloader` fetches the images. Addresses inside the server's own network are never requested, and a download has to pass the same checks as an uploaded image.
 - The archive holds `site.json` and the original images in `media/`. `App\Transfer\SiteExporter` writes it, `App\Transfer\SiteImporter` reads it.
 - All ids change on import. `App\Transfer\BlockReferences` rewrites references in blocks using the field definitions, so custom block types with image, gallery, shared-block or form fields work without extra code.
 - The importer trusts nothing in the archive: text is cleaned like editor input, images are validated like uploads and resized again, links are checked, and only plain file names inside `media/` are read.

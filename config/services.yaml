@@ -34,3 +34,6 @@ when@test:
         app.install_env_file: '%kernel.project_dir%/var/test-install/.env.local'
         app.install_lock: '%kernel.project_dir%/var/test-install/installed.lock'
         app.media_dir: '%kernel.project_dir%/var/test-uploads'
+
+    services:
+        App\Tests\Support\FakeWeb: ~

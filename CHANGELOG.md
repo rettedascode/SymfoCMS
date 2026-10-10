@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- WordPress import: posts, pages, categories and images from a WordPress export file (WXR). Content is converted to blocks, old addresses get redirects, and a report lists what could not be converted. Also available as `app:wordpress:import`.
 - Export of the whole website as a ZIP file (content, menus, settings, images) and import into another installation, adding to or replacing the existing content. Also available as `app:site:export` and `app:site:import` (see `docs/import-export.md`).
 - Read API: read-only JSON under `/api/v1` for published pages, posts, categories, menus and images, with pagination and language filter, blocks as structured data and as rendered HTML, and an OpenAPI description. Disabled by default; administrators switch it on in the settings (see `docs/api.md`).
 - Setup wizard in the browser for new websites: requirements check, database connection (SQLite, MySQL/MariaDB, PostgreSQL), name of the website and the first administrator. It closes itself permanently once the website has a user (see `docs/installation.md`).

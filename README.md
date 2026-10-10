@@ -58,6 +58,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
 - [Setup wizard](docs/installation.md) in the browser: requirements check, database connection, name of the website and administrator account
 - [Export and import](docs/import-export.md): the whole website as one ZIP file with content, menus, settings and images, importable into another installation
+- [WordPress import](docs/import-export.md#moving-from-wordpress): posts, pages, categories and images from a WordPress export file, converted to blocks, with a report of what could not be converted
 - [Read API](docs/api.md): read-only JSON for published pages, posts, categories, menus and images with pagination and language filter, blocks as structured data and as HTML, described with OpenAPI; off by default
 - [Themes](docs/themes.md): selectable in the admin area, with logo, colours and fonts as theme settings and locally served fonts; two themes included
 - [Search](docs/search.md): full-text search over published pages and posts with highlighted matches, per language, on every supported database; one search field in the admin area for pages, posts and images

@@ -13,3 +13,6 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        # Tests never reach the internet: every request of the HTTP client is answered by a test double.
+        http_client:
+            mock_response_factory: App\Tests\Support\FakeWeb

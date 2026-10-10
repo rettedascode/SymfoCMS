@@ -57,4 +57,31 @@
             </div>
         </form>
     </div>
+
+    <div class="card card--narrow table-wrap--spaced">
+        <h2>{{ 'transfer.wordpress.heading'|trans }}</h2>
+        <p class="muted">{{ 'transfer.wordpress.intro'|trans }}</p>
+        <form method="post" action="{{ path('admin_transfer_wordpress') }}" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+            <div class="field">
+                <label for="transfer-wordpress">{{ 'transfer.wordpress.file'|trans }}</label>
+                <input type="file" id="transfer-wordpress" name="export" accept=".xml,text/xml,application/xml" required aria-describedby="transfer-wordpress-help">
+                <p class="field__help" id="transfer-wordpress-help">{{ 'transfer.wordpress.file_help'|trans({'%limit%': max_upload_mb}) }}</p>
+            </div>
+            {% if is_multilingual() %}
+                <div class="field">
+                    <label for="transfer-wordpress-locale">{{ 'transfer.wordpress.locale'|trans }}</label>
+                    <select id="transfer-wordpress-locale" name="locale">
+                        {% for locale in content_locales() %}
+                            <option value="{{ locale }}">{{ locale_name(locale) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+            <p class="muted">{{ 'transfer.wordpress.hint'|trans }}</p>
+            <div class="form-actions">
+                <button type="submit" class="button button--primary">{{ 'transfer.wordpress.submit'|trans }}</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

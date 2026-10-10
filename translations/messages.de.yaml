@@ -687,3 +687,24 @@ transfer.issue.image_missing: Das Bild fehlt in der Datei.
 transfer.issue.image_invalid: Das Bild konnte nicht gelesen werden oder ist zu groß.
 transfer.issue.content_invalid: Der Eintrag hat keinen Titel oder keine gültige Sprache und wurde übersprungen.
 transfer.issue.menu_item: Der Menüeintrag führt zu etwas, das nicht importiert wurde, und wurde ausgelassen.
+
+transfer.wordpress.heading: Aus WordPress importieren
+transfer.wordpress.intro: 'Übernimmt Beiträge, Seiten, Kategorien und die darin verwendeten Bilder einer WordPress-Website. Wählen Sie in WordPress „Werkzeuge → Daten exportieren → Alle Inhalte“ und laden Sie die Datei hier hoch.'
+transfer.wordpress.file: WordPress-Exportdatei (XML)
+transfer.wordpress.file_help: 'Höchstens %limit% MB. Größere Dateien lassen sich über die Kommandozeile importieren.'
+transfer.wordpress.locale: Sprache der importierten Inhalte
+transfer.wordpress.hint: Die alte Website muss während des Imports erreichbar bleiben, weil die Bilder von dort geholt werden. Von dieser Website wird nichts gelöscht. Der Import kann einige Minuten dauern.
+transfer.wordpress.submit: Aus WordPress importieren
+transfer.wordpress.report_heading: WordPress-Import abgeschlossen
+transfer.wordpress.error.not_wxr: Diese Datei ist kein WordPress-Export. Bitte verwenden Sie die XML-Datei aus „Werkzeuge → Daten exportieren“ in WordPress.
+transfer.wordpress.error.locale: Diese Sprache ist für die Website nicht aktiviert.
+transfer.wordpress.note.image: 'Ein Bild konnte nicht geholt werden und wurde ausgelassen: %detail%'
+transfer.wordpress.note.gallery_images: '%detail% Bild(er) einer Galerie konnten nicht geholt werden.'
+transfer.wordpress.note.shortcode: 'Der Shortcode [%detail%] gehört zu einem WordPress-Plugin und wurde entfernt.'
+transfer.wordpress.note.dynamic_block: 'Der WordPress-Block „%detail%“ hat keine Entsprechung und wurde ausgelassen.'
+transfer.wordpress.note.embed: 'Eingebetteter Inhalt konnte nicht übernommen werden: %detail%'
+transfer.wordpress.note.table: Eine Tabelle wurde in einfachen Text umgewandelt, eine Zeile pro Tabellenzeile.
+transfer.wordpress.note.element: 'Ein Element vom Typ „%detail%“ wurde ausgelassen.'
+transfer.wordpress.issue.password: Der Eintrag war in WordPress durch ein Passwort geschützt und wurde als Entwurf importiert.
+transfer.wordpress.issue.type: '%count% Einträge dieses WordPress-Inhaltstyps wurden nicht importiert.'
+transfer.wordpress.issue.comments: Kommentare werden nicht unterstützt und wurden nicht importiert.

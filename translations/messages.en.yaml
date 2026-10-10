@@ -688,3 +688,24 @@ transfer.issue.image_missing: The image is missing in the file.
 transfer.issue.image_invalid: The image could not be read or is too large.
 transfer.issue.content_invalid: The entry has no title or no valid language and was skipped.
 transfer.issue.menu_item: The menu entry leads to something that was not imported and was left out.
+
+transfer.wordpress.heading: Import from WordPress
+transfer.wordpress.intro: 'Moves posts, pages, categories and the images they use from a WordPress website. In WordPress, choose “Tools → Export → All content” and upload the file here.'
+transfer.wordpress.file: WordPress export file (XML)
+transfer.wordpress.file_help: 'At most %limit% MB. Larger files can be imported on the command line.'
+transfer.wordpress.locale: Language of the imported content
+transfer.wordpress.hint: The old website has to stay online during the import, because the images are fetched from it. Nothing of this website is deleted. The import can take a few minutes.
+transfer.wordpress.submit: Import from WordPress
+transfer.wordpress.report_heading: WordPress import finished
+transfer.wordpress.error.not_wxr: This file is not a WordPress export. Please use the XML file from “Tools → Export” in WordPress.
+transfer.wordpress.error.locale: This language is not switched on for the website.
+transfer.wordpress.note.image: 'An image could not be fetched and was left out: %detail%'
+transfer.wordpress.note.gallery_images: '%detail% image(s) of a gallery could not be fetched.'
+transfer.wordpress.note.shortcode: 'The shortcode [%detail%] belongs to a WordPress plugin and was removed.'
+transfer.wordpress.note.dynamic_block: 'The WordPress block “%detail%” has no counterpart and was left out.'
+transfer.wordpress.note.embed: 'Embedded content could not be taken over: %detail%'
+transfer.wordpress.note.table: A table was turned into plain text, one line per row.
+transfer.wordpress.note.element: 'An element of the type “%detail%” was left out.'
+transfer.wordpress.issue.password: The entry was protected by a password in WordPress and was imported as a draft.
+transfer.wordpress.issue.type: '%count% entries of this WordPress content type were not imported.'
+transfer.wordpress.issue.comments: Comments are not supported and were not imported.
