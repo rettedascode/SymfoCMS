@@ -14,6 +14,7 @@ use App\Service\ContentTranslator;
 use App\Service\PageTemplates;
 use App\Service\RevisionManager;
 use App\Service\SlugGenerator;
+use App\Workflow\ReviewWorkflow;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,7 @@ final class PageController extends AdminController
         private readonly ContentLocales $locales,
         private readonly ContentTranslator $translator,
         private readonly RevisionManager $revisions,
+        private readonly ReviewWorkflow $review,
     ) {
     }
 
@@ -77,6 +79,7 @@ final class PageController extends AdminController
     #[Route('/{id<\d+>}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Page $page): Response
     {
+        $original = $page->getStatus();
         $form = $this->createForm(PageType::class, $page);
         $form->handleRequest($request);
         $blocks = $page->getBlocks();
@@ -90,7 +93,11 @@ final class PageController extends AdminController
                     $this->pages->unsetOtherHomepages($page);
                 }
 
-                $this->contentManager->save($page, $blocks, publish: $request->request->has('publish'));
+                if (!$this->review->handle($page, $original, $request)) {
+                    throw $this->createAccessDeniedException('This change of status is not allowed.');
+                }
+
+                $this->contentManager->save($page, $blocks);
                 $this->addFlash('success', $page->isPublic() ? 'flash.page_published' : 'flash.draft_saved');
 
                 return $this->redirectToRoute('admin_page_edit', ['id' => $page->getId()]);

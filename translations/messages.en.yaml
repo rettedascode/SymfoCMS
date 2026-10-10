@@ -749,3 +749,23 @@ flash.two_factor_reset: Two-step login was switched off for this user.
 settings.security_heading: Security
 settings.two_factor_admins: Administrators have to use two-step login
 settings.two_factor_admins_help: Administrators who have not set it up yet are asked to do so the next time they open the admin area.
+
+status.review: In review
+review.submit: Submit for review
+review.withdraw: Take back
+review.approve: Approve and publish
+review.reject: Send back
+review.note: Note for the author
+review.note_placeholder: What should be changed? Shown to the author when you send the post back.
+review.waiting_editor: This post is waiting for your review.
+review.waiting_editor_hint: Publish it, or send it back to its author with a note.
+review.waiting_author: This post is waiting for review by an editor. You can keep improving it or take it back.
+review.sent_back: '%name% sent this post back:'
+review.an_editor: An editor
+review.waiting_count: '{1}One post is waiting for review.|]1,Inf[%count% posts are waiting for review.'
+flash.post_submitted: The post was submitted. An editor will look at it.
+flash.post_withdrawn: The post is a draft again.
+flash.post_sent_back: The post was sent back to its author.
+settings.review_heading: Blog
+settings.review_required: Posts by authors have to be approved by an editor
+settings.review_required_help: Authors then submit their posts for review instead of publishing them, and cannot change a post once it is public. Editors and administrators publish as before.

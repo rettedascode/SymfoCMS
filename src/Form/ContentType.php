@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Fields shared by the page and the post form. Used as parent type.
@@ -27,6 +28,17 @@ final class ContentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Only the statuses the user may choose are offered; with less than two there is nothing to choose.
+        if (\count($options['statuses']) > 1) {
+            $builder->add('status', EnumType::class, [
+                'label' => 'label.status',
+                'class' => ContentStatus::class,
+                'choices' => $options['statuses'],
+                'choice_label' => static fn (ContentStatus $status): string => $status->label(),
+                'expanded' => true,
+            ]);
+        }
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'label.title',
@@ -37,12 +49,6 @@ final class ContentType extends AbstractType
                 'help' => 'content.slug_help',
                 'required' => false,
                 'empty_data' => '',
-            ])
-            ->add('status', EnumType::class, [
-                'label' => 'label.status',
-                'class' => ContentStatus::class,
-                'choice_label' => static fn (ContentStatus $status): string => $status->label(),
-                'expanded' => true,
             ])
             ->add('seoTitle', TextType::class, [
                 'label' => 'content.seo_title',
@@ -77,5 +83,11 @@ final class ContentType extends AbstractType
                 }
                 $content->setSlug($slug);
             });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(['statuses' => [ContentStatus::Draft, ContentStatus::Published]]);
+        $resolver->setAllowedTypes('statuses', 'array');
     }
 }

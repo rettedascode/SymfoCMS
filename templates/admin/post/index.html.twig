@@ -10,6 +10,10 @@
 
     {{ include('admin/post/_tabs.html.twig', {active: 'posts', locale: locale}) }}
 
+    {% if can_review and waiting > 0 %}
+        <div class="flash flash--info" role="status">{{ 'review.waiting_count'|trans({'%count%': waiting}) }}</div>
+    {% endif %}
+
     {% if posts is empty %}
         <div class="empty">
             <h2>{{ 'post.empty_title'|trans }}</h2>

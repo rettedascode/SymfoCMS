@@ -22,6 +22,7 @@ use App\EventSubscriber\ApiSubscriber;
 use App\Service\ContentLocales;
 use App\Service\MediaManager;
 use App\Service\Settings;
+use App\Workflow\ReviewWorkflow;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -169,6 +170,15 @@ final class AppFixtures extends Fixture
                 ['type' => 'heading', 'data' => ['text' => 'Check it first', 'level' => '2']],
                 ['type' => 'text', 'data' => ['content' => '<p>While you are logged in, you can open drafts and scheduled posts to see how they will look.</p>']],
             ]);
+
+        // The review workflow is switched on for the demo: this post of the author waits for an editor.
+        $this->settings->set(ReviewWorkflow::REQUIRED_SETTING, true);
+        $this->createPost($manager, 'Notes from the Community Garden', 'notes-from-the-community-garden', $news, $author, $forest, 'now',
+            'What we planted this spring, and what the snails left of it.', [
+                ['type' => 'text', 'data' => ['content' => '<p>This post was <strong>submitted for review</strong> by the author. Log in as the editor to approve it or to send it back with a note.</p>']],
+            ])
+            ->setStatus(ContentStatus::Review)
+            ->setPublishedAt(null);
 
         // A contact form built with the form builder, shown on its own page, with two messages in the inbox.
         $contactForm = (new Form())

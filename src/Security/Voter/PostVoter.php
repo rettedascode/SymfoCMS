@@ -4,13 +4,17 @@ namespace App\Security\Voter;
 
 use App\Entity\Post;
 use App\Entity\User;
+use App\Enum\ContentStatus;
+use App\Service\Settings;
+use App\Workflow\ReviewWorkflow;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
  * Editors and admins manage every post. Authors may create posts and
- * edit or delete only the ones they wrote.
+ * edit or delete only the ones they wrote. When the website requires a
+ * review, a post that is public is out of its author's hands.
  *
  * @extends Voter<string, Post|null>
  */
@@ -23,8 +27,10 @@ final class PostVoter extends Voter
     /** Edit posts of other people and reassign the author. */
     public const MANAGE_ALL = 'POST_MANAGE_ALL';
 
-    public function __construct(private readonly AccessDecisionManagerInterface $decisionManager)
-    {
+    public function __construct(
+        private readonly AccessDecisionManagerInterface $decisionManager,
+        private readonly Settings $settings,
+    ) {
     }
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -58,7 +64,9 @@ final class PostVoter extends Voter
             self::CREATE => $this->decisionManager->decide($token, ['ROLE_AUTHOR']),
             self::EDIT, self::DELETE => $subject instanceof Post
                 && null !== $subject->getAuthor()
-                && $subject->getAuthor()->getId() === $user->getId(),
+                && $subject->getAuthor()->getId() === $user->getId()
+                // Otherwise an author could change approved text without anybody looking at it again.
+                && !(ContentStatus::Published === $subject->getStatus() && true === $this->settings->get(ReviewWorkflow::REQUIRED_SETTING)),
             default => false,
         };
     }

@@ -15,6 +15,9 @@
 
 {% block main %}
     {% set is_draft = content.status.value == 'draft' %}
+    {% set in_review = content.status.value == 'review' %}
+    {# Pages are published by editors directly; posts bring the details of the review workflow. #}
+    {% set review = review|default({required: false, can_submit: false, can_publish: true, can_withdraw: false, can_decide: false}) %}
     {# After a save that failed validation the editor shows what was typed, which is not stored yet. #}
     <div class="editor" data-controller="editor" data-editor-config-value="{{ editor_config|json_encode }}"
          data-editor-unsaved-value="{{ form.vars.submitted and not form.vars.valid ? 'true' : 'false' }}">
@@ -35,7 +38,18 @@
                 <a class="button" href="{{ public_url }}" target="_blank" rel="noopener">{{ (content.public ? 'editor.open_public' : 'editor.open_draft')|trans }} ↗</a>
                 {% if is_draft %}
                     <button type="submit" class="button">{{ 'editor.save_draft'|trans }}</button>
-                    <button type="submit" name="publish" value="1" class="button button--primary">{{ 'editor.publish'|trans }}</button>
+                    {% if review.can_publish %}
+                        <button type="submit" name="publish" value="1" class="button button--primary">{{ 'editor.publish'|trans }}</button>
+                    {% elseif review.can_submit %}
+                        <button type="submit" name="submit_review" value="1" class="button button--primary">{{ 'review.submit'|trans }}</button>
+                    {% endif %}
+                {% elseif in_review and review.can_decide %}
+                    <button type="submit" class="button">{{ 'editor.save_changes'|trans }}</button>
+                    <button type="submit" name="reject" value="1" class="button" data-review-reject>{{ 'review.reject'|trans }}</button>
+                    <button type="submit" name="approve" value="1" class="button button--primary">{{ 'review.approve'|trans }}</button>
+                {% elseif in_review %}
+                    {% if review.can_withdraw %}<button type="submit" name="withdraw" value="1" class="button">{{ 'review.withdraw'|trans }}</button>{% endif %}
+                    <button type="submit" class="button button--primary">{{ 'editor.save_changes'|trans }}</button>
                 {% else %}
                     <button type="submit" class="button button--primary">{{ 'editor.save_changes'|trans }}</button>
                 {% endif %}
@@ -46,6 +60,21 @@
             <span data-editor-target="restoreText"></span>
             <button type="button" class="link-button" data-action="editor#discardAutosave">{{ 'editor.restore_discard'|trans }}</button>
         </div>
+
+        {% if in_review and review.can_decide %}
+            <div class="flash flash--info review-box">
+                <p><strong>{{ 'review.waiting_editor'|trans }}</strong> {{ 'review.waiting_editor_hint'|trans }}</p>
+                <label for="review-note">{{ 'review.note'|trans }}</label>
+                <textarea id="review-note" name="review_note" rows="2" maxlength="2000" data-editor-ignore placeholder="{{ 'review.note_placeholder'|trans }}"></textarea>
+            </div>
+        {% elseif in_review %}
+            <div class="flash flash--info review-banner" role="status">{{ 'review.waiting_author'|trans }}</div>
+        {% elseif content.reviewNote %}
+            <div class="flash flash--info review-box" role="status">
+                <p><strong>{{ 'review.sent_back'|trans({'%name%': content.reviewNoteBy ?: 'review.an_editor'|trans}) }}</strong></p>
+                <p class="review-box__note">{{ content.reviewNote|nl2br }}</p>
+            </div>
+        {% endif %}
 
         {% if form.vars.errors|length > 0 %}
             <div class="flash flash--error editor__errors">{{ form_errors(form) }}</div>
@@ -73,7 +102,7 @@
                     <div class="card">
                         {% block settings_main %}{% endblock %}
                         {{ form_row(form.slug) }}
-                        {{ form_row(form.status) }}
+                        {% if form.status is defined %}{{ form_row(form.status) }}{% endif %}
                         {% block settings_extra %}{% endblock %}
                         <h2 class="card__heading">{{ 'editor.seo_heading'|trans }}</h2>
                         <p class="muted">{{ 'editor.seo_intro'|trans }}</p>

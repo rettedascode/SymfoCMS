@@ -748,3 +748,23 @@ flash.two_factor_reset: Die Anmeldung in zwei Schritten wurde für diese Person 
 settings.security_heading: Sicherheit
 settings.two_factor_admins: Administratoren müssen die Anmeldung in zwei Schritten verwenden
 settings.two_factor_admins_help: Administratoren, die sie noch nicht eingerichtet haben, werden beim nächsten Öffnen des Admin-Bereichs dazu aufgefordert.
+
+status.review: In Prüfung
+review.submit: Zur Prüfung einreichen
+review.withdraw: Zurückziehen
+review.approve: Freigeben und veröffentlichen
+review.reject: Zurückgeben
+review.note: Hinweis für die Autorin oder den Autor
+review.note_placeholder: Was soll geändert werden? Wird beim Zurückgeben des Beitrags angezeigt.
+review.waiting_editor: Dieser Beitrag wartet auf Ihre Prüfung.
+review.waiting_editor_hint: Veröffentlichen Sie ihn oder geben Sie ihn mit einem Hinweis zurück.
+review.waiting_author: Dieser Beitrag wartet auf die Prüfung durch die Redaktion. Sie können ihn weiter verbessern oder zurückziehen.
+review.sent_back: '%name% hat diesen Beitrag zurückgegeben:'
+review.an_editor: Die Redaktion
+review.waiting_count: '{1}Ein Beitrag wartet auf Prüfung.|]1,Inf[%count% Beiträge warten auf Prüfung.'
+flash.post_submitted: Der Beitrag wurde eingereicht. Die Redaktion sieht ihn sich an.
+flash.post_withdrawn: Der Beitrag ist wieder ein Entwurf.
+flash.post_sent_back: Der Beitrag wurde zurückgegeben.
+settings.review_heading: Blog
+settings.review_required: Beiträge von Autoren müssen von der Redaktion freigegeben werden
+settings.review_required_help: Autoren reichen ihre Beiträge dann zur Prüfung ein, statt sie zu veröffentlichen, und können einen veröffentlichten Beitrag nicht mehr ändern. Redakteure und Administratoren veröffentlichen wie bisher.

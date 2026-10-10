@@ -1,0 +1,41 @@
+framework:
+    workflows:
+        # The way a page or post takes from the first draft to the public website.
+        # Who may take which step is decided in App\Workflow\ReviewGuard.
+        content_review:
+            type: state_machine
+            marking_store:
+                type: method
+                property: workflowPlace
+            supports:
+                - App\Entity\Page
+                - App\Entity\Post
+            initial_marking: draft
+            places:
+                - draft
+                - review
+                - published
+            transitions:
+                # An author hands a draft to the editors ...
+                submit:
+                    from: draft
+                    to: review
+                # ... and may take it back while nobody has decided yet.
+                withdraw:
+                    from: review
+                    to: draft
+                # An editor publishes what was submitted ...
+                approve:
+                    from: review
+                    to: published
+                # ... or sends it back with a note.
+                reject:
+                    from: review
+                    to: draft
+                # Without a review: straight from draft to public, and back.
+                publish:
+                    from: draft
+                    to: published
+                unpublish:
+                    from: published
+                    to: draft

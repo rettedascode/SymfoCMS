@@ -14,6 +14,7 @@ use App\Service\ContentManager;
 use App\Service\ContentTranslator;
 use App\Service\RevisionManager;
 use App\Service\SlugGenerator;
+use App\Workflow\ReviewWorkflow;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +31,26 @@ final class PostController extends AdminController
         private readonly ContentLocales $locales,
         private readonly ContentTranslator $translator,
         private readonly RevisionManager $revisions,
+        private readonly ReviewWorkflow $review,
     ) {
+    }
+
+    /**
+     * The statuses offered in the settings of a post. "In review" only appears where reviews are used.
+     *
+     * @return list<ContentStatus>
+     */
+    private function statusChoices(Post $post): array
+    {
+        // Authors use the buttons of the editor instead: they cannot publish themselves.
+        if ($this->review->isReviewRequired() && !$this->isGranted(PostVoter::MANAGE_ALL)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->review->reachableStatuses($post),
+            fn (ContentStatus $status): bool => ContentStatus::Review !== $status || $this->review->isReviewRequired() || ContentStatus::Review === $post->getStatus(),
+        ));
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
@@ -41,8 +61,12 @@ final class PostController extends AdminController
         // Authors only see what they wrote themselves.
         $author = $this->isGranted(PostVoter::MANAGE_ALL) ? null : $this->currentUser();
 
+        $posts = $this->posts->findForAdmin($locale, $author);
+
         return $this->render('admin/post/index.html.twig', [
-            'posts' => $this->posts->findForAdmin($locale, $author),
+            'posts' => $posts,
+            'waiting' => \count(array_filter($posts, static fn (Post $post): bool => ContentStatus::Review === $post->getStatus())),
+            'can_review' => $this->isGranted(PostVoter::MANAGE_ALL),
             'locale' => $locale,
         ]);
     }
@@ -81,8 +105,10 @@ final class PostController extends AdminController
     #[IsGranted(PostVoter::EDIT, subject: 'post')]
     public function edit(Request $request, Post $post): Response
     {
+        $original = $post->getStatus();
         $form = $this->createForm(PostType::class, $post, [
             'can_change_author' => $this->isGranted(PostVoter::MANAGE_ALL),
+            'statuses' => $this->statusChoices($post),
         ]);
         $form->handleRequest($request);
         $blocks = $post->getBlocks();
@@ -92,8 +118,8 @@ final class PostController extends AdminController
             [$blocks, $errors] = $this->editor->submittedBlocks($form);
 
             if ($form->isValid()) {
-                if ($request->request->has('publish')) {
-                    $post->setStatus(ContentStatus::Published);
+                if (!$this->review->handle($post, $original, $request)) {
+                    throw $this->createAccessDeniedException('This change of status is not allowed.');
                 }
                 // Publishing without a date means "now"; a date in the future schedules the post.
                 if (ContentStatus::Published === $post->getStatus() && null === $post->getPublishedAt()) {
@@ -102,6 +128,8 @@ final class PostController extends AdminController
 
                 $this->contentManager->save($post, $blocks);
                 $this->addFlash('success', match (true) {
+                    ContentStatus::Review === $post->getStatus() && ContentStatus::Review !== $original => 'flash.post_submitted',
+                    ContentStatus::Review === $original && ContentStatus::Draft === $post->getStatus() => $request->request->has('reject') ? 'flash.post_sent_back' : 'flash.post_withdrawn',
                     $post->isScheduled() => 'flash.post_scheduled',
                     $post->isPublic() => 'flash.post_published',
                     default => 'flash.draft_saved',
@@ -116,6 +144,13 @@ final class PostController extends AdminController
             'post' => $post,
             'translations' => $this->translator->overview($post),
             'revisions' => $this->revisions->history($post),
+            'review' => [
+                'required' => $this->review->isReviewRequired(),
+                'can_submit' => $this->review->can($post, ReviewWorkflow::SUBMIT) && !$this->review->can($post, ReviewWorkflow::PUBLISH),
+                'can_publish' => $this->review->can($post, ReviewWorkflow::PUBLISH),
+                'can_withdraw' => $this->review->can($post, ReviewWorkflow::WITHDRAW) && !$this->review->can($post, ReviewWorkflow::APPROVE),
+                'can_decide' => $this->review->can($post, ReviewWorkflow::APPROVE),
+            ],
             'editor_config' => $this->editor->config($post, $blocks, [
                 'autosave' => $this->generateUrl('admin_post_autosave', ['id' => $post->getId()]),
                 'discard' => $this->generateUrl('admin_post_discard_autosave', ['id' => $post->getId()]),

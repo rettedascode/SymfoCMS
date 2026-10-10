@@ -46,6 +46,13 @@ abstract class Content
     #[ORM\Column(length: 20, enumType: ContentStatus::class)]
     protected ContentStatus $status = ContentStatus::Draft;
 
+    /** What an editor wrote when sending the content back to its author. */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    protected ?string $reviewNote = null;
+
+    #[ORM\Column(length: 120, nullable: true)]
+    protected ?string $reviewNoteBy = null;
+
     /**
      * Ordered list of blocks, each one shaped like {"type": "heading", "data": {...}}.
      *
@@ -158,6 +165,40 @@ abstract class Content
     public function setStatus(ContentStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * The status as the review workflow sees it (config/packages/workflow.yaml).
+     */
+    public function getWorkflowPlace(): string
+    {
+        return $this->status->value;
+    }
+
+    public function setWorkflowPlace(string $place): void
+    {
+        $this->status = ContentStatus::from($place);
+    }
+
+    public function getReviewNote(): ?string
+    {
+        return $this->reviewNote;
+    }
+
+    /**
+     * Name of the editor who wrote the note.
+     */
+    public function getReviewNoteBy(): ?string
+    {
+        return $this->reviewNoteBy;
+    }
+
+    public function setReviewNote(?string $note, ?string $by): static
+    {
+        $this->reviewNote = $note;
+        $this->reviewNoteBy = null !== $note ? $by : null;
 
         return $this;
     }

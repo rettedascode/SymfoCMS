@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @extends AbstractType<array{siteName: string, siteTagline: string|null, locales: string, retentionDays: int|null, twoFactorAdmins: bool, apiEnabled: bool}>
+ * @extends AbstractType<array{siteName: string, siteTagline: string|null, locales: string, retentionDays: int|null, reviewRequired: bool, twoFactorAdmins: bool, apiEnabled: bool}>
  */
 final class SettingsType extends AbstractType
 {
@@ -57,6 +57,12 @@ final class SettingsType extends AbstractType
             'required' => false,
             'constraints' => [new Assert\Range(min: 1, max: 3650)],
             'attr' => ['min' => 1, 'max' => 3650, 'inputmode' => 'numeric'],
+        ]);
+
+        $builder->add('reviewRequired', CheckboxType::class, [
+            'label' => 'settings.review_required',
+            'help' => 'settings.review_required_help',
+            'required' => false,
         ]);
 
         $builder->add('twoFactorAdmins', CheckboxType::class, [
