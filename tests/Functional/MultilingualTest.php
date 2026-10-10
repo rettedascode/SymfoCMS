@@ -311,7 +311,7 @@ final class MultilingualTest extends AppWebTestCase
         self::assertSame(['No category', 'Neues'], $crawler->filter('#post_category option')->each(static fn ($option) => $option->text()));
 
         $crawler = $this->client->request('GET', '/admin/categories?locale=de');
-        self::assertSame(['Neues'], $crawler->filter('tbody th a')->each(static fn ($a) => $a->text()));
+        self::assertSame(['Neues'], $crawler->filter('.sort-list__title')->each(static fn ($a) => $a->text()));
         $this->client->submitForm('Add category', ['category[name]' => 'Tipps']);
         self::assertResponseRedirects('/admin/categories?locale=de');
     }

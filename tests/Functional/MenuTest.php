@@ -45,6 +45,45 @@ final class MenuTest extends AppWebTestCase
         self::assertSelectorExists('.has-children > button[aria-expanded="false"]');
     }
 
+    public function testMenuEditorOffersThePagesAsATreeToDragFrom(): void
+    {
+        $this->loginAs(UserRole::Admin);
+        $this->enableLocales('en', 'de');
+        $services = $this->createPage('Services', ContentStatus::Published);
+        $about = $this->createPage('About', ContentStatus::Published);
+        $team = $this->createPage('Team', ContentStatus::Draft);
+        $team->setParent($about);
+        $history = $this->createPage('History', ContentStatus::Published);
+        $history->setParent($about)->setPosition(1);
+        $this->createPage('Kontakt', ContentStatus::Published, locale: 'de');
+        $this->em()->flush();
+
+        $crawler = $this->client->request('GET', '/admin/menus');
+        self::assertResponseIsSuccessful();
+
+        // The page tree is a palette of the same group as the menu: its pages are dragged into it.
+        $tree = $crawler->filter('[data-menu-target="pageTree"]');
+        self::assertSame('palette', $tree->attr('data-controller'));
+        self::assertSame('menu', $tree->attr('data-palette-group-value'));
+        self::assertSame('palette:add->menu#pagePicked', $tree->attr('data-action'));
+
+        // The pages come in the order of the page tree, child pages after their parent and one level deeper.
+        $config = json_decode((string) $crawler->filter('[data-controller="menu"]')->attr('data-menu-config-value'), true);
+        self::assertSame([
+            ['id' => $about->getId(), 'title' => 'About', 'depth' => 0],
+            ['id' => $team->getId(), 'title' => 'Team', 'depth' => 1],
+            ['id' => $history->getId(), 'title' => 'History', 'depth' => 1],
+            ['id' => $services->getId(), 'title' => 'Services', 'depth' => 0],
+        ], $config['pages']);
+        foreach (['drop_item', 'page_add', 'page_added'] as $key) {
+            self::assertArrayHasKey($key, $config['i18n']);
+        }
+
+        // Every language has its own pages.
+        $config = json_decode((string) $this->client->request('GET', '/admin/menus/main?locale=de')->filter('[data-controller="menu"]')->attr('data-menu-config-value'), true);
+        self::assertSame(['Kontakt'], array_column($config['pages'], 'title'));
+    }
+
     public function testFooterNavigationIsFlat(): void
     {
         $this->loginAs(UserRole::Admin);

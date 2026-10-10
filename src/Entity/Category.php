@@ -32,6 +32,22 @@ class Category
     #[ORM\Column(length: 10, options: ['default' => 'en'])]
     private string $locale = 'en';
 
+    /** Place in the list of categories of its language, 0 being the first. */
+    #[ORM\Column(options: ['default' => 0])]
+    private int $position = 0;
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = max(0, $position);
+
+        return $this;
+    }
+
     public function getLocale(): string
     {
         return $this->locale;

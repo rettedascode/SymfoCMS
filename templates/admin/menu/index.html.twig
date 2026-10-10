@@ -30,11 +30,11 @@
             <h2>{{ 'menu.add_heading'|trans }}</h2>
 
             <div class="field">
-                <label for="menu-add-page">{{ 'menu.add_page'|trans }}</label>
-                <div class="inline-form">
-                    <select id="menu-add-page" data-menu-target="pageSelect"></select>
-                    <button type="button" class="button" data-action="menu#addPage">{{ 'menu.add'|trans }}</button>
-                </div>
+                <span class="field__title" id="menu-pages-title">{{ 'menu.add_page'|trans }}</span>
+                <p class="field__help">{{ 'menu.page_tree_hint'|trans }}</p>
+                {# The page tree as a palette (see palette_controller.js): filled by the menu controller. #}
+                <ul class="menu-pages" data-menu-target="pageTree" data-controller="palette" data-palette-group-value="menu"
+                    data-action="palette:add->menu#pagePicked" aria-labelledby="menu-pages-title"></ul>
             </div>
 
             <div class="field" data-menu-target="postField">

@@ -20,7 +20,7 @@ Everything lives below `/api/v1`.
 | `/api/v1/pages/{id}` | One page with its content. Pages carry `parent` (id of the parent page or `null`) and `path` (all address parts, e.g. `about/team`). |
 | `/api/v1/posts` | Published posts, newest first |
 | `/api/v1/posts/{id}` | One post with its content |
-| `/api/v1/categories` | Blog categories |
+| `/api/v1/categories` | Blog categories, per language in the order they were arranged in |
 | `/api/v1/menus` | Main and footer menu of one language |
 | `/api/v1/media` | Images of the media library, newest first |
 | `/api/v1/media/{id}` | One image |

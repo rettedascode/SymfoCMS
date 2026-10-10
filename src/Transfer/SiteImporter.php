@@ -255,7 +255,7 @@ final class SiteImporter
             // A category that exists already is used instead of creating a twin.
             $category = $this->entityManager->getRepository(Category::class)->findOneBy(['locale' => $locale, 'slug' => $slug]);
             if (null === $category) {
-                $category = (new Category())->setLocale($locale)->setName($name)->setSlug($slug);
+                $category = (new Category())->setLocale($locale)->setName($name)->setSlug($slug)->setPosition(max(0, (int) ($row['position'] ?? 0)));
                 $this->entityManager->persist($category);
                 $this->entityManager->flush();
                 $report->count('categories');

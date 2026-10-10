@@ -19,6 +19,17 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
+     * The categories of a language in their order. Categories that were never arranged share
+     * the same position and come by name.
+     *
+     * @return list<Category>
+     */
+    public function findOrdered(string $locale): array
+    {
+        return $this->findBy(['locale' => $locale], ['position' => 'ASC', 'name' => 'ASC']);
+    }
+
+    /**
      * Categories that have at least one publicly visible post.
      *
      * @param string|null $locale limit to one language, or null for all languages
@@ -31,7 +42,8 @@ class CategoryRepository extends ServiceEntityRepository
             ->where('EXISTS (SELECT 1 FROM '.Post::class.' p WHERE p.category = c AND p.status = :status AND p.publishedAt <= :now)')
             ->setParameter('status', ContentStatus::Published)
             ->setParameter('now', new \DateTimeImmutable())
-            ->orderBy('c.name', 'ASC');
+            ->orderBy('c.position', 'ASC')
+            ->addOrderBy('c.name', 'ASC');
 
         if (null !== $locale) {
             $qb->andWhere('c.locale = :locale')->setParameter('locale', $locale);

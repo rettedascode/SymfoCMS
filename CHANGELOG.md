@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Menu editor: the page tree stands next to the menu, and pages are dragged from it to their place in the menu, also as sub-items; a click still adds at the end.
+- Blog categories have an order of their own, arranged by dragging. It is used on the blog, in the post form and in the read API.
 - Gallery images are arranged by dragging them, with the same handles, keyboard path and undo as blocks.
 - Image editing: the crop frame is resized by dragging its edges as well as its corners, and the focal point is a marker that is dragged (or moved with the arrow keys) while the previews follow.
 - Columns by dragging in the page editor: a block dropped on the left or right edge of another block lands next to it, up to three in a row; dragging a block out again removes its column or dissolves the columns. The divider between columns changes their widths in snapping steps, also with the arrow keys. On small screens columns stack.

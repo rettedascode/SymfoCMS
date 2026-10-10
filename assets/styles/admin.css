@@ -361,6 +361,29 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 .menu-editor__custom legend, .field__title { display: block; font-weight: 600; margin-bottom: .3rem; font-size: .95rem; padding: 0; }
 .menu-editor__custom .button { justify-self: start; }
 
+/* A plain list that is arranged by dragging, e.g. the categories. */
+.list-hint { margin: 1.5rem 0 .6rem; }
+.sort-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; max-width: 52rem; }
+.sort-list__item { display: flex; align-items: center; gap: .6rem; padding: .35rem .6rem .35rem .3rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.sort-list__title { font-weight: 600; }
+.sort-list__detail { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .9rem; }
+.sort-list__actions { display: flex; gap: .4rem; flex: none; margin-left: auto; }
+@media (max-width: 560px) {
+    .sort-list__detail { display: none; }
+}
+
+/* The page tree next to the menu: pages to drag into it. */
+.menu-pages { list-style: none; margin: .4rem 0 0; padding: .3rem; max-height: 22rem; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); }
+.menu-pages__item { padding-left: calc(var(--depth, 0) * 1.1rem); }
+.menu-pages__button {
+    display: flex; align-items: center; gap: .45rem; width: 100%; padding: .4rem .5rem;
+    border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; text-align: left; cursor: grab;
+}
+.menu-pages__button:hover, .menu-pages__button:focus-visible { background: var(--subtle); }
+.menu-pages__button .icon { flex: none; color: var(--muted); }
+.menu-pages__button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A page from the tree while it hovers over the menu: it looks like the item it will become. */
+.menu-list > .menu-pages__item { padding: 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
 .menu-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
 .menu-list--children { margin: .5rem 0 0 2.25rem; min-height: 14px; border-radius: 6px; }
 .menu-list--children:empty { outline: 1px dashed transparent; }

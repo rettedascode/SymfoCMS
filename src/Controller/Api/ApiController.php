@@ -120,7 +120,7 @@ final class ApiController extends AbstractController
     #[Route('/categories', name: 'categories')]
     public function categories(Request $request, CategoryRepository $categories): JsonResponse
     {
-        $qb = $categories->createQueryBuilder('p')->orderBy('p.name', 'ASC')->addOrderBy('p.id', 'ASC');
+        $qb = $categories->createQueryBuilder('p')->orderBy('p.locale', 'ASC')->addOrderBy('p.position', 'ASC')->addOrderBy('p.name', 'ASC')->addOrderBy('p.id', 'ASC');
         $this->filter($qb, $request);
 
         return $this->paginated($request, $qb, fn (Category $category): array => $this->serializer->category($category));

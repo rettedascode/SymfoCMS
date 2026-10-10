@@ -42,7 +42,8 @@ final class PostType extends AbstractType
                 'query_builder' => static fn (EntityRepository $repository): QueryBuilder => $repository->createQueryBuilder('c')
                     ->where('c.locale = :locale')
                     ->setParameter('locale', $post instanceof Post ? $post->getLocale() : '')
-                    ->orderBy('c.name', 'ASC'),
+                    ->orderBy('c.position', 'ASC')
+                    ->addOrderBy('c.name', 'ASC'),
                 'required' => false,
                 'placeholder' => 'post.no_category',
             ])

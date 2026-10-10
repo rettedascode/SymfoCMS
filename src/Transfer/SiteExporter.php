@@ -115,6 +115,7 @@ final class SiteExporter
                 'locale' => $category->getLocale(),
                 'name' => $category->getName(),
                 'slug' => $category->getSlug(),
+                'position' => $category->getPosition(),
             ], $this->entityManager->getRepository(Category::class)->findBy([], ['id' => 'ASC'])),
             'forms' => array_map(static fn (Form $form): array => [
                 'id' => $form->getId(),

@@ -283,6 +283,7 @@ post.published_at: Publish date
 post.published_at_help: Leave empty to use the moment you publish. A date in the future schedules the post - it appears on its own at that time.
 post.delete_confirm: 'Delete the post "%title%"? This cannot be undone.'
 
+category.order_hint: Drag the categories into the order they should have on the blog.
 category.add: Add a category
 category.add_button: Add category
 category.edit: Edit category
@@ -303,14 +304,15 @@ menu.intro_footer: The footer navigation appears at the bottom of every page, fo
 menu.save: Save menu
 menu.add_heading: Add menu item
 menu.add: Add
-menu.add_page: Page
+menu.add_page: Pages
+menu.page_tree_hint: Drag a page to its place in the menu, or click it to add it at the end.
 menu.add_post: Blog post
 menu.add_blog: Blog
 menu.add_blog_button: Add link to the blog
 menu.add_url: Custom link
 menu.url_label: Text, e.g. "Shop"
 menu.url_address: Web address, e.g. https://example.com
-menu.js.empty: This menu is empty. Add your first item using the box on the right.
+menu.js.empty: This menu is empty. Drag a page here, or add your first item using the box next to it.
 menu.js.unsaved: Unsaved changes
 menu.js.saving: Saving…
 menu.js.saved: Menu saved.
@@ -926,6 +928,9 @@ editor.drop_here: Drop a block here
 menu.js.list_top: Top level of the menu
 menu.js.list_inside: 'Sub-items of “%title%”'
 menu.js.drop_sub_item: Drop here to make a sub-item
+menu.js.drop_item: Drop a page here
+menu.js.page_add: 'Add “%title%”: drag it into the menu or click to add it at the end'
+menu.js.page_added: '“%title%” was added at the end of the menu.'
 form.js.list: Fields of the form
 
 editor.palette: Blocks

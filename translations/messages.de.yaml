@@ -282,6 +282,7 @@ post.published_at: Veröffentlichungsdatum
 post.published_at_help: Leer lassen, um den Zeitpunkt der Veröffentlichung zu verwenden. Ein Datum in der Zukunft plant den Beitrag - er erscheint dann von selbst.
 post.delete_confirm: 'Beitrag „%title%“ löschen? Das kann nicht rückgängig gemacht werden.'
 
+category.order_hint: Ziehen Sie die Kategorien in die Reihenfolge, die sie im Blog haben sollen.
 category.add: Kategorie hinzufügen
 category.add_button: Kategorie hinzufügen
 category.edit: Kategorie bearbeiten
@@ -302,14 +303,15 @@ menu.intro_footer: Die Fußzeilen-Navigation erscheint unten auf jeder Seite, zu
 menu.save: Menü speichern
 menu.add_heading: Menüeintrag hinzufügen
 menu.add: Hinzufügen
-menu.add_page: Seite
+menu.add_page: Seiten
+menu.page_tree_hint: Ziehen Sie eine Seite an ihre Stelle im Menü oder klicken Sie sie an, um sie ans Ende zu setzen.
 menu.add_post: Blogbeitrag
 menu.add_blog: Blog
 menu.add_blog_button: Link zum Blog hinzufügen
 menu.add_url: Eigener Link
 menu.url_label: Text, z. B. „Shop“
 menu.url_address: Webadresse, z. B. https://example.com
-menu.js.empty: Dieses Menü ist leer. Füge über das Feld rechts den ersten Eintrag hinzu.
+menu.js.empty: Dieses Menü ist leer. Ziehen Sie eine Seite hierher oder fügen Sie den ersten Eintrag über den Kasten daneben hinzu.
 menu.js.unsaved: Nicht gespeicherte Änderungen
 menu.js.saving: Wird gespeichert …
 menu.js.saved: Menü gespeichert.
@@ -925,6 +927,9 @@ editor.drop_here: Block hier ablegen
 menu.js.list_top: Oberste Ebene des Menüs
 menu.js.list_inside: 'Unterpunkte von „%title%“'
 menu.js.drop_sub_item: Hier ablegen, um einen Unterpunkt zu erstellen
+menu.js.drop_item: Seite hier ablegen
+menu.js.page_add: '„%title%“ hinzufügen: ins Menü ziehen oder anklicken, um sie ans Ende zu setzen'
+menu.js.page_added: '„%title%“ wurde am Ende des Menüs hinzugefügt.'
 form.js.list: Felder des Formulars
 
 editor.palette: Blöcke

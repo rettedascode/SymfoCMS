@@ -40,10 +40,10 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 - Pages with editable web address, draft/published status, SEO title and meta description; one page is the homepage
 - [Page tree](docs/page-tree.md): drag a page below another one to make it a child page with a nested address (`/about/team`); old addresses of published pages are redirected
 - Blog posts with excerpt, cover image, category, author and publish date (a date in the future schedules the post)
-- Blog overview with pagination, category pages and an RSS feed
+- Blog overview with pagination, category pages and an RSS feed; categories are dragged into the order they have on the blog
 - Drafts and scheduled posts can be previewed by logged-in users only
 - [Redirects](docs/redirects.md): changing the address of a published page creates a 301 redirect automatically; admins manage redirects by hand, loops and chains are prevented
-- Menu editor for the main and the footer navigation: link pages, posts or any URL, reorder by drag and drop, one level of dropdowns
+- Menu editor for the main and the footer navigation: drag pages in from the page tree, link posts or any URL, reorder by drag and drop, one level of dropdowns
 - [Form builder](docs/forms.md): contact and sign-up forms with an inbox, email notification, CSV export and spam protection that needs no third-party service
 - Media library: upload several images by drag and drop, automatic resized versions, alt text per image
 

@@ -13,9 +13,12 @@ import { normalizeUrl } from '../lib/richtext.js';
  * them, carry them with the keyboard or use the menu on the handle. Where the
  * menu allows it, an item dropped into the list of another item becomes its
  * sub-item (one level deep). Ctrl+Z takes a change back.
+ *
+ * Pages are added from the page tree next to the menu: drag a page to the
+ * place it should have in the menu, or click it to add it at the end.
  */
 export default class extends Controller {
-    static targets = ['list', 'status', 'saveButton', 'pageSelect', 'postSelect', 'postField', 'urlLabel', 'urlAddress'];
+    static targets = ['list', 'status', 'saveButton', 'pageTree', 'postSelect', 'postField', 'urlLabel', 'urlAddress'];
     static values = { config: Object };
 
     connect() {
@@ -27,12 +30,15 @@ export default class extends Controller {
         this.history = new History();
         this.onDndMove = (event) => this.itemMoved(event.detail);
         this.element.addEventListener('dnd:move', this.onDndMove);
+        // A page dragged out of the page tree.
+        this.onDndInsert = (event) => this.pageDropped(event.detail);
+        this.element.addEventListener('dnd:insert', this.onDndInsert);
         this.unbindHistoryKeys = this.history.bindKeys(document, {
             onUndo: () => announce(t('undone')),
             onRedo: () => announce(t('redone')),
         });
 
-        this.fillSelect(this.pageSelectTarget, this.config.pages);
+        this.renderPageTree();
         this.fillSelect(this.postSelectTarget, this.config.posts);
         this.postFieldTarget.hidden = this.config.posts.length === 0;
         this.render();
@@ -49,6 +55,7 @@ export default class extends Controller {
     disconnect() {
         window.removeEventListener('beforeunload', this.onBeforeUnload);
         this.element.removeEventListener('dnd:move', this.onDndMove);
+        this.element.removeEventListener('dnd:insert', this.onDndInsert);
         this.unbindHistoryKeys();
         this.sortables.forEach((sortable) => sortable.destroy());
     }
@@ -59,11 +66,53 @@ export default class extends Controller {
 
     // ----- Adding items ---------------------------------------------------
 
-    addPage() {
-        const page = this.config.pages.find((choice) => String(choice.id) === this.pageSelectTarget.value);
-        if (page) {
-            this.add({ label: page.title, type: 'page', page: page.id, post: null, url: '' });
+    /** The pages of the website in the order of the page tree, child pages indented below their parent. */
+    renderPageTree() {
+        this.pageTreeTarget.replaceChildren(...this.config.pages.map((page) => el('li', {
+            class: 'menu-pages__item',
+            style: `--depth: ${page.depth}`,
+            'data-dnd-item': true,
+            'data-dnd-label': page.title,
+            'data-page-id': String(page.id),
+        }, el('button', {
+            type: 'button',
+            class: 'menu-pages__button',
+            'data-dnd-handle': true,
+            title: format(this.i18n.page_add, { title: page.title }),
+        }, icon('grip'), el('span', { text: page.title })))));
+    }
+
+    pageItem(source) {
+        const page = this.config.pages.find((choice) => String(choice.id) === source.dataset.pageId);
+
+        return page ? { label: page.title, type: 'page', page: page.id, post: null, url: '', children: [] } : null;
+    }
+
+    /** A page was clicked in the page tree (or Enter was pressed on it): it goes to the end of the menu. */
+    pagePicked(event) {
+        const item = this.pageItem(event.detail.source);
+        if (item) {
+            this.add(item);
+            announce(format(this.i18n.page_added, { title: item.label }));
         }
+    }
+
+    /** A page was dragged out of the page tree and dropped at a place in the menu. */
+    pageDropped(detail) {
+        const item = this.pageItem(detail.source);
+        const list = detail.to.items;
+        if (!item || !list) {
+            return;
+        }
+
+        list.splice(Math.min(detail.index, list.length), 0, item);
+        this.record({
+            undo: () => list.splice(list.indexOf(item), 1),
+            redo: () => list.splice(Math.min(detail.index, list.length), 0, item),
+        });
+        this.focusRequest = () => focusHandle([...this.listTarget.querySelectorAll('.menu-item')].find((candidate) => candidate.item === item));
+        this.changed();
+        this.render();
     }
 
     addPost() {
@@ -171,13 +220,11 @@ export default class extends Controller {
         this.sortables.forEach((sortable) => sortable.destroy());
         this.sortables = [];
 
-        if (this.items.length === 0) {
-            this.listTarget.replaceChildren(el('p', { class: 'blocks__empty', text: this.i18n.empty }));
-
-            return;
-        }
-
-        this.listTarget.replaceChildren(this.renderLevel(this.items, null));
+        // The list is there even while the menu is empty: it is where the first page is dropped.
+        this.listTarget.replaceChildren(
+            ...(this.items.length === 0 ? [el('p', { class: 'blocks__empty', text: this.i18n.empty })] : []),
+            this.renderLevel(this.items, null),
+        );
 
         if (this.focusRequest) {
             this.focusRequest();
@@ -189,7 +236,7 @@ export default class extends Controller {
         const list = el('ul', {
             class: parent ? 'menu-list menu-list--children' : 'menu-list',
             'aria-label': parent ? format(this.i18n.list_inside, { title: parent.label }) : this.i18n.list_top,
-            'data-dnd-empty-hint': parent ? this.i18n.drop_sub_item : null,
+            'data-dnd-empty-hint': parent ? this.i18n.drop_sub_item : this.i18n.drop_item,
         });
         list.items = items;
         items.forEach((item, index) => list.append(this.renderItem(item, items, index, parent)));

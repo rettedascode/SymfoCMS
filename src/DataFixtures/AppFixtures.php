@@ -158,7 +158,7 @@ final class AppFixtures extends Fixture
         $manager->persist($team);
 
         $news = (new Category())->setName('News')->setSlug('news');
-        $guides = (new Category())->setName('Guides')->setSlug('guides');
+        $guides = (new Category())->setName('Guides')->setSlug('guides')->setPosition(1);
         $manager->persist($news);
         $manager->persist($guides);
 

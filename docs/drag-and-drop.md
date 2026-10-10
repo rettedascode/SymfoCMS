@@ -12,6 +12,25 @@ Every item that can be moved has a **handle** – the six dots at its left edge.
 | **Keyboard** | Move to the handle with Tab. **Space** picks the item up, the **arrow keys** carry it, **Space** drops it, **Escape** puts it back. Where items can be nested – sub-items of a menu, blocks in columns – the up and down keys walk through every possible place, and **Right** and **Left** move an item into the one above it and out again. Every step is read out by screen readers. |
 | **Menu** | Click the handle (or press Enter on it): **Move up**, **Move down** and **Move to …**, which lists every possible destination. |
 
+## Where things are arranged
+
+| Screen | What is dragged |
+| --- | --- |
+| Page editor | Blocks, block types from the palette, images from the desktop, blocks onto the edge of others to make [columns](editor.md#columns), the lines of the outline, the images of a gallery |
+| Pages | Pages in the [page tree](page-tree.md): below another page, or among their siblings |
+| Menus | Menu items, and pages from the page tree next to the menu |
+| Blog → Categories | Categories, into the order they have on the blog |
+| Forms | Field types into the form, fields next to each other, the choices of a selection field |
+| Media | Files from the desktop into the library; the crop frame and the focal point of an [image](images.md) |
+
+### Menus
+
+Next to the menu is the page tree: all pages of the language, child pages indented below their parent. Drag a page to the place it should have in the menu – between two items, or into the area below an item to make it a sub-item of the main navigation. A click on a page (or Enter) adds it at the end. As everywhere in the menu editor, nothing is stored before **Save menu**, and Ctrl+Z takes a step back.
+
+### Categories
+
+Under **Blog → Categories** the categories are a list with handles. Drag them into the order they should have; that order is used for the list of categories on the blog, in the post form and in the read API. Every move is stored at once, and the message at the bottom offers **Undo**. New categories go to the end. Each language has its own order.
+
 ## Undo
 
 In editors – pages, posts, menus, forms – **Ctrl+Z** takes back the last change of the structure (adding, moving, deleting) and **Ctrl+Shift+Z** makes it again. Inside a text field the same keys undo typing, as usual. Nothing is stored before you save.
