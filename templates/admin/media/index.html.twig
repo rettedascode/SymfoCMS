@@ -7,17 +7,20 @@
         <h1>{{ 'nav.media'|trans }}</h1>
     </div>
 
-    <div data-controller="uploader"
-         data-uploader-url-value="{{ path('admin_media_upload') }}"
-         data-uploader-csrf-value="{{ csrf_token('admin') }}"
-         data-uploader-uploading-value="{{ 'media.uploading'|trans }}"
-         data-uploader-error-value="{{ i18n.picker_error }}">
-        <label class="dropzone" data-uploader-target="dropzone">
-            <input type="file" class="visually-hidden" accept="{{ accept }}" multiple data-uploader-target="input" data-action="uploader#pick">
+    {# Dropping files anywhere in the window uploads them; see dropzone_controller.js. #}
+    <div data-controller="dropzone uploader"
+         data-dropzone-url-value="{{ path('admin_media_upload') }}"
+         data-dropzone-csrf-value="{{ csrf_token('admin') }}"
+         data-dropzone-max-bytes-value="{{ max_upload_mb * 1024 * 1024 }}"
+         data-dropzone-types-value="{{ accept|split(',')|json_encode }}"
+         data-dropzone-window-value="true"
+         data-action="dropzone:uploaded->uploader#uploaded">
+        <label class="dropzone">
+            <input type="file" class="visually-hidden" accept="{{ accept }}" multiple data-dropzone-target="input" data-action="dropzone#pick">
             <strong>{{ 'media.upload_title'|trans }}</strong>
             <span class="muted">{{ 'media.upload_hint'|trans({'%limit%': max_upload_mb}) }}</span>
         </label>
-        <ul class="upload-messages" data-uploader-target="messages" role="status"></ul>
+        <ul class="upload-messages" data-dropzone-target="messages" data-uploader-target="messages" role="status"></ul>
     </div>
 
     {% if media is empty %}

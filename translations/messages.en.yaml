@@ -877,3 +877,43 @@ appearance.auto: Like the device
 appearance.light: Light
 appearance.dark: Dark
 appearance.hint: Switch between light and dark
+
+dnd.handle: 'Move %item%'
+dnd.handle_hint: 'Drag to move. Click for more ways to move. With the keyboard: Space to pick up, arrow keys to move, Space to drop, Escape to cancel.'
+dnd.menu: 'Move %item%'
+dnd.move_up: Move up
+dnd.move_down: Move down
+dnd.move_to: Move to …
+dnd.destination: Destination
+dnd.move: Move
+dnd.cancel: Cancel
+dnd.current: (now)
+dnd.position: 'Position %position% of %total%.'
+dnd.position_in: 'Position %position% of %total% in %list%.'
+dnd.position_number: 'Position %position%'
+dnd.grabbed: '%item% picked up.'
+dnd.instructions: Use the arrow keys to move it, Space to drop it, Escape to put it back.
+dnd.dropped: '%item% dropped.'
+dnd.moved: '%item% moved.'
+dnd.cancelled: 'Move cancelled. %item% is back where it was.'
+dnd.edge: It cannot be moved further in this direction.
+dnd.undone: Undone.
+dnd.redone: Redone.
+dnd.undo: Undo
+dnd.saved: Moved.
+dnd.save_failed: The change could not be saved. It was taken back.
+dnd.uploading: 'Uploading %name% (%current% of %total%) …'
+dnd.upload_failed: The upload failed.
+dnd.file_too_large: '%name% is too large. The limit is %limit% MB.'
+dnd.file_wrong_type: '%name% is not an image that can be used here (JPEG, PNG, GIF or WebP).'
+dnd.error.into_itself: Something cannot be moved into itself or into one of its own sub-items.
+dnd.error.too_deep: That would be nested too deeply.
+dnd.error.wrong_parent: The destination does not exist any more. Please reload the page.
+dnd.error.not_allowed: You are not allowed to move this.
+editor.list_page: Blocks of the page
+editor.list_column: Blocks of the column
+editor.drop_here: Drop a block here
+menu.js.list_top: Top level of the menu
+menu.js.list_inside: 'Sub-items of “%title%”'
+menu.js.drop_sub_item: Drop here to make a sub-item
+form.js.list: Fields of the form

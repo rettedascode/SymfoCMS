@@ -371,8 +371,6 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
     display: flex; align-items: center; gap: .5rem; padding: .35rem .4rem;
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
 }
-.menu-item--ghost { opacity: .4; }
-.menu-item__handle { cursor: grab; color: var(--muted); padding: .55rem .3rem; touch-action: none; }
 .menu-item__label { flex: 1 1 140px; min-width: 0; font-weight: 600; border-color: transparent !important; }
 .menu-item__label:hover { border-color: var(--border-strong) !important; }
 .menu-item__label:focus { border-color: var(--accent) !important; }
@@ -403,7 +401,6 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 .form-builder__add p { margin-bottom: .6rem; }
 .form-field { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: .5rem 1rem 1rem; }
 .form-field__header { display: flex; align-items: center; gap: .25rem; margin: 0 -.5rem .4rem; }
-.form-field__handle { cursor: grab; color: var(--muted); padding: .5rem .3rem; touch-action: none; }
 .form-field__type { flex: 1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
 .answers { margin: 1rem 0 0; }
 .answers dt { font-weight: 600; margin-top: 1rem; }

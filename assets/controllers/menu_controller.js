@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
-import Sortable from 'sortablejs';
+import { announce, createDragList, focusHandle, handle, t } from '../lib/dnd.js';
 import { el, format } from '../lib/dom.js';
+import { History, moveStep } from '../lib/history.js';
 import { icon } from '../lib/icons.js';
 import { normalizeUrl } from '../lib/richtext.js';
 
@@ -8,9 +9,10 @@ import { normalizeUrl } from '../lib/richtext.js';
  * Menu editor.
  *
  * The menu is a list of items ({ label, type, page, post, url, children }).
- * Items can be dragged to reorder them and, where the menu allows it, dropped
- * onto the area below another item to become its sub-item (one level deep).
- * Every drag has an equivalent button, so the editor also works by keyboard.
+ * Items are arranged with the shared drag-and-drop layer (lib/dnd.js): drag
+ * them, carry them with the keyboard or use the menu on the handle. Where the
+ * menu allows it, an item dropped into the list of another item becomes its
+ * sub-item (one level deep). Ctrl+Z takes a change back.
  */
 export default class extends Controller {
     static targets = ['list', 'status', 'saveButton', 'pageSelect', 'postSelect', 'postField', 'urlLabel', 'urlAddress'];
@@ -22,6 +24,13 @@ export default class extends Controller {
         this.items = structuredClone(this.config.items);
         this.sortables = [];
         this.dirty = false;
+        this.history = new History();
+        this.onDndMove = (event) => this.itemMoved(event.detail);
+        this.element.addEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys = this.history.bindKeys(document, {
+            onUndo: () => announce(t('undone')),
+            onRedo: () => announce(t('redone')),
+        });
 
         this.fillSelect(this.pageSelectTarget, this.config.pages);
         this.fillSelect(this.postSelectTarget, this.config.posts);
@@ -39,6 +48,8 @@ export default class extends Controller {
 
     disconnect() {
         window.removeEventListener('beforeunload', this.onBeforeUnload);
+        this.element.removeEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys();
         this.sortables.forEach((sortable) => sortable.destroy());
     }
 
@@ -81,11 +92,47 @@ export default class extends Controller {
     }
 
     add(item) {
-        this.items.push({ ...item, children: [] });
+        const added = { ...item, children: [] };
+        this.items.push(added);
+        this.record({
+            undo: () => this.items.splice(this.items.indexOf(added), 1),
+            redo: () => this.items.push(added),
+        });
         this.changed();
         this.render();
     }
 
+    /** Remembers a change of the structure for Ctrl+Z and Ctrl+Shift+Z. */
+    record(step) {
+        const redraw = () => {
+            this.changed();
+            this.render();
+        };
+        this.history.record({
+            undo: () => { step.undo(); redraw(); },
+            redo: () => { step.redo(); redraw(); },
+        });
+    }
+
+    /** The drag-and-drop layer has moved an item on screen: the data follows. */
+    itemMoved(detail) {
+        const from = detail.from.items;
+        const to = detail.to.items;
+        if (!from || !to) {
+            return;
+        }
+
+        const [moved] = from.splice(detail.oldIndex, 1);
+        to.splice(detail.newIndex, 0, moved);
+        this.record(moveStep(from, detail.oldIndex, to, detail.newIndex));
+        if (detail.cause !== 'pointer') {
+            this.focusRequest = () => focusHandle([...this.listTarget.querySelectorAll('.menu-item')].find((candidate) => candidate.item === moved));
+        }
+        setTimeout(() => {
+            this.changed();
+            this.render();
+        });
+    }
     // ----- State ----------------------------------------------------------
 
     changed() {
@@ -139,30 +186,18 @@ export default class extends Controller {
     }
 
     renderLevel(items, parent) {
-        const list = el('ul', { class: parent ? 'menu-list menu-list--children' : 'menu-list' });
+        const list = el('ul', {
+            class: parent ? 'menu-list menu-list--children' : 'menu-list',
+            'aria-label': parent ? format(this.i18n.list_inside, { title: parent.label }) : this.i18n.list_top,
+            'data-dnd-empty-hint': parent ? this.i18n.drop_sub_item : null,
+        });
         list.items = items;
         items.forEach((item, index) => list.append(this.renderItem(item, items, index, parent)));
 
-        this.sortables.push(Sortable.create(list, {
-            group: {
-                name: 'menu',
-                // Only one level of nesting: an item that has sub-items cannot become a sub-item itself.
-                put: (to, from, dragged) => !parent || (dragged.item?.children ?? []).length === 0,
-            },
-            handle: '.menu-item__handle',
-            animation: 150,
-            ghostClass: 'menu-item--ghost',
-            onEnd: (event) => {
-                if (event.from === event.to && event.oldIndex === event.newIndex) {
-                    return;
-                }
-                const [moved] = event.from.items.splice(event.oldIndex, 1);
-                event.to.items.splice(event.newIndex, 0, moved);
-                setTimeout(() => {
-                    this.changed();
-                    this.render();
-                });
-            },
+        this.sortables.push(createDragList(list, {
+            group: 'menu',
+            // Only one level of nesting: an item that has sub-items cannot become a sub-item itself.
+            accept: parent ? (dragged) => (dragged.item?.children ?? []).length === 0 : null,
         }));
 
         return list;
@@ -194,23 +229,23 @@ export default class extends Controller {
         const canNest = this.config.allowNesting;
         item.children ??= [];
         const row = el('div', { class: 'menu-item__row' },
-            el('span', { class: 'menu-item__handle', title: this.i18n.drag, 'aria-hidden': 'true' }, icon('grip')),
+            handle(item.label),
             labelInput,
             el('span', { class: 'menu-item__target', text: this.describe(item) }),
             el('span', { class: 'menu-item__actions' },
-                button('up', this.i18n.move_up, 'up', () => this.move(item, siblings, index, -1), index === 0),
-                button('down', this.i18n.move_down, 'down', () => this.move(item, siblings, index, 1), index === siblings.length - 1),
-                canNest && !parent ? button('indent', this.i18n.indent, 'indent', () => this.indent(item, index), index === 0 || item.children.length > 0) : null,
-                canNest && parent ? button('outdent', this.i18n.outdent, 'outdent', () => this.outdent(item, parent, index)) : null,
                 button('delete', this.i18n.delete, 'trash', () => {
                     siblings.splice(index, 1);
+                    this.record({
+                        undo: () => siblings.splice(Math.min(index, siblings.length), 0, item),
+                        redo: () => siblings.splice(siblings.indexOf(item), 1),
+                    });
                     this.changed();
                     this.render();
                 }),
             ),
         );
 
-        const node = el('li', { class: 'menu-item' }, row);
+        const node = el('li', { class: 'menu-item', 'data-dnd-item': true, 'data-dnd-label': item.label }, row);
         node.item = item;
 
         if (canNest && !parent) {
@@ -229,42 +264,5 @@ export default class extends Controller {
         }
 
         return item.url;
-    }
-
-    // ----- Keyboard-friendly alternatives to dragging ---------------------
-
-    keepFocusOn(item, action) {
-        this.focusRequest = () => {
-            const node = [...this.listTarget.querySelectorAll('.menu-item')].find((candidate) => candidate.item === item);
-            const preferred = node?.querySelector(`:scope > .menu-item__row [data-item-action="${action}"]`);
-            (preferred && !preferred.disabled ? preferred : node?.querySelector('.icon-button:not([disabled])'))?.focus();
-        };
-    }
-
-    move(item, siblings, index, delta) {
-        siblings.splice(index, 1);
-        siblings.splice(index + delta, 0, item);
-        this.keepFocusOn(item, delta < 0 ? 'up' : 'down');
-        this.changed();
-        this.render();
-    }
-
-    /** Makes the item a sub-item of the item above it. */
-    indent(item, index) {
-        this.items.splice(index, 1);
-        this.items[index - 1].children.push({ ...item, children: [] });
-        this.keepFocusOn(this.items[index - 1].children.at(-1), 'outdent');
-        this.changed();
-        this.render();
-    }
-
-    /** Moves a sub-item back to the top level, right after its former parent. */
-    outdent(item, parent, index) {
-        parent.children.splice(index, 1);
-        const moved = { ...item, children: [] };
-        this.items.splice(this.items.indexOf(parent) + 1, 0, moved);
-        this.keepFocusOn(moved, 'indent');
-        this.changed();
-        this.render();
     }
 }

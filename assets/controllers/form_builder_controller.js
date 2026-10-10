@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
-import Sortable from 'sortablejs';
+import { announce, createDragList, focusHandle, handle, t } from '../lib/dnd.js';
 import { el, uid } from '../lib/dom.js';
+import { History, moveStep } from '../lib/history.js';
 import { icon } from '../lib/icons.js';
 
 const TYPES = ['text', 'email', 'textarea', 'select', 'checkbox', 'consent'];
@@ -20,6 +21,13 @@ export default class extends Controller {
         this.i18n = this.configValue.i18n;
         this.fields = structuredClone(this.configValue.fields);
         this.dirty = false;
+        this.history = new History();
+        this.onDndMove = (event) => this.fieldMoved(event.detail);
+        this.element.addEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys = this.history.bindKeys(document, {
+            onUndo: () => announce(t('undone')),
+            onRedo: () => announce(t('redone')),
+        });
 
         this.addTarget.replaceChildren(...TYPES.map((type) => el('button', {
             type: 'button',
@@ -40,6 +48,8 @@ export default class extends Controller {
 
     disconnect() {
         window.removeEventListener('beforeunload', this.onBeforeUnload);
+        this.element.removeEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys();
         this.sortable?.destroy();
     }
 
@@ -57,17 +67,40 @@ export default class extends Controller {
     add(type) {
         const field = { id: '', type, label: '', required: type === 'consent', options: type === 'select' ? [''] : [] };
         this.fields.push(field);
+        this.record({
+            undo: () => this.fields.splice(this.fields.indexOf(field), 1),
+            redo: () => this.fields.push(field),
+        });
         this.changed();
         this.render();
         // Put the cursor where the question is typed.
         this.listTarget.querySelector('.form-field:last-child .form-field__label')?.focus();
     }
 
-    move(index, delta) {
-        const [field] = this.fields.splice(index, 1);
-        this.fields.splice(index + delta, 0, field);
+    /** Remembers a change of the structure for Ctrl+Z and Ctrl+Shift+Z. */
+    record(step) {
+        const redraw = () => {
+            this.changed();
+            this.render();
+        };
+        this.history.record({
+            undo: () => { step.undo(); redraw(); },
+            redo: () => { step.redo(); redraw(); },
+        });
+    }
+
+    /** The drag-and-drop layer has moved a field on screen: the data follows. */
+    fieldMoved(detail) {
+        const [moved] = this.fields.splice(detail.oldIndex, 1);
+        this.fields.splice(detail.newIndex, 0, moved);
+        this.record(moveStep(this.fields, detail.oldIndex, this.fields, detail.newIndex));
         this.changed();
-        this.render();
+        setTimeout(() => {
+            this.render();
+            if (detail.cause !== 'pointer') {
+                focusHandle([...this.listTarget.children].find((node) => node.field === moved));
+            }
+        });
     }
 
     render() {
@@ -80,19 +113,9 @@ export default class extends Controller {
         }
 
         this.listTarget.replaceChildren(...this.fields.map((field, index) => this.renderField(field, index)));
-        this.sortable = Sortable.create(this.listTarget, {
-            handle: '.form-field__handle',
-            animation: 150,
-            onEnd: (event) => {
-                if (event.oldIndex === event.newIndex) {
-                    return;
-                }
-                const [moved] = this.fields.splice(event.oldIndex, 1);
-                this.fields.splice(event.newIndex, 0, moved);
-                this.changed();
-                setTimeout(() => this.render());
-            },
-        });
+        this.listTarget.setAttribute('aria-label', this.i18n.list);
+        this.sortable = createDragList(this.listTarget, { group: 'form-fields' });
+
     }
 
     renderField(field, index) {
@@ -130,14 +153,16 @@ export default class extends Controller {
             },
         });
 
-        const node = el('div', { class: 'form-field' },
+        const node = el('div', { class: 'form-field', 'data-dnd-item': true, 'data-dnd-label': field.label || this.i18n[`type_${field.type}`] },
             el('div', { class: 'form-field__header' },
-                el('span', { class: 'form-field__handle', title: this.i18n.drag, 'aria-hidden': 'true' }, icon('grip')),
+                handle(field.label || this.i18n[`type_${field.type}`]),
                 el('span', { class: 'form-field__type', text: this.i18n[`type_${field.type}`] }),
-                button(this.i18n.move_up, 'up', () => this.move(index, -1), index === 0),
-                button(this.i18n.move_down, 'down', () => this.move(index, 1), index === this.fields.length - 1),
                 button(this.i18n.delete, 'trash', () => {
                     this.fields.splice(index, 1);
+                    this.record({
+                        undo: () => this.fields.splice(Math.min(index, this.fields.length), 0, field),
+                        redo: () => this.fields.splice(this.fields.indexOf(field), 1),
+                    });
                     this.changed();
                     this.render();
                 }),
@@ -146,6 +171,7 @@ export default class extends Controller {
             field.type === 'select' ? this.renderOptions(field) : null,
             el('label', { class: 'check' }, required, el('span', { text: this.i18n.required })),
         );
+        node.field = field;
 
         return node;
     }

@@ -56,6 +56,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 - Clean, responsive default theme in plain CSS – no build step, no Node.js
 - Semantic HTML, accessible navigation, `sitemap.xml`, `robots.txt`, friendly 404 page
+- [Drag and drop](docs/drag-and-drop.md) as the way to arrange things, the same on every screen: mouse, touch and keyboard, a move menu on every handle, undo and redo, screen reader announcements
 - Dark mode in the admin area: follows the setting of the device and can be switched by hand with *Appearance* at the bottom of the sidebar (like the device, light, dark). The choice is remembered in the browser.
 - [Image editing](docs/images.md) in the browser: crop, rotate and a focal point that stays visible wherever an image is cut to another shape
 - [Activity log](docs/activity-log.md) for administrators: who changed what and when, filterable by person and content
@@ -295,7 +296,7 @@ themes/             Public themes: manifest, templates and stylesheets
 translations/       Interface texts (English and German)
 tests/Functional/   Functional tests
 examples/           Example extension (a block type in its own bundle)
-docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
+docs/               Guides: installation, two-step login, the review workflow, the activity log, image editing, drag and drop, the editor, forms, redirects, SEO, search, themes, the read API, export and import, extensions, multilingual websites
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to report bugs and propose changes, and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

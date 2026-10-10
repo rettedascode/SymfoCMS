@@ -234,7 +234,7 @@ final class FormTest extends AppWebTestCase
 
         $author = $this->loginAs(UserRole::Author);
         $post = $this->createPost('Mine', author: $author);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
 
         foreach (['/admin/forms', '/admin/forms/new', '/admin/forms/'.$form->getId().'/edit', '/admin/forms/'.$form->getId().'/submissions', '/admin/forms/submissions/'.$submission->getId(), '/admin/forms/'.$form->getId().'/export.csv'] as $url) {
             $this->client->request('GET', $url);

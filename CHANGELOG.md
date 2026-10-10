@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- One shared drag-and-drop layer for the whole admin area (see `docs/drag-and-drop.md`): handles on every movable item, a preview and a marked landing spot, a "not allowed" state, automatic scrolling, touch support, moving with the keyboard (Space, arrow keys, Escape) with screen reader announcements, and a menu with "Move up", "Move down" and "Move to …".
+- Undo and redo (Ctrl+Z, Ctrl+Shift+Z) for structural changes in the page editor, the menu editor and the form builder.
+- Upload progress and clear messages for files that are too large or of the wrong type when dropping files into the media library.
 - Dark mode for the admin area. It follows the system setting; the "Appearance" switch in the sidebar chooses light or dark by hand and is remembered per browser.
 - Image editing in the media library: crop (with fixed shapes), rotate and restore the upload. A focal point per image keeps the important spot visible in galleries, post cards and the new 1200 x 630 version used when a link is shared (see `docs/images.md`).
 - Activity log for administrators: who created, changed, published or deleted what and when, plus logins, filterable by person and content. Only the names of changed fields are stored, never values (see `docs/activity-log.md`).
@@ -66,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Blocks, menu entries and form fields are moved through the shared drag-and-drop layer. The separate "move up", "move down", "indent" and "outdent" buttons were replaced by the menu on the handle.
 - Name and tagline of the website are edited under "Settings". `APP_SITE_NAME` and `APP_SITE_TAGLINE` remain the defaults.
 - The public templates and stylesheet moved from `templates/site/` and `assets/styles/site.css` to `themes/default/`. Template names such as `site/page.html.twig` are unchanged.
 - Web addresses of pages, posts and categories only have to be unique within one language.

@@ -876,3 +876,43 @@ appearance.auto: Wie das Gerät
 appearance.light: Hell
 appearance.dark: Dunkel
 appearance.hint: Zwischen hell und dunkel wechseln
+
+dnd.handle: '%item% verschieben'
+dnd.handle_hint: 'Zum Verschieben ziehen. Klicken für weitere Möglichkeiten. Mit der Tastatur: Leertaste zum Aufnehmen, Pfeiltasten zum Bewegen, Leertaste zum Ablegen, Escape zum Abbrechen.'
+dnd.menu: '%item% verschieben'
+dnd.move_up: Nach oben
+dnd.move_down: Nach unten
+dnd.move_to: Verschieben nach …
+dnd.destination: Ziel
+dnd.move: Verschieben
+dnd.cancel: Abbrechen
+dnd.current: (jetzt)
+dnd.position: 'Position %position% von %total%.'
+dnd.position_in: 'Position %position% von %total% in %list%.'
+dnd.position_number: 'Position %position%'
+dnd.grabbed: '%item% aufgenommen.'
+dnd.instructions: Mit den Pfeiltasten bewegen, mit der Leertaste ablegen, mit Escape zurücklegen.
+dnd.dropped: '%item% abgelegt.'
+dnd.moved: '%item% verschoben.'
+dnd.cancelled: 'Verschieben abgebrochen. %item% ist wieder am alten Platz.'
+dnd.edge: In diese Richtung geht es nicht weiter.
+dnd.undone: Rückgängig gemacht.
+dnd.redone: Wiederhergestellt.
+dnd.undo: Rückgängig
+dnd.saved: Verschoben.
+dnd.save_failed: Die Änderung konnte nicht gespeichert werden. Sie wurde zurückgenommen.
+dnd.uploading: '%name% wird hochgeladen (%current% von %total%) …'
+dnd.upload_failed: Das Hochladen ist fehlgeschlagen.
+dnd.file_too_large: '%name% ist zu groß. Die Grenze liegt bei %limit% MB.'
+dnd.file_wrong_type: '%name% ist kein Bild, das hier verwendet werden kann (JPEG, PNG, GIF oder WebP).'
+dnd.error.into_itself: Etwas kann nicht in sich selbst oder in einen eigenen Unterpunkt verschoben werden.
+dnd.error.too_deep: Das wäre zu tief verschachtelt.
+dnd.error.wrong_parent: Das Ziel gibt es nicht mehr. Bitte laden Sie die Seite neu.
+dnd.error.not_allowed: Sie dürfen das nicht verschieben.
+editor.list_page: Blöcke der Seite
+editor.list_column: Blöcke der Spalte
+editor.drop_here: Block hier ablegen
+menu.js.list_top: Oberste Ebene des Menüs
+menu.js.list_inside: 'Unterpunkte von „%title%“'
+menu.js.drop_sub_item: Hier ablegen, um einen Unterpunkt zu erstellen
+form.js.list: Felder des Formulars

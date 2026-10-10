@@ -1,3 +1,4 @@
+import { watchFileDrops } from './dnd.js';
 import { el, format } from './dom.js';
 import { icon } from './icons.js';
 import { imageFiles, uploadFiles } from './upload.js';
@@ -118,17 +119,17 @@ export function openMediaPicker({ listUrl, uploadUrl, csrf, i18n, multiple = fal
             upload(imageFiles(fileInput.files));
             fileInput.value = '';
         });
-        dialog.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            dropzone.classList.add('is-dragover');
-        });
-        dialog.addEventListener('dragleave', () => dropzone.classList.remove('is-dragover'));
-        dialog.addEventListener('drop', (event) => {
-            event.preventDefault();
-            dropzone.classList.remove('is-dragover');
-            upload(imageFiles(event.dataTransfer.files));
+        // Files dropped anywhere on the dialog are uploaded, like everywhere else in the admin area.
+        const stopWatching = watchFileDrops(dialog, {
+            onOver: (over) => dropzone.classList.toggle('is-dragover', over),
+            onFiles: (files, event) => {
+                // The page behind the dialog may accept dropped files too; this drop belongs to the dialog.
+                event.stopPropagation();
+                upload(imageFiles(files));
+            },
         });
         dialog.addEventListener('close', () => {
+            stopWatching();
             dialog.remove();
             resolve(chosen);
         });

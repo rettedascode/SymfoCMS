@@ -53,11 +53,8 @@
 
 .block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); min-width: 0; }
 .block:focus-within { border-color: var(--accent); }
-.block--ghost { opacity: .4; }
 
 .block__header { display: flex; align-items: center; gap: .5rem; padding: .3rem .4rem .3rem .2rem; border-bottom: 1px solid var(--border); background: var(--subtle-2); border-radius: var(--radius) var(--radius) 0 0; }
-.block__handle { cursor: grab; color: var(--muted); padding: .55rem .4rem; touch-action: none; user-select: none; }
-.block__handle:active { cursor: grabbing; }
 .block__icon { display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: .9rem; }
 .block__type { font-weight: 600; font-size: .92rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .block__actions { display: flex; }
@@ -132,12 +129,6 @@
 .image-field__actions { display: flex; gap: .4rem; flex-wrap: wrap; }
 .image-field--empty { display: block; }
 
-.toast {
-    position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); z-index: 60;
-    display: flex; gap: 1rem; align-items: center; padding: .75rem 1.1rem;
-    background: #1b2130; color: #fff; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0, 0, 0, .3);
-}
-.toast .link-button { color: #a9bcff; font-weight: 600; text-decoration: underline; }
 
 /* ---------- Tablets: one column, switch between editing and preview ---------- */
 
@@ -163,3 +154,6 @@
 .editor__errors .field__errors { margin: 0; color: inherit; }
 
 .editor__notice { margin: 1rem 1.5rem 0; }
+
+/* Blocks scrolled into view (keyboard moves, new blocks) stay clear of the sticky bar. */
+.block { scroll-margin-top: 5rem; }

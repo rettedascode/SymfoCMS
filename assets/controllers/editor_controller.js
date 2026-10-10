@@ -1,12 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
-import Sortable from 'sortablejs';
 import { renderField } from '../lib/block_fields.js';
+import { announce, createDragList, focusHandle, handle, hideToast, t, toast } from '../lib/dnd.js';
 import { el, format } from '../lib/dom.js';
+import { History, moveStep } from '../lib/history.js';
 import { icon } from '../lib/icons.js';
 
 const PREVIEW_DELAY = 350;
 const AUTOSAVE_DELAY = 2500;
-const UNDO_DURATION = 8000;
 
 /*
  * The block editor.
@@ -18,6 +18,10 @@ const UNDO_DURATION = 8000;
  *
  * Structural changes (add, move, duplicate, delete) re-render the list.
  * Typing into a field only updates the data, which keeps the focus in place.
+ *
+ * Blocks are arranged with the shared drag-and-drop layer (lib/dnd.js): every
+ * list of blocks is a drag list of the group "blocks", so blocks travel
+ * between the page and columns. Structural changes can be undone with Ctrl+Z.
  */
 export default class extends Controller {
     static targets = ['form', 'title', 'input', 'list', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
@@ -34,6 +38,7 @@ export default class extends Controller {
         this.errors = Array.isArray(this.config.errors) ? {} : { ...this.config.errors };
         this.lists = new WeakMap();
         this.sortables = [];
+        this.history = new History();
         this.dirty = this.unsavedValue;
         this.submitting = false;
         this.previewRequest = 0;
@@ -65,6 +70,14 @@ export default class extends Controller {
                 cancel?.();
             }
         };
+        // A block that was dragged, carried with the keyboard or moved through the menu.
+        this.onDndMove = (event) => this.blockMoved(event.detail);
+        this.element.addEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys = this.history.bindKeys(document, {
+            onUndo: () => announce(t('undone')),
+            onRedo: () => announce(t('redone')),
+        });
+
         window.addEventListener('beforeunload', this.onBeforeUnload);
         document.addEventListener('click', this.onDocumentClick);
         document.addEventListener('keydown', this.onKeydown);
@@ -74,6 +87,9 @@ export default class extends Controller {
         window.removeEventListener('beforeunload', this.onBeforeUnload);
         document.removeEventListener('click', this.onDocumentClick);
         document.removeEventListener('keydown', this.onKeydown);
+        this.element.removeEventListener('dnd:move', this.onDndMove);
+        this.unbindHistoryKeys();
+        hideToast();
         clearTimeout(this.previewTimer);
         clearTimeout(this.autosaveTimer);
         this.destroySortables();
@@ -284,7 +300,11 @@ export default class extends Controller {
     }
 
     renderList(container, blocks, nested, pathPrefix) {
-        const items = el('div', { class: 'blocks__items' });
+        const items = el('div', {
+            class: 'blocks__items',
+            'aria-label': nested ? this.i18n.list_column : this.i18n.list_page,
+            'data-dnd-empty-hint': this.i18n.drop_here,
+        });
         this.lists.set(items, blocks);
         blocks.forEach((block, index) => items.append(this.renderBlock(block, blocks, index, nested, `${pathPrefix}${index}`)));
 
@@ -302,30 +322,55 @@ export default class extends Controller {
             container.prepend(el('p', { class: 'blocks__empty', text: nested ? this.i18n.empty_column : this.i18n.empty }));
         }
 
-        this.sortables.push(Sortable.create(items, {
+        this.sortables.push(createDragList(items, {
             // One shared group lets blocks travel between the page and columns.
             // Layout blocks (columns) are not allowed inside another column.
-            group: { name: 'blocks', put: (to, from, dragged) => !nested || dragged.dataset.layout !== 'true' },
-            handle: '.block__handle',
-            draggable: '.block',
-            animation: 150,
-            ghostClass: 'block--ghost',
-            onEnd: (event) => {
-                const from = this.lists.get(event.from);
-                const to = this.lists.get(event.to);
-                if (!from || !to || (from === to && event.oldDraggableIndex === event.newDraggableIndex)) {
-                    return;
-                }
-                this.errors = {};
-                const [moved] = from.splice(event.oldDraggableIndex, 1);
-                to.splice(event.newDraggableIndex, 0, moved);
-                // Let Sortable finish its own cleanup before the list is rebuilt.
-                setTimeout(() => {
-                    this.render();
-                    this.changed();
-                });
-            },
+            group: 'blocks',
+            accept: nested ? ':not([data-layout="true"])' : null,
         }));
+    }
+
+    /** The drag-and-drop layer has moved a block on screen: the data follows. */
+    blockMoved(detail) {
+        const from = this.lists.get(detail.from);
+        const to = this.lists.get(detail.to);
+        if (!from || !to) {
+            return;
+        }
+
+        const [moved] = from.splice(detail.oldIndex, 1);
+        to.splice(detail.newIndex, 0, moved);
+        this.record(moveStep(from, detail.oldIndex, to, detail.newIndex));
+        if (detail.cause !== 'pointer') {
+            this.keepFocusOnHandle(moved);
+        }
+        // Let the layer finish its own cleanup before the list is rebuilt.
+        setTimeout(() => this.structureChanged());
+    }
+
+    /** After the next render, focus the handle of the block that was moved. */
+    keepFocusOnHandle(block) {
+        this.focusRequest = () => focusHandle([...this.listTarget.querySelectorAll('.block')].find((candidate) => candidate.block === block));
+    }
+
+    structureChanged() {
+        this.errors = {};
+        this.render();
+        this.changed();
+    }
+
+    /** Remembers a structural change so that Ctrl+Z takes it back and Ctrl+Shift+Z makes it again. */
+    record(step) {
+        this.history.record({
+            undo: () => {
+                step.undo();
+                this.structureChanged();
+            },
+            redo: () => {
+                step.redo();
+                this.structureChanged();
+            },
+        });
     }
 
     renderBlock(block, list, index, nested, path) {
@@ -340,15 +385,13 @@ export default class extends Controller {
             onclick: onClick,
         }, symbol);
 
-        const node = el('section', { class: 'block', 'data-layout': String(type.layout), 'aria-label': type.label });
+        const node = el('section', { class: 'block', 'data-layout': String(type.layout), 'aria-label': type.label, 'data-dnd-item': true, 'data-dnd-label': type.label });
 
         const header = el('header', { class: 'block__header' },
-            el('span', { class: 'block__handle', title: this.i18n.drag, 'aria-hidden': 'true' }, icon('grip')),
+            handle(type.label),
             el('span', { class: 'block__icon', 'aria-hidden': 'true', text: type.icon }),
             el('span', { class: 'block__type', text: type.label }),
             el('span', { class: 'block__actions' },
-                actionButton('up', this.i18n.move_up, icon('up'), () => this.move(list, index, -1), index === 0),
-                actionButton('down', this.i18n.move_down, icon('down'), () => this.move(list, index, 1), index === list.length - 1),
                 el('button', {
                     type: 'button',
                     class: 'icon-button',
@@ -392,48 +435,49 @@ export default class extends Controller {
         };
     }
 
-    move(list, index, delta) {
-        const target = index + delta;
-        if (target < 0 || target >= list.length) {
-            return;
-        }
-        this.errors = {};
-
-        const [block] = list.splice(index, 1);
-        list.splice(target, 0, block);
-        this.keepFocusOn(block, delta < 0 ? 'up' : 'down');
-        this.render();
-        this.changed();
-    }
-
     duplicate(list, index) {
-        this.errors = {};
         const copy = structuredClone(list[index]);
-        list.splice(index + 1, 0, copy);
+        this.addBlock(list, index + 1, copy);
         this.keepFocusOn(copy, 'duplicate');
-        this.render();
-        this.changed();
+        this.structureChanged();
     }
 
     remove(list, index) {
-        this.errors = {};
         const [block] = list.splice(index, 1);
-        this.render();
-        this.changed();
-        this.showUndo(() => {
-            list.splice(Math.min(index, list.length), 0, block);
-            this.render();
-            this.changed();
+        this.record({
+            undo: () => list.splice(Math.min(index, list.length), 0, block),
+            redo: () => list.splice(list.indexOf(block), 1),
         });
+        this.structureChanged();
+        toast(this.i18n.deleted, { actionLabel: this.i18n.undo, onAction: () => this.history.undo() });
     }
 
     insert(list, index, typeName) {
-        this.errors = {};
         const block = this.newBlock(typeName);
-        list.splice(index, 0, block);
+        this.addBlock(list, index, block);
         this.focusNewBlock(block);
-        this.render();
-        this.changed();
+        this.structureChanged();
+
+        return block;
+    }
+
+    /** Swaps one block for another and remembers the step for undo. */
+    replaceBlock(list, index, replacement) {
+        const previous = list[index];
+        list[index] = replacement;
+        this.record({
+            undo: () => { list[list.indexOf(replacement)] = previous; },
+            redo: () => { list[list.indexOf(previous)] = replacement; },
+        });
+    }
+
+    /** Puts a block into a list and remembers the step for undo. */
+    addBlock(list, index, block) {
+        list.splice(index, 0, block);
+        this.record({
+            undo: () => list.splice(list.indexOf(block), 1),
+            redo: () => list.splice(Math.min(index, list.length), 0, block),
+        });
     }
 
     /** After the next render, scroll to the given block and put the cursor into its first field. */
@@ -473,9 +517,8 @@ export default class extends Controller {
                 }
 
                 this.config.sharedBlocks.push(result);
-                list[index] = { type: 'shared', data: { block: result.id } };
-                this.render();
-                this.changed();
+                this.replaceBlock(list, index, { type: 'shared', data: { block: result.id } });
+                this.structureChanged();
             } catch (error) {
                 message.textContent = error.message || this.i18n.picker_error;
                 message.hidden = false;
@@ -592,12 +635,10 @@ export default class extends Controller {
                 return;
             }
 
-            this.errors = {};
             const replacement = this.newBlock(typeName);
-            place.list[place.index] = replacement;
+            this.replaceBlock(place.list, place.index, replacement);
             this.focusNewBlock(replacement);
-            this.render();
-            this.changed();
+            this.structureChanged();
         }, backToText);
     }
 
@@ -629,29 +670,5 @@ export default class extends Controller {
         this.menuCancel = null;
     }
 
-    // ----- Undo after deleting -------------------------------------------
-
-    showUndo(undo) {
-        this.hideUndo();
-        this.toast = el('div', { class: 'toast', role: 'status' },
-            el('span', { text: this.i18n.deleted }),
-            el('button', {
-                type: 'button',
-                class: 'link-button',
-                text: this.i18n.undo,
-                onclick: () => {
-                    this.hideUndo();
-                    undo();
-                },
-            }),
-        );
-        this.element.append(this.toast);
-        this.toastTimer = setTimeout(() => this.hideUndo(), UNDO_DURATION);
-    }
-
-    hideUndo() {
-        clearTimeout(this.toastTimer);
-        this.toast?.remove();
-        this.toast = null;
-    }
 }
+

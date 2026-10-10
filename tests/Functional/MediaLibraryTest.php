@@ -12,7 +12,7 @@ final class MediaLibraryTest extends AppWebTestCase
     public function testUploadStoresImageWithUniqueNameAndResizedVersions(): void
     {
         $this->loginAs(UserRole::Editor);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
 
         $this->client->request('POST', '/admin/media/upload', files: ['file' => $this->image(2000, 1000, 'My Holiday Photo.png')], server: ['HTTP_X_CSRF_TOKEN' => $token]);
 
@@ -44,7 +44,7 @@ final class MediaLibraryTest extends AppWebTestCase
     public function testFilesThatAreNotImagesAreRejected(): void
     {
         $this->loginAs(UserRole::Editor);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
 
         $fake = tempnam(sys_get_temp_dir(), 'cms');
         file_put_contents($fake, '<?php echo "not an image";');
@@ -123,7 +123,7 @@ final class MediaLibraryTest extends AppWebTestCase
 
         $author = $this->createUser(UserRole::Author);
         $this->client->loginUser($author);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
 
         // Uploading works and the author owns the result ...
         $this->client->request('POST', '/admin/media/upload', files: ['file' => $this->image(60, 60)], server: ['HTTP_X_CSRF_TOKEN' => $token]);
@@ -170,7 +170,7 @@ final class MediaLibraryTest extends AppWebTestCase
     private function upload(UploadedFile $file): Media
     {
         $this->loginAs(UserRole::Editor);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
         $this->client->request('POST', '/admin/media/upload', files: ['file' => $file], server: ['HTTP_X_CSRF_TOKEN' => $token]);
         self::assertResponseStatusCodeSame(201);
 

@@ -1,0 +1,110 @@
+/*
+ * Looks of the shared drag-and-drop layer (assets/lib/dnd.js). Every screen
+ * that arranges things by dragging uses these classes, so a drag feels and
+ * looks the same everywhere.
+ */
+
+/* ---------- Handle ---------- */
+
+.dnd-handle {
+    display: inline-grid; place-items: center; flex: none;
+    width: 2rem; height: 2.25rem; padding: 0;
+    border: 0; border-radius: 6px; background: none; color: var(--muted);
+    cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.dnd-handle:hover, .dnd-handle[aria-expanded="true"] { background: var(--subtle); color: var(--text); }
+.dnd-handle:active { cursor: grabbing; }
+.dnd-handle[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* ---------- While dragging with a pointer ---------- */
+
+/* The slot in the list that shows where the item will land. */
+.dnd-placeholder {
+    position: relative;
+    outline: 2px dashed var(--accent); outline-offset: -2px;
+    border-radius: var(--radius);
+    background: var(--accent-soft) !important;
+    /* A tall item leaves a gap of moderate height, so the rest of the list stays in view. */
+    max-height: 6rem; overflow: hidden;
+}
+.dnd-placeholder > * { visibility: hidden; }
+
+/* The copy that follows the pointer. */
+.dnd-preview {
+    opacity: .95 !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .28);
+    border-radius: var(--radius);
+    transform: rotate(1.2deg);
+    cursor: grabbing;
+    max-height: 9rem; overflow: hidden;
+}
+
+.dnd-dragging, .dnd-dragging * { cursor: grabbing !important; }
+.dnd-dragging { user-select: none; -webkit-user-select: none; }
+
+/* "Not here": the list that refuses the item, and the cursor. */
+.dnd-not-allowed, .dnd-not-allowed * { cursor: not-allowed !important; }
+.dnd-rejects { outline: 2px solid var(--danger); outline-offset: 2px; border-radius: var(--radius); background-image: repeating-linear-gradient(135deg, transparent 0 10px, var(--danger-soft) 10px 20px); }
+
+/* An empty list still has to be a place to drop things into. */
+.dnd-dragging [data-dnd-empty-hint]:empty, .dnd-carrying [data-dnd-empty-hint]:empty {
+    min-height: 2.75rem;
+    outline: 2px dashed var(--border-strong); outline-offset: -2px; border-radius: var(--radius);
+}
+.dnd-dragging [data-dnd-empty-hint]:empty::before, .dnd-carrying [data-dnd-empty-hint]:empty::before {
+    content: attr(data-dnd-empty-hint); display: block; padding: .6rem .9rem; color: var(--muted); font-size: .9rem;
+}
+
+/* ---------- While carrying with the keyboard ---------- */
+
+.dnd-carried {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+    position: relative; z-index: 2;
+}
+
+/* ---------- Move menu ---------- */
+
+.dnd-menu {
+    position: absolute; z-index: 80;
+    display: grid; gap: 2px; min-width: 12rem; padding: .35rem;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+}
+.dnd-menu__item {
+    display: flex; align-items: center; gap: .6rem; width: 100%;
+    padding: .5rem .65rem; border: 0; border-radius: 6px;
+    background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.dnd-menu__item:hover:not([disabled]), .dnd-menu__item:focus-visible { background: var(--accent-soft); }
+.dnd-menu__item[disabled] { color: var(--muted); opacity: .55; cursor: default; }
+.dnd-menu--destinations { gap: .6rem; padding: .75rem; min-width: 16rem; }
+.dnd-menu__label { display: grid; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.dnd-menu__label select { width: 100%; padding: .45rem .5rem; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--input-bg); color: var(--text); font: inherit; font-weight: 400; }
+.dnd-menu__buttons { display: flex; gap: .4rem; }
+
+/* ---------- Toast ---------- */
+
+.toast {
+    position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 90;
+    display: flex; gap: 1rem; align-items: center; max-width: min(36rem, calc(100vw - 2rem));
+    padding: .75rem 1.1rem;
+    background: #1b2130; color: #fff; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0, 0, 0, .3);
+}
+.toast .link-button { color: #a9bcff; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+.toast--error { background: #7a1c1c; }
+
+/* ---------- Dropping files ---------- */
+
+.is-dragover { outline: 3px dashed var(--accent); outline-offset: -3px; }
+.upload-messages__progress { display: grid; gap: .25rem; }
+.upload-messages__progress progress { width: 100%; height: .5rem; accent-color: var(--accent); }
+
+/* ---------- Less motion for people who ask for it ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .dnd-preview { transform: none; }
+    .dnd-handle, .dnd-menu__item { transition: none; }
+}

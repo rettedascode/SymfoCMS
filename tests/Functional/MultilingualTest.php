@@ -117,7 +117,7 @@ final class MultilingualTest extends AppWebTestCase
         $page = $this->createPage('About', ContentStatus::Published);
 
         $this->loginAs(UserRole::Author);
-        $token = $this->csrfToken('/admin/media', '[data-uploader-csrf-value]', 'data-uploader-csrf-value');
+        $token = $this->csrfToken('/admin/media', '[data-dropzone-csrf-value]', 'data-dropzone-csrf-value');
 
         $this->client->request('POST', '/admin/posts/'.$post->getId().'/translate/de', ['_token' => $token]);
         self::assertResponseStatusCodeSame(403, 'Authors cannot translate posts of other people.');
