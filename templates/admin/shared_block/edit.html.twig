@@ -58,7 +58,15 @@
                             <ul class="palette__list" data-editor-target="palette" data-controller="palette" data-palette-group-value="blocks"
                                 data-action="palette:add->editor#paletteAdd" aria-label="{{ 'editor.palette'|trans }}"></ul>
                         </aside>
-                        <div class="blocks" data-editor-target="list"></div>
+                        <div class="blocks-area__main">
+                            {# All blocks at a glance: jump to one, or arrange them by dragging. Filled by the editor controller. #}
+                            <details class="outline" data-editor-target="outline" data-action="toggle->editor#outlineToggled">
+                                <summary class="outline__summary">{{ 'editor.outline'|trans }}</summary>
+                                <p class="outline__hint">{{ 'editor.outline_hint'|trans }}</p>
+                                <div data-editor-target="outlineBody"></div>
+                            </details>
+                            <div class="blocks" data-editor-target="list"></div>
+                        </div>
                     </div>
                 <noscript><p class="flash flash--error">{{ 'editor.needs_javascript'|trans }}</p></noscript>
             </div>

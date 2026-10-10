@@ -1,4 +1,8 @@
-<div class="block block-columns">
-    <div class="block-columns__column">{{ render_blocks(data.left) }}</div>
-    <div class="block-columns__column">{{ render_blocks(data.right) }}</div>
+{# The middle column only exists when it holds blocks. Widths are twelfths ("4-8"); they only count when there is one per column. #}
+{% set columns = data.middle|default([]) is empty ? [data.left, data.right] : [data.left, data.middle, data.right] %}
+{% set widths = data.widths|default('')|split('-') %}
+<div class="block block-columns block-columns--{{ columns|length }}"{% if widths|length == columns|length %} style="--columns: {{ widths|map(width => 'minmax(0, ' ~ width ~ 'fr)')|join(' ') }}"{% endif %}>
+    {% for column in columns %}
+        <div class="block-columns__column">{{ render_blocks(column) }}</div>
+    {% endfor %}
 </div>

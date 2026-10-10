@@ -107,6 +107,10 @@ final class AppFixtures extends Fixture
                         ['type' => 'heading', 'data' => ['text' => 'Write', 'level' => '3']],
                         ['type' => 'text', 'data' => ['content' => '<p>Type your text, make it <strong>bold</strong> or <em>italic</em>, add links and lists. You never have to look at code.</p>']],
                     ],
+                    'middle' => [
+                        ['type' => 'heading', 'data' => ['text' => 'Arrange', 'level' => '3']],
+                        ['type' => 'text', 'data' => ['content' => '<p>Drag a block onto the edge of another one and they stand side by side. The line between columns changes their widths.</p>']],
+                    ],
                     'right' => [
                         ['type' => 'heading', 'data' => ['text' => 'Preview', 'level' => '3']],
                         ['type' => 'text', 'data' => ['content' => '<p>The live preview next to the editor shows the page exactly as visitors will see it, while you type.</p>']],

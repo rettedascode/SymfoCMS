@@ -8,6 +8,18 @@ import { icon } from '../lib/icons.js';
 
 const PREVIEW_DELAY = 350;
 const AUTOSAVE_DELAY = 2500;
+/** Column widths are counted in parts of this many (see App\Block\Type\ColumnsBlock). */
+const GRID = 12;
+
+/** Several steps that are taken back and made again as one. */
+function compose(steps) {
+    const taken = steps.filter(Boolean);
+
+    return {
+        undo: () => [...taken].reverse().forEach((step) => step.undo()),
+        redo: () => taken.forEach((step) => step.redo()),
+    };
+}
 
 /*
  * The block editor.
@@ -23,9 +35,13 @@ const AUTOSAVE_DELAY = 2500;
  * Blocks are arranged with the shared drag-and-drop layer (lib/dnd.js): every
  * list of blocks is a drag list of the group "blocks", so blocks travel
  * between the page and columns. Structural changes can be undone with Ctrl+Z.
+ *
+ * Columns are made by dragging: a block dropped on the left or right edge of
+ * a block on the page lands next to it, and a column that loses its last
+ * block goes away again. The divider between two columns changes their widths.
  */
 export default class extends Controller {
-    static targets = ['form', 'title', 'input', 'list', 'palette', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
+    static targets = ['form', 'title', 'input', 'list', 'palette', 'outline', 'outlineBody', 'preview', 'status', 'restore', 'restoreText', 'tab', 'panel', 'viewButton'];
     static values = { config: Object, unsaved: Boolean };
 
     connect() {
@@ -38,6 +54,10 @@ export default class extends Controller {
         // Problems reported by the server, keyed by "<block path>:<field>". PHP encodes an empty map as [].
         this.errors = Array.isArray(this.config.errors) ? {} : { ...this.config.errors };
         this.lists = new WeakMap();
+        // The drop areas at the edges of blocks: element => { block, side }.
+        this.edges = new WeakMap();
+        // The block type that puts blocks next to each other, if the website has one.
+        this.columnsType = this.config.types.find((type) => type.layout && this.columnFields(type).length > 1) ?? null;
         this.sortables = [];
         this.history = new History();
         this.dirty = this.unsavedValue;
@@ -48,6 +68,7 @@ export default class extends Controller {
             this.restoreAutosave(this.config.autosave);
         }
 
+        this.restoreOutline();
         this.render();
         this.renderPalette();
         this.refreshPreview();
@@ -152,7 +173,10 @@ export default class extends Controller {
         this.setStatus('unsaved');
 
         clearTimeout(this.previewTimer);
-        this.previewTimer = setTimeout(() => this.refreshPreview(), PREVIEW_DELAY);
+        this.previewTimer = setTimeout(() => {
+            this.refreshPreview();
+            this.refreshOutlineTexts();
+        }, PREVIEW_DELAY);
 
         clearTimeout(this.autosaveTimer);
         this.autosaveTimer = setTimeout(() => this.autosave(), AUTOSAVE_DELAY);
@@ -299,6 +323,7 @@ export default class extends Controller {
         this.closeMenu();
         this.destroySortables();
         this.renderList(this.listTarget, this.blocks, false, '');
+        this.renderOutline();
 
         if (this.focusRequest) {
             this.focusRequest();
@@ -342,6 +367,114 @@ export default class extends Controller {
         }));
     }
 
+    // ----- Outline --------------------------------------------------------
+
+    /**
+     * The outline: every block as one line, columns with their blocks below them. A click jumps to
+     * the block; dragging a line moves the block, exactly like dragging the block itself.
+     */
+    renderOutline() {
+        if (!this.hasOutlineBodyTarget) {
+            return;
+        }
+
+        const build = (blocks, nested, label) => {
+            const list = el('ul', { class: 'outline__list', 'aria-label': label, 'data-dnd-empty-hint': this.i18n.drop_here });
+            // The lines stand for the same lists of blocks as the page does, so a move in the outline is a move of the block.
+            this.lists.set(list, blocks);
+            for (const block of blocks) {
+                const type = this.types.get(block.type);
+                const item = el('li', { class: 'outline__item', 'data-dnd-item': true, 'data-dnd-label': type.label, 'data-layout': String(type.layout) },
+                    el('div', { class: 'outline__row' },
+                        handle(type.label),
+                        el('button', { type: 'button', class: 'outline__jump', title: this.i18n.outline_jump, onclick: () => this.jumpTo(block) },
+                            el('span', { class: 'block-menu__icon', 'aria-hidden': 'true', text: type.icon }),
+                            el('span', { class: 'outline__name', text: type.label }),
+                            el('span', { class: 'outline__excerpt', text: this.excerpt(block, type) }),
+                        ),
+                    ),
+                );
+                item.block = block;
+                if (type.layout) {
+                    for (const field of this.activeColumns(block, type)) {
+                        item.append(el('div', { class: 'outline__column' },
+                            el('span', { class: 'outline__column-label', text: field.label }),
+                            build(block.data[field.name], true, field.label),
+                        ));
+                    }
+                }
+                list.append(item);
+            }
+            this.sortables.push(createDragList(list, { group: 'outline', accept: nested ? ':not([data-layout="true"])' : null }));
+
+            return list;
+        };
+
+        this.outlineBodyTarget.replaceChildren(build(this.blocks, false, this.i18n.outline_list));
+    }
+
+    /** A few words of what a block says, so that ten text blocks can be told apart. */
+    excerpt(block, type) {
+        for (const field of type.fields) {
+            const value = block.data[field.name];
+            if (['text', 'textarea', 'richtext'].includes(field.type) && typeof value === 'string' && value.trim() !== '') {
+                const text = field.type === 'richtext' ? new DOMParser().parseFromString(value, 'text/html').body.textContent : value;
+
+                return text.replace(/\s+/g, ' ').trim().slice(0, 60);
+            }
+        }
+
+        return '';
+    }
+
+    /** Typing changes what a block says; the outline follows without being rebuilt. */
+    refreshOutlineTexts() {
+        if (!this.hasOutlineBodyTarget) {
+            return;
+        }
+
+        this.outlineBodyTarget.querySelectorAll('.outline__item').forEach((item) => {
+            const text = item.querySelector(':scope > .outline__row .outline__excerpt');
+            const excerpt = this.excerpt(item.block, this.types.get(item.block.type));
+            if (text.textContent !== excerpt) {
+                text.textContent = excerpt;
+            }
+        });
+    }
+
+    /** Scrolls to a block of the page and puts the focus on its handle. */
+    jumpTo(block) {
+        const node = [...this.listTarget.querySelectorAll('.block')].find((candidate) => candidate.block === block);
+        if (!node) {
+            return;
+        }
+
+        node.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        node.querySelector('[data-dnd-handle]')?.focus({ preventScroll: true });
+        node.classList.add('block--found');
+        setTimeout(() => node.classList.remove('block--found'), 1200);
+    }
+
+    /** Whether the outline is open is remembered in the browser. */
+    outlineToggled() {
+        try {
+            localStorage.setItem('symfocms-outline', this.outlineTarget.open ? 'open' : 'closed');
+        } catch {
+            // Without storage the outline simply starts closed next time.
+        }
+    }
+
+    restoreOutline() {
+        if (!this.hasOutlineTarget) {
+            return;
+        }
+        try {
+            this.outlineTarget.open = localStorage.getItem('symfocms-outline') === 'open';
+        } catch {
+            // See outlineToggled().
+        }
+    }
+
     // ----- Palette -------------------------------------------------------
 
     /** The block types as things to drag into the page (see palette_controller.js). */
@@ -374,7 +507,16 @@ export default class extends Controller {
     /** A block type was dropped somewhere in the page or in a column. */
     paletteDropped(detail) {
         const list = this.lists.get(detail.to);
+        const edge = this.edges.get(detail.to);
         const typeName = detail.source.dataset.paletteType;
+        if (edge && this.types.has(typeName)) {
+            const block = this.newBlock(typeName);
+            this.record(this.putBeside(edge.block, block, edge.side));
+            this.focusNewBlock(block);
+            this.structureChanged();
+
+            return;
+        }
         if (!list || !this.types.has(typeName)) {
             return;
         }
@@ -489,23 +631,36 @@ export default class extends Controller {
     blockMoved(detail) {
         const from = this.lists.get(detail.from);
         const to = this.lists.get(detail.to);
-        if (!from || !to) {
+        const edge = this.edges.get(detail.to);
+        if (!from || (!to && !edge)) {
             return;
         }
 
-        const [moved] = from.splice(detail.oldIndex, 1);
-        to.splice(detail.newIndex, 0, moved);
-        this.record(moveStep(from, detail.oldIndex, to, detail.newIndex));
+        const steps = [];
+        let moved;
+        if (edge) {
+            // Dropped on the edge of a block: it becomes a column next to that block.
+            const taken = this.takeOut(from, detail.oldIndex);
+            moved = taken.block;
+            steps.push(taken, this.putBeside(edge.block, moved, edge.side));
+        } else {
+            [moved] = from.splice(detail.oldIndex, 1);
+            to.splice(detail.newIndex, 0, moved);
+            steps.push(moveStep(from, detail.oldIndex, to, detail.newIndex));
+        }
+        steps.push(this.leaveColumn(from, to ?? null));
+        this.record(compose(steps));
         if (detail.cause !== 'pointer') {
-            this.keepFocusOnHandle(moved);
+            // The focus stays where the block was moved: in the outline or in the page.
+            this.keepFocusOnHandle(moved, this.hasOutlineBodyTarget && this.outlineBodyTarget.contains(detail.to) ? this.outlineBodyTarget : this.listTarget);
         }
         // Let the layer finish its own cleanup before the list is rebuilt.
         setTimeout(() => this.structureChanged());
     }
 
     /** After the next render, focus the handle of the block that was moved. */
-    keepFocusOnHandle(block) {
-        this.focusRequest = () => focusHandle([...this.listTarget.querySelectorAll('.block')].find((candidate) => candidate.block === block));
+    keepFocusOnHandle(block, root = this.listTarget) {
+        this.focusRequest = () => focusHandle([...root.querySelectorAll('[data-dnd-item]')].find((candidate) => candidate.block === block));
     }
 
     structureChanged() {
@@ -565,9 +720,13 @@ export default class extends Controller {
             ),
         );
 
-        const body = el('div', { class: type.layout ? 'block__body block__body--layout' : 'block__body' });
-        for (const field of type.fields) {
-            body.append(renderField(this, block, field, path));
+        const body = el('div', { class: 'block__body' });
+        if (type.layout) {
+            this.renderColumns(body, block, type, path);
+        } else {
+            for (const field of type.fields) {
+                body.append(renderField(this, block, field, path));
+            }
         }
         if (type.fields.length === 0) {
             body.hidden = true;
@@ -575,8 +734,295 @@ export default class extends Controller {
 
         node.append(header, body);
         node.block = block;
+        if (!nested) {
+            this.addEdges(node, block, type);
+        }
 
         return node;
+    }
+
+    // ----- Columns --------------------------------------------------------
+
+    /** The fields of a layout block that hold blocks: its columns, from left to right. */
+    columnFields(type) {
+        return type.fields.filter((field) => field.type === 'blocks');
+    }
+
+    /** The columns that are shown: the outer two always, the ones in between only while they hold blocks. */
+    activeColumns(block, type) {
+        const fields = this.columnFields(type);
+        fields.forEach((field) => {
+            if (!Array.isArray(block.data[field.name])) {
+                block.data[field.name] = [];
+            }
+        });
+
+        return fields.filter((field, index) => index === 0 || index === fields.length - 1 || block.data[field.name].length > 0);
+    }
+
+    /** The ways the width can be shared, as the server accepts them ("4-8"); empty for layouts without widths. */
+    widthChoices(type) {
+        return new Set((type.fields.find((field) => field.name === 'widths')?.options ?? []).map((option) => option.value));
+    }
+
+    /** The share of every column in parts of GRID. Without a stored choice that fits, all are equally wide. */
+    columnWidths(block, type, count) {
+        const stored = String(block.data.widths ?? '');
+        if (stored.split('-').length === count && this.widthChoices(type).has(stored)) {
+            return stored.split('-').map(Number);
+        }
+
+        return Array(count).fill(GRID / count);
+    }
+
+    widthsText(widths, index) {
+        const percent = (parts) => String(Math.round((parts / GRID) * 100));
+
+        return format(this.i18n.column_widths, { left: percent(widths[index]), right: percent(widths[index + 1]) });
+    }
+
+    /** Shows the widths in the editor and tells the dividers what they stand at. */
+    applyWidths(grid, widths) {
+        grid.style.setProperty('--columns', widths.map((parts) => `minmax(0, ${parts}fr)`).join(' auto '));
+        grid.querySelectorAll(':scope > .columns__divider').forEach((divider, index) => {
+            divider.setAttribute('aria-valuenow', String(Math.round((widths[index] / GRID) * 100)));
+            divider.setAttribute('aria-valuetext', this.widthsText(widths, index));
+            divider.dataset.widths = this.widthsText(widths, index);
+        });
+    }
+
+    renderColumns(body, block, type, path) {
+        for (const field of type.fields) {
+            if (field.type !== 'blocks' && field.name !== 'widths') {
+                body.append(renderField(this, block, field, path));
+            }
+        }
+
+        const active = this.activeColumns(block, type);
+        const resizable = this.widthChoices(type).size > 0;
+        const grid = el('div', { class: 'columns' });
+        active.forEach((field, index) => {
+            if (index > 0) {
+                grid.append(resizable ? this.renderDivider(grid, block, type, index - 1, active.length) : el('div', { class: 'columns__gap' }));
+            }
+            grid.append(renderField(this, block, field, path));
+        });
+        this.applyWidths(grid, this.columnWidths(block, type, active.length));
+        body.append(grid);
+    }
+
+    /**
+     * The line between two columns. Dragging it (or the left and right arrow keys) moves width from
+     * one column to the other, in steps of a twelfth; a double click makes all columns equally wide.
+     */
+    renderDivider(grid, block, type, index, count) {
+        const choices = this.widthChoices(type);
+        const divider = el('div', {
+            class: 'columns__divider',
+            role: 'separator',
+            tabindex: '0',
+            'aria-orientation': 'vertical',
+            'aria-label': this.i18n.column_divider,
+            'aria-valuemin': '0',
+            'aria-valuemax': '100',
+            title: this.i18n.column_divider_hint,
+        });
+
+        // Moves "delta" parts from the column on the right to the one on the left, as far as the choices allow.
+        const shifted = (base, delta) => {
+            for (let step = delta; step !== 0; step -= Math.sign(step)) {
+                const next = [...base];
+                next[index] += step;
+                next[index + 1] -= step;
+                if (choices.has(next.join('-'))) {
+                    return next;
+                }
+            }
+
+            return base;
+        };
+        const store = (widths) => {
+            const before = block.data.widths ?? '';
+            const after = widths.join('-');
+            if (after === (before === '' ? this.columnWidths(block, type, count).join('-') : before)) {
+                return;
+            }
+
+            block.data.widths = after;
+            this.record({
+                undo: () => { block.data.widths = before; },
+                redo: () => { block.data.widths = after; },
+            });
+            this.changed();
+            announce(this.widthsText(widths, index));
+        };
+
+        divider.addEventListener('pointerdown', (event) => {
+            if (event.pointerType === 'mouse' && event.button !== 0) {
+                return;
+            }
+
+            event.preventDefault();
+            divider.focus({ preventScroll: true });
+            const start = this.columnWidths(block, type, count);
+            const unit = grid.getBoundingClientRect().width / GRID;
+            let widths = start;
+
+            const move = (moveEvent) => {
+                widths = shifted(start, Math.round((moveEvent.clientX - event.clientX) / unit));
+                this.applyWidths(grid, widths);
+            };
+            const finish = () => {
+                divider.removeEventListener('pointermove', move);
+                divider.removeEventListener('pointerup', finish);
+                divider.removeEventListener('pointercancel', finish);
+                divider.classList.remove('is-dragging');
+                store(widths);
+            };
+
+            divider.setPointerCapture?.(event.pointerId);
+            divider.classList.add('is-dragging');
+            divider.addEventListener('pointermove', move);
+            divider.addEventListener('pointerup', finish);
+            divider.addEventListener('pointercancel', finish);
+        });
+
+        divider.addEventListener('keydown', (event) => {
+            const delta = { ArrowLeft: -1, ArrowRight: 1, Home: -GRID, End: GRID }[event.key];
+            if (delta === undefined) {
+                return;
+            }
+
+            event.preventDefault();
+            const widths = shifted(this.columnWidths(block, type, count), delta);
+            this.applyWidths(grid, widths);
+            store(widths);
+        });
+
+        divider.addEventListener('dblclick', () => {
+            const widths = Array(count).fill(GRID / count);
+            this.applyWidths(grid, widths);
+            store(widths);
+        });
+
+        return divider;
+    }
+
+    /**
+     * Drop areas at the left and right edge of a block on the page. What is dropped there
+     * becomes a column next to the block - as long as there is room for another column.
+     */
+    addEdges(node, block, type) {
+        if (!this.columnsType || (type.layout && type !== this.columnsType)) {
+            return;
+        }
+        if (type.layout && this.activeColumns(block, type).length >= this.columnFields(type).length) {
+            return;
+        }
+
+        for (const side of ['left', 'right']) {
+            const edge = el('div', {
+                class: `block__edge block__edge--${side}`,
+                'aria-label': format(this.i18n[`edge_${side}`], { block: type.label }),
+                'data-dnd-empty-hint': this.i18n.edge_hint,
+            });
+            this.edges.set(edge, { block, side });
+            node.append(edge);
+            // Columns do not hold other columns.
+            this.sortables.push(createDragList(edge, { group: 'blocks', accept: ':not([data-layout="true"])', side, emptyReach: 6 }));
+        }
+    }
+
+    /** The layout block on the page that holds the given list as one of its columns. */
+    ownerOf(list) {
+        return this.blocks.find((block) => {
+            const type = this.types.get(block.type);
+
+            return type?.layout && this.columnFields(type).some((field) => block.data[field.name] === list);
+        }) ?? null;
+    }
+
+    /** Takes a block out of its list. */
+    takeOut(list, index) {
+        const [block] = list.splice(index, 1);
+
+        return {
+            block,
+            undo: () => list.splice(Math.min(index, list.length), 0, block),
+            redo: () => list.splice(list.indexOf(block), 1),
+        };
+    }
+
+    /**
+     * Gives a layout block the given columns, from left to right, with equal widths.
+     * The lists themselves are kept, so earlier steps in the history still find them.
+     */
+    arrangeColumns(block, columns) {
+        const fields = this.columnFields(this.types.get(block.type));
+        const apply = (state) => {
+            fields.forEach((field, index) => { block.data[field.name] = state.columns[index]; });
+            if ('widths' in block.data) {
+                block.data.widths = state.widths;
+            }
+        };
+        const before = { columns: fields.map((field) => block.data[field.name]), widths: block.data.widths };
+        const after = { columns: fields.map(() => []), widths: '' };
+        after.columns[0] = columns[0];
+        after.columns[fields.length - 1] = columns[columns.length - 1];
+        columns.slice(1, -1).forEach((column, index) => { after.columns[index + 1] = column; });
+        apply(after);
+
+        return { undo: () => apply(before), redo: () => apply(after) };
+    }
+
+    /** Puts a block next to a block on the page: as a further column, or by wrapping both in new columns. */
+    putBeside(target, block, side) {
+        const type = this.types.get(target.type);
+        if (type === this.columnsType) {
+            const columns = this.activeColumns(target, type).map((field) => target.data[field.name]);
+
+            return this.arrangeColumns(target, side === 'left' ? [[block], ...columns] : [...columns, [block]]);
+        }
+
+        const wrapper = this.newBlock(this.columnsType.type);
+        this.arrangeColumns(wrapper, side === 'left' ? [[block], [target]] : [[target], [block]]);
+        this.blocks[this.blocks.indexOf(target)] = wrapper;
+
+        return {
+            undo: () => { this.blocks[this.blocks.indexOf(wrapper)] = target; },
+            redo: () => { this.blocks[this.blocks.indexOf(target)] = wrapper; },
+        };
+    }
+
+    /**
+     * A block was dragged out of a column. If that emptied the column, the column goes away;
+     * with a single column left, the layout block dissolves into the blocks it still holds.
+     * Moving blocks between the columns of the same layout block changes nothing.
+     */
+    leaveColumn(from, to) {
+        const owner = this.ownerOf(from);
+        if (!owner || from.length > 0 || this.types.get(owner.type) !== this.columnsType) {
+            return null;
+        }
+
+        const type = this.columnsType;
+        if (to && this.columnFields(type).some((field) => owner.data[field.name] === to)) {
+            return null;
+        }
+
+        const remaining = this.activeColumns(owner, type).map((field) => owner.data[field.name]).filter((column) => column !== from);
+        if (remaining.length > 1) {
+            return this.arrangeColumns(owner, remaining);
+        }
+
+        const index = this.blocks.indexOf(owner);
+        const rest = [...(remaining[0] ?? [])];
+        this.blocks.splice(index, 1, ...rest);
+
+        return {
+            undo: () => this.blocks.splice(rest.length > 0 ? this.blocks.indexOf(rest[0]) : Math.min(index, this.blocks.length), rest.length, owner),
+            redo: () => this.blocks.splice(this.blocks.indexOf(owner), 1, ...rest),
+        };
     }
 
     // ----- Block operations ----------------------------------------------

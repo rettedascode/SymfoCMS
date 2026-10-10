@@ -68,7 +68,7 @@ final class PageEditorDragDropTest extends BrowserTestCase
 
         // Enter on a palette entry adds the block at the end.
         $this->press($this->paletteEntry('Quote'), WebDriverKeys::ENTER);
-        self::assertSame(['Heading', 'Divider', 'Two columns', 'Quote'], $this->blockTypes());
+        self::assertSame(['Heading', 'Divider', 'Columns', 'Quote'], $this->blockTypes());
 
         // Space picks the heading up, the arrow keys carry it, Space drops it.
         $handle = $this->find(self::LIST.' > .block:nth-child(1) [data-dnd-handle]');
@@ -87,15 +87,15 @@ final class PageEditorDragDropTest extends BrowserTestCase
         $this->browser->getKeyboard()->pressKey(WebDriverKeys::SPACE);
         usleep(350_000);
         self::assertStringContainsString('Heading dropped', $this->announcement());
-        self::assertSame(['Divider', 'Two columns', 'Quote'], $this->blockTypes());
-        self::assertSame('Heading', $this->js('return document.querySelector(".block__body--layout .block .block__type").textContent'));
-        self::assertTrue($this->js('return document.activeElement.matches(".block__body--layout .block [data-dnd-handle]")'), 'The focus stays on the handle of the moved block.');
+        self::assertSame(['Divider', 'Columns', 'Quote'], $this->blockTypes());
+        self::assertSame('Heading', $this->js('return document.querySelector(".columns .block .block__type").textContent'));
+        self::assertTrue($this->js('return document.activeElement.matches(".columns .block [data-dnd-handle]")'), 'The focus stays on the handle of the moved block.');
 
         // Escape puts a carried block back.
         $handle = $this->find(self::LIST.' > .block:nth-child(1) [data-dnd-handle]');
         $this->press($handle, WebDriverKeys::SPACE, WebDriverKeys::ARROW_DOWN, WebDriverKeys::ARROW_DOWN, WebDriverKeys::ESCAPE);
         self::assertStringContainsString('Move cancelled', $this->announcement());
-        self::assertSame(['Divider', 'Two columns', 'Quote'], $this->blockTypes());
+        self::assertSame(['Divider', 'Columns', 'Quote'], $this->blockTypes());
 
         // The menu on the handle: "Move down".
         $this->press($this->find(self::LIST.' > .block:nth-child(1) [data-dnd-handle]'), WebDriverKeys::ENTER);
@@ -106,14 +106,14 @@ final class PageEditorDragDropTest extends BrowserTestCase
         $this->js('arguments[0].click()', $this->find('.dnd-menu__item:nth-child(2)'));
         usleep(350_000);
         // Below the divider comes the first column, so the divider lands inside it.
-        self::assertSame(['Two columns', 'Quote'], $this->blockTypes());
+        self::assertSame(['Columns', 'Quote'], $this->blockTypes());
 
         // Ctrl+Z takes the last move back, Ctrl+Shift+Z makes it again.
         $this->js('document.activeElement.blur()');
         $this->shortcut(WebDriverKeys::CONTROL, 'z');
-        self::assertSame(['Divider', 'Two columns', 'Quote'], $this->blockTypes());
+        self::assertSame(['Divider', 'Columns', 'Quote'], $this->blockTypes());
         $this->shortcut(WebDriverKeys::CONTROL, WebDriverKeys::SHIFT, 'z');
-        self::assertSame(['Two columns', 'Quote'], $this->blockTypes());
+        self::assertSame(['Columns', 'Quote'], $this->blockTypes());
         $this->assertNoJavaScriptErrors();
     }
 

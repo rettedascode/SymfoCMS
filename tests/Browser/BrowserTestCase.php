@@ -182,6 +182,47 @@ abstract class BrowserTestCase extends PantherTestCase
     }
 
     /**
+     * Drags one element onto the left or right edge of another.
+     *
+     * On the way other items make room, so what was aimed at is no longer where it was:
+     * like a hand, the pointer is corrected once it is nearly there.
+     */
+    protected function dragToEdge(WebDriverElement $handle, WebDriverElement $target, string $side): void
+    {
+        $this->js('arguments[0].scrollIntoView({block: "center"})', $target);
+        $aim = function () use ($target, $side): array {
+            /** @var array{x: float, y: float, width: float, height: float} $bounds */
+            $bounds = $this->js('const b = arguments[0].getBoundingClientRect(); return {x: b.x, y: b.y, width: b.width, height: b.height};', $target);
+
+            return [
+                (int) round('left' === $side ? $bounds['x'] - 1 : $bounds['x'] + $bounds['width'] + 1),
+                (int) round($bounds['y'] + min($bounds['height'] / 2, 40)),
+            ];
+        };
+
+        $pointer = array_map(static fn (float $value): int => (int) round($value), $this->center($handle));
+        $this->actions()->moveToElement($handle)->clickAndHold()->moveByOffset(4, 6)->perform();
+        $pointer = [$pointer[0] + 4, $pointer[1] + 6];
+
+        foreach ([10, 3, 3] as $steps) {
+            [$x, $y] = $aim();
+            $actions = $this->actions();
+            for ($i = $steps; $i >= 1; --$i) {
+                $dx = (int) round(($x - $pointer[0]) / $i);
+                $dy = (int) round(($y - $pointer[1]) / $i);
+                $actions->moveByOffset($dx, $dy);
+                $pointer = [$pointer[0] + $dx, $pointer[1] + $dy];
+            }
+            // One more nudge, so that the last event arrives after the list has settled.
+            $actions->moveByOffset(0, 1)->moveByOffset(0, -1)->perform();
+            usleep(200_000);
+        }
+
+        $this->actions()->release()->perform();
+        usleep(350_000);
+    }
+
+    /**
      * Presses keys while the given element has the focus.
      */
     protected function press(WebDriverElement $element, string ...$keys): void

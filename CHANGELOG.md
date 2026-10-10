@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Columns by dragging in the page editor: a block dropped on the left or right edge of another block lands next to it, up to three in a row; dragging a block out again removes its column or dissolves the columns. The divider between columns changes their widths in snapping steps, also with the arrow keys. On small screens columns stack.
+- Outline in the page editor: all blocks of the page as a short list to jump to a block or to rearrange a long page by dragging.
 - Page tree: the list of pages is a tree in which a page dragged below another one becomes its child page, with a nested address such as `/about/team`. Siblings are reordered by dragging, collapsed branches are remembered per user, and before the address of a published page changes the admin area asks and then redirects the old addresses of the page and all its child pages (see `docs/page-tree.md`).
 - The read API reports `parent` and `path` for pages; export and import keep the page tree.
 - Form builder with a palette of field types to drag into the form. Fields dragged next to each other share a row (up to three, stacked on small screens), and the choices of a selection field are arranged by dragging.
@@ -75,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The block "Two columns" is now called "Columns". Existing content keeps working unchanged.
 - Blocks, menu entries and form fields are moved through the shared drag-and-drop layer. The separate "move up", "move down", "indent" and "outdent" buttons were replaced by the menu on the handle.
 - Name and tagline of the website are edited under "Settings". `APP_SITE_NAME` and `APP_SITE_TAGLINE` remain the defaults.
 - The public templates and stylesheet moved from `templates/site/` and `assets/styles/site.css` to `themes/default/`. Template names such as `site/page.html.twig` are unchanged.

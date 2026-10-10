@@ -33,6 +33,8 @@ import { icon } from './icons.js';
  */
 
 const ITEM = '[data-dnd-item]';
+/** The list whose height is held while one of its items is dragged: { element, value }. */
+let heldHeight = null;
 const HANDLE = '[data-dnd-handle]';
 
 /** @type {Map<Element, DragList>} */
@@ -136,6 +138,9 @@ export function focusHandle(item) {
  * @param {boolean} [options.clone]  true for a palette: dragging copies instead of moving
  * @param {boolean} [options.put]    false when nothing may be dropped here
  * @param {number}  [options.emptyReach] how close (in pixels) the pointer has to come to the list while it is empty
+ * @param {string}  [options.side]   "left" or "right" for a drop area at the side of an item, such as "make a column
+ *                                    next to this block": the up and down keys pass it by, the left and right keys
+ *                                    lead into it, and "Move to …" lists it
  *
  * @returns {{destroy: function(): void}}
  */
@@ -148,8 +153,9 @@ export function createDragList(element, options = {}) {
 }
 
 class DragList {
-    constructor(element, { group = 'default', accept = null, sort = true, clone = false, put = true, emptyReach = 5 } = {}) {
+    constructor(element, { group = 'default', accept = null, sort = true, clone = false, put = true, emptyReach = 5, side = null } = {}) {
         this.el = element;
+        this.side = side;
         this.group = group;
         this.accept = accept;
         this.clone = clone;
@@ -184,6 +190,10 @@ class DragList {
                 closeMenu();
                 startWatchingPointer(event.item, this.group);
                 document.documentElement.classList.add('dnd-dragging');
+                // The list keeps its height while its item is away in another list: otherwise everything
+                // below would jump up and slide away from under the pointer.
+                heldHeight = { element, value: element.style.minHeight };
+                element.style.minHeight = `${element.offsetHeight}px`;
             },
             onMove: (event) => this.onPointerMove(event),
             onEnd: (event) => this.onPointerEnd(event),
@@ -241,6 +251,10 @@ class DragList {
 
     onPointerEnd(event) {
         document.documentElement.classList.remove('dnd-dragging');
+        if (heldHeight) {
+            heldHeight.element.style.minHeight = heldHeight.value;
+            heldHeight = null;
+        }
         clearRejection();
         // The browser sends a click to the handle after a drag; that must not open the menu.
         suppressClickUntil = Date.now() + 300;
@@ -501,6 +515,11 @@ function slotsFor(item) {
     return slots.filter((slot) => slot.list === own ? own.sortable.option('sort') !== false : true);
 }
 
+/** The slots the up and down keys walk through: areas at the side of an item are left out, unless the item is in one. */
+function walkable(item, slots) {
+    return slots.filter((slot) => !slot.list.side || slot.list.el === item.parentElement);
+}
+
 function currentSlotIndex(item, slots) {
     const next = items(item.parentElement)[indexOf(item) + 1] ?? null;
 
@@ -531,7 +550,7 @@ function startCarry(item, handleElement) {
 
 function carry(step) {
     const { item } = carrying;
-    const slots = slotsFor(item);
+    const slots = walkable(item, slotsFor(item));
     const target = slots[currentSlotIndex(item, slots) + step];
     if (!target) {
         announce(t('edge'));
@@ -542,19 +561,33 @@ function carry(step) {
     moveCarried(target);
 }
 
-/** Right moves the item into the item above it, left moves it out of its parent - where the lists allow it. */
+/**
+ * Right moves the item into the item above it, left moves it out of its parent - where the lists allow it.
+ * Where neither is possible, the keys lead to the drop area at that side of the neighbouring item, if it has one.
+ */
 function carrySideways(inwards) {
     const { item } = carrying;
     const slots = slotsFor(item);
+    const own = registry.get(item.parentElement);
+    const wanted = inwards ? 'right' : 'left';
+    const sideOf = (host) => (host ? slots.find((slot) => slot.list.side === wanted && slot.list.el.closest(ITEM) === host) : null);
     let target = null;
 
-    if (inwards) {
+    if (own?.side) {
+        // Already at one side of an item: the other key leads to its other side.
+        target = own.side === wanted ? null : sideOf(item.parentElement.closest(ITEM));
+    } else if (inwards) {
         const previous = items(item.parentElement)[indexOf(item) - 1];
-        target = previous ? slots.find((slot) => slot.before === null && slot.list.el !== item.parentElement && slot.list.el.closest(ITEM) === previous) : null;
+        target = previous ? slots.find((slot) => !slot.list.side && slot.before === null && slot.list.el !== item.parentElement && slot.list.el.closest(ITEM) === previous) : null;
     } else {
         const parent = item.parentElement.closest(ITEM);
         const after = parent ? items(parent.parentElement)[indexOf(parent) + 1] ?? null : undefined;
         target = parent ? slots.find((slot) => slot.list.el === parent.parentElement && slot.before === after) : null;
+    }
+
+    if (!target && !own?.side) {
+        const siblings = items(item.parentElement);
+        target = sideOf(siblings[indexOf(item) - 1]) ?? sideOf(siblings[indexOf(item) + 1]);
     }
 
     if (!target) {
@@ -617,6 +650,9 @@ function showMenu(item, handleElement) {
 
     const slots = slotsFor(item);
     const current = currentSlotIndex(item, slots);
+    // "Move up" and "Move down" take the same steps as the arrow keys.
+    const steps = walkable(item, slots);
+    const step = currentSlotIndex(item, steps);
     const moveTo = (slot) => {
         const origin = { list: item.parentElement, index: indexOf(item) };
         closeMenu();
@@ -635,8 +671,8 @@ function showMenu(item, handleElement) {
     }, icon(iconName), label);
 
     const element = el('div', { class: 'dnd-menu', role: 'menu', 'aria-label': t('menu', { item: labelOf(item) }) },
-        entry(t('move_up'), 'up', slots[current - 1]),
-        entry(t('move_down'), 'down', slots[current + 1]),
+        entry(t('move_up'), 'up', steps[step - 1]),
+        entry(t('move_down'), 'down', steps[step + 1]),
         entry(t('move_to'), 'right', null, slots.length > 1 ? () => showDestinations(item, handleElement, slots, current, moveTo) : null),
     );
 

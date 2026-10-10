@@ -42,6 +42,7 @@ All of this is one layer, `assets/lib/dnd.js`, wrapped by four Stimulus controll
 - `data-dnd-label` names the item in announcements, `aria-label` on the list names the list in "Move to …".
 - Lists with the same group exchange items. A list inside an item makes a tree.
 - `data-dnd-empty-hint="Drop here"` gives an empty list a visible drop area while something is being moved.
+- A list created with the option `side: 'left'` or `'right'` is a drop area at the side of an item, such as "make a column next to this block" in the editor. The up and down keys pass it by, the left and right keys lead into it, and "Move to …" lists it.
 
 ### Controllers
 

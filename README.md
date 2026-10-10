@@ -22,7 +22,7 @@ Pages and blog posts are built from blocks – headings, text, images, buttons, 
 
 **Block editor**
 
-- Fourteen block types: heading, rich text, image, gallery, video, button, quote, divider, two columns, questions and answers, form, map, code and shared block ([overview](docs/editor.md))
+- Fourteen block types: heading, rich text, image, gallery, video, button, quote, divider, columns, questions and answers, form, map, code and shared block ([overview](docs/editor.md))
 - Privacy by default: videos (YouTube, Vimeo) and maps (OpenStreetMap, no API key) load nothing from third parties until the visitor clicks
 - Add, duplicate and delete blocks; reorder them by drag and drop or with the arrow buttons; undo an accidental delete
 - Slash command: type `/` in an empty text block to pick another block type; the block list is searchable

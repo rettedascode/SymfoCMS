@@ -128,7 +128,7 @@ block.quote.label: Quote
 block.quote.text: Quote
 block.quote.author: Who said it? (optional)
 block.divider.label: Divider
-block.columns.label: Two columns
+block.columns.label: Columns
 block.gallery.label: Gallery
 block.gallery.images: Images
 block.gallery.images_help: Choose several images at once. Use the arrows to change their order.
@@ -911,6 +911,14 @@ dnd.error.too_deep: That would be nested too deeply.
 dnd.error.wrong_parent: The destination does not exist any more. Please reload the page.
 dnd.error.not_allowed: You are not allowed to move this.
 editor.list_page: Blocks of the page
+editor.edge_left: 'Left of “%block%”: new column'
+editor.edge_right: 'Right of “%block%”: new column'
+editor.edge_hint: New column
+editor.column_divider: Width of the columns
+editor.column_divider_hint: Drag to change the widths of the columns. Arrow keys work as well; a double click makes them equally wide.
+editor.column_widths: '%left% % and %right% %'
+block.columns.middle: Middle column
+block.columns.widths: Widths
 editor.list_column: Blocks of the column
 editor.drop_here: Drop a block here
 menu.js.list_top: Top level of the menu
@@ -919,6 +927,10 @@ menu.js.drop_sub_item: Drop here to make a sub-item
 form.js.list: Fields of the form
 
 editor.palette: Blocks
+editor.outline: Outline
+editor.outline_hint: All blocks of the page. Click one to jump to it, or drag it by its handle to move it.
+editor.outline_list: Outline of the page
+editor.outline_jump: Go to this block
 editor.palette_hint: Drag a block into the page, or click it to add it at the end.
 editor.palette_add: 'Add “%type%”: drag it into the page or click to add it at the end'
 editor.palette_added: '“%type%” was added at the end of the page.'
