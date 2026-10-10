@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
+    {{ include('_theme_script.html.twig') }}
     <title>{% block title %}{{ 'admin.title'|trans }}{% endblock %} · {{ site_name }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
     <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
@@ -58,6 +59,7 @@
         <div class="sidebar__footer">
             <a href="{{ path('app_home') }}" target="_blank" rel="noopener">{{ 'nav.view_site'|trans }} ↗</a>
             <a href="{{ path('admin_account') }}" {% if route == 'admin_account' %}aria-current="page"{% endif %}>{{ app.user.name }}</a>
+            {{ include('_theme_switch.html.twig') }}
             <form method="post" action="{{ path('app_logout') }}">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}" data-controller="csrf-protection">
                 <button type="submit" class="link-button">{{ 'nav.logout'|trans }}</button>

@@ -870,3 +870,9 @@ flash.media_changed: Das Bild wurde geändert.
 media.edit_failed: Dieses Bild kann nicht bearbeitet werden.
 media.crop_too_small: Der gewählte Ausschnitt ist zu klein.
 media.editor.save_focus: Fokuspunkt setzen
+
+appearance.label: Darstellung
+appearance.auto: Wie das Gerät
+appearance.light: Hell
+appearance.dark: Dunkel
+appearance.hint: Zwischen hell und dunkel wechseln

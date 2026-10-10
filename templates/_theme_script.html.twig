@@ -1,0 +1,17 @@
+{#
+    Applies the appearance somebody chose with the switch before the page is drawn, so a dark
+    admin area never flashes white. Without a choice nothing is set and the stylesheet follows
+    the system (prefers-color-scheme).
+#}
+<script>
+    (function () {
+        try {
+            var theme = localStorage.getItem('symfocms-admin-theme');
+            if (theme === 'dark' || theme === 'light') {
+                document.documentElement.dataset.theme = theme;
+            }
+        } catch (error) {
+            // Storage can be blocked; the system setting still applies.
+        }
+    })();
+</script>

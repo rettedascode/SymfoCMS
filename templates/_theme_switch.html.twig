@@ -1,0 +1,9 @@
+{# Switch for the appearance of the admin area: like the device, light or dark. See theme_controller.js. #}
+<button type="button" class="theme-switch" data-controller="theme" data-action="theme#next"
+        title="{{ 'appearance.hint'|trans }}"
+        data-theme-auto-value="{{ 'appearance.auto'|trans }}"
+        data-theme-light-value="{{ 'appearance.light'|trans }}"
+        data-theme-dark-value="{{ 'appearance.dark'|trans }}">
+    <span aria-hidden="true">◐</span>
+    <span>{{ 'appearance.label'|trans }}: <span data-theme-target="label">{{ 'appearance.auto'|trans }}</span></span>
+</button>

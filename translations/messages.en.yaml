@@ -871,3 +871,9 @@ flash.media_changed: The image was changed.
 media.edit_failed: This image cannot be edited.
 media.crop_too_small: The chosen part is too small.
 media.editor.save_focus: Set focal point
+
+appearance.label: Appearance
+appearance.auto: Like the device
+appearance.light: Light
+appearance.dark: Dark
+appearance.hint: Switch between light and dark
