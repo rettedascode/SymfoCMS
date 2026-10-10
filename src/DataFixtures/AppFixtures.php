@@ -187,7 +187,8 @@ final class AppFixtures extends Fixture
             ->setSuccessMessage('Thank you! Your message has arrived and we will get back to you soon.')
             ->setFields([
                 ['id' => 'fname0001', 'type' => 'text', 'label' => 'Your name', 'required' => true, 'options' => []],
-                ['id' => 'femail001', 'type' => 'email', 'label' => 'Your email address', 'required' => true, 'options' => []],
+                // "join" places a field next to the one before it: name and email share a row.
+                ['id' => 'femail001', 'type' => 'email', 'label' => 'Your email address', 'required' => true, 'options' => [], 'join' => true],
                 ['id' => 'ftopic001', 'type' => 'select', 'label' => 'What is it about?', 'required' => false, 'options' => ['A question', 'Feedback', 'Something else']],
                 ['id' => 'fmessage1', 'type' => 'textarea', 'label' => 'Your message', 'required' => true, 'options' => []],
                 ['id' => 'fconsent1', 'type' => 'consent', 'label' => 'I agree that my details are stored to answer my request.', 'required' => true, 'options' => []],

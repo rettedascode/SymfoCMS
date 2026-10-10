@@ -183,6 +183,9 @@ p, ul, ol { margin: 0 0 1.25rem; }
 .code-tag { color: #f2a7c3; }
 
 .site-form { display: grid; gap: 1.1rem; }
+.site-form__row { display: grid; gap: 1.1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+.site-form__row--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 640px) { .site-form__row, .site-form__row--3 { grid-template-columns: 1fr; } }
 .site-form label { display: block; font-weight: 600; margin-bottom: .3rem; }
 .site-form input[type="text"], .site-form input[type="email"], .site-form select, .site-form textarea {
     display: block; width: 100%; padding: .6rem .75rem; font: inherit; color: var(--color-text);

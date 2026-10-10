@@ -15,7 +15,10 @@
                 </p>
             {% endif %}
 
-            {% for field in form.fields %}
+            {# Fields that were placed side by side in the form builder share a row; on small screens they stack. #}
+            {% for row in form.rows %}
+            {% if row|length > 1 %}<div class="site-form__row site-form__row--{{ row|length }}">{% endif %}
+            {% for field in row %}
                 {% set name = 'fields[' ~ field.id ~ ']' %}
                 {% set input_id = 'form-' ~ form.id ~ '-' ~ field.id %}
                 {% set error = errors[field.id] ?? null %}
@@ -46,6 +49,8 @@
                     {% endif %}
                     {% if error %}<p class="site-form__error" id="{{ input_id }}-error">{{ error|trans({}, 'validators') }}</p>{% endif %}
                 </div>
+            {% endfor %}
+            {% if row|length > 1 %}</div>{% endif %}
             {% endfor %}
 
             {# Spam protection: people never see or fill this field, bots do. #}

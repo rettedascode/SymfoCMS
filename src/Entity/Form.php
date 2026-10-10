@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FormRepository;
+use App\Service\FormDefinition;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -74,7 +75,7 @@ class Form
     }
 
     /**
-     * @return list<array{id: string, type: string, label: string, required: bool, options: list<string>}>
+     * @return list<array{id: string, type: string, label: string, required: bool, options: list<string>, join?: bool}>
      */
     public function getFields(): array
     {
@@ -82,7 +83,17 @@ class Form
     }
 
     /**
-     * @param list<array{id: string, type: string, label: string, required: bool, options: list<string>}> $fields
+     * The fields as rows: fields that were placed side by side in the form builder share one.
+     *
+     * @return list<list<array<string, mixed>>>
+     */
+    public function getRows(): array
+    {
+        return FormDefinition::rows($this->fields);
+    }
+
+    /**
+     * @param list<array{id: string, type: string, label: string, required: bool, options: list<string>, join?: bool}> $fields
      */
     public function setFields(array $fields): static
     {

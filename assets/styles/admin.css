@@ -396,9 +396,7 @@ dialog.dialog::backdrop { background: rgba(20, 26, 40, .55); }
 
 .form-builder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); gap: 1.5rem; align-items: start; }
 .form-builder__heading { margin: 1.5rem 0 .75rem; }
-.form-builder__list { display: grid; gap: .75rem; margin-bottom: .75rem; }
-.form-builder__buttons { display: flex; flex-wrap: wrap; gap: .4rem; }
-.form-builder__add p { margin-bottom: .6rem; }
+.form-builder__list { display: grid; gap: 0; margin-bottom: .75rem; min-width: 0; }
 .form-field { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: .5rem 1rem 1rem; }
 .form-field__header { display: flex; align-items: center; gap: .25rem; margin: 0 -.5rem .4rem; }
 .form-field__type { flex: 1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
@@ -567,3 +565,30 @@ fieldset.field legend { font-weight: 600; margin-bottom: .35rem; padding: 0; }
 .theme-switch:hover { text-decoration: underline; }
 /* The QR code and the imitation of a search result are pictures of something light: they stay as they are. */
 .seo-preview__result { color-scheme: light; }
+
+/* ---------- Form builder: rows, gaps and choices ---------- */
+
+.form-row { display: grid; gap: .75rem; grid-template-columns: repeat(var(--fields, 1), minmax(0, 1fr)); align-items: start; }
+.form-row--2 { --fields: 2; }
+.form-row--3 { --fields: 3; }
+/* While something is dragged into a row, the newcomer needs a column too. */
+.form-row:has(> .dnd-placeholder:nth-child(2)) { --fields: 2; }
+.form-row:has(> .dnd-placeholder:nth-child(3)), .form-row:has(> :nth-child(3)) { --fields: 3; }
+.form-row > .form-field { min-width: 0; }
+/*
+ * The gaps between rows stay thin, so nothing jumps when a drag starts. A field that comes
+ * close is taken in (see emptyInsertThreshold in lib/dnd.js) and its outline shows the new row.
+ */
+.form-gap { min-height: .75rem; border-radius: var(--radius); }
+.form-gap > .form-field, .form-gap > .palette__item { margin: .4rem 0; }
+.dnd-dragging .form-gap:empty, .dnd-carrying .form-gap:empty { min-height: .75rem; outline: 0; }
+.dnd-dragging .form-gap:empty::before, .dnd-carrying .form-gap:empty::before { content: none; }
+.dnd-dragging .form-gap:empty { background: linear-gradient(var(--border-strong), var(--border-strong)) center / 100% 2px no-repeat; }
+.form-field__options-label { display: block; font-weight: 600; margin-bottom: .3rem; }
+.form-options { list-style: none; margin: 0 0 .5rem; padding: 0; display: grid; gap: .3rem; }
+.form-options__item { display: flex; align-items: center; gap: .25rem; background: var(--surface); border-radius: 6px; }
+.form-options__item input { flex: 1; min-width: 0; }
+
+@media (max-width: 900px) {
+    .form-row, .form-row--2, .form-row--3 { --fields: 1 !important; }
+}

@@ -926,3 +926,15 @@ editor.drop_images: Drop images here
 editor.dropped_image: The image was added as a new block.
 editor.dropped_gallery: The images were added as a gallery.
 dnd.not_allowed: It cannot be dropped there. Nothing was moved.
+
+form.palette: Fields
+form.palette_hint: Drag a field into the form, or click it to add it at the end.
+form.js.palette_add: 'Add “%type%”: drag it into the form or click to add it at the end'
+form.js.added: '“%type%” was added at the end of the form.'
+form.js.list_row: 'Row %number% of the form'
+form.js.list_new_row: A new row
+form.js.drop_new_row: Drop here for a row of its own
+form.js.list_options: 'Choices of “%field%”'
+form.js.option_number: 'Choice %number%'
+form.js.option_add: Add a choice
+form.js.option_delete: Remove this choice

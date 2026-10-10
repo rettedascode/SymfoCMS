@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Form builder with a palette of field types to drag into the form. Fields dragged next to each other share a row (up to three, stacked on small screens), and the choices of a selection field are arranged by dragging.
 - Block palette in the page editor: every block type can be dragged to any position of the page or a column; clicking one still adds it at the end.
 - Image files dropped from the desktop into the editor are uploaded and become an image block at that position, several at once a gallery. Progress is shown in place, and files that are too large or of the wrong type are refused with a clear message.
 - Browser tests with Symfony Panther (`composer test:browser`) for dragging, the keyboard path and file drops.

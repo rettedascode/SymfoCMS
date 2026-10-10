@@ -20,10 +20,15 @@
                 </div>
 
                 <h2 class="form-builder__heading">{{ 'form.fields_heading'|trans }}</h2>
-                <div class="form-builder__list" data-form-builder-target="list"></div>
-                <div class="card form-builder__add">
-                    <p class="muted">{{ 'form.add_field'|trans }}</p>
-                    <div class="form-builder__buttons" data-form-builder-target="add"></div>
+                <div class="form-builder__canvas">
+                    {# Field types to drag into the form; filled by the form builder controller. #}
+                    <aside class="palette" aria-label="{{ 'form.palette'|trans }}">
+                        <h3 class="palette__heading">{{ 'form.palette'|trans }}</h3>
+                        <p class="palette__hint">{{ 'form.palette_hint'|trans }}</p>
+                        <ul class="palette__list" data-form-builder-target="palette" data-controller="palette" data-palette-group-value="form-fields"
+                            data-action="palette:add->form-builder#paletteAdd" aria-label="{{ 'form.palette'|trans }}"></ul>
+                    </aside>
+                    <div class="form-builder__list" data-form-builder-target="list"></div>
                 </div>
             </div>
 

@@ -17,18 +17,22 @@ final class FormDefinition
 
     public const TYPES = [self::TEXT, self::EMAIL, self::TEXTAREA, self::SELECT, self::CHECKBOX, self::CONSENT];
 
+    /** Fields that sit side by side in one row of the form. */
+    public const MAX_PER_ROW = 3;
+
     private const MAX_FIELDS = 30;
     private const MAX_OPTIONS = 50;
 
     /**
      * Turns untrusted builder input into a valid list of fields. Entries that make no sense are dropped.
      *
-     * @return list<array{id: string, type: string, label: string, required: bool, options: list<string>}>
+     * @return list<array{id: string, type: string, label: string, required: bool, options: list<string>, join: bool}>
      */
     public function normalize(mixed $fields): array
     {
         $normalized = [];
         $usedIds = [];
+        $inRow = 0;
 
         foreach (\is_array($fields) ? $fields : [] as $field) {
             if (!\is_array($field) || \count($normalized) >= self::MAX_FIELDS) {
@@ -61,6 +65,10 @@ final class FormDefinition
                 : 'f'.bin2hex(random_bytes(4));
             $usedIds[$id] = true;
 
+            // "join" puts a field next to the one before it. A row never holds more than three.
+            $join = [] !== $normalized && $inRow < self::MAX_PER_ROW && filter_var($field['join'] ?? false, \FILTER_VALIDATE_BOOLEAN);
+            $inRow = $join ? $inRow + 1 : 1;
+
             $normalized[] = [
                 'id' => $id,
                 'type' => $type,
@@ -68,10 +76,33 @@ final class FormDefinition
                 // Consent is only meaningful when it cannot be skipped.
                 'required' => self::CONSENT === $type || filter_var($field['required'] ?? false, \FILTER_VALIDATE_BOOLEAN),
                 'options' => $options,
+                'join' => $join,
             ];
         }
 
         return $normalized;
+    }
+
+    /**
+     * The fields grouped the way the form shows them: one list per row.
+     *
+     * @param list<array<string, mixed>> $fields
+     *
+     * @return list<list<array<string, mixed>>>
+     */
+    public static function rows(array $fields): array
+    {
+        $rows = [];
+        foreach ($fields as $field) {
+            $last = \count($rows) - 1;
+            if (true === ($field['join'] ?? false) && $last >= 0 && \count($rows[$last]) < self::MAX_PER_ROW) {
+                $rows[$last][] = $field;
+            } else {
+                $rows[] = [$field];
+            }
+        }
+
+        return $rows;
     }
 
     private function text(mixed $value, int $maxLength): string

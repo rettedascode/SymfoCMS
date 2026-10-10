@@ -64,3 +64,15 @@ Forms are protected without third-party services, cookies banners or puzzles for
 - `App\Service\FormSubmitter` checks spam, validates, stores and notifies. `App\Service\SpamGuard` holds the honeypot and timing checks.
 - The public markup is `themes/default/templates/site/_form.html.twig`; a theme can restyle it through the `.site-form` classes.
 - Block types of your own can show a form with `Field::form()` and `render_form(data.name)`.
+
+## Arranging the fields by dragging
+
+The form builder has the **field types on the left** and **the form on the right**.
+
+- **Drag** a field type into the form, or **click** it to add it at the end.
+- Move a field by its handle – the six dots. The keyboard and the menu on the handle work as everywhere else, see [drag and drop](drag-and-drop.md). Ctrl+Z takes a change back.
+- **Side by side:** drag a field next to another one and they share a row, for example first name and last name, or postcode and town. A row holds up to three fields; a full row refuses a fourth. On small screens the fields of a row are shown one below the other, on the website as well.
+- **A row of its own:** drop a field on the thin line between two rows.
+- **Choices** of a selection field are single lines with a handle each: drag them into the order visitors should see, add one with *Add a choice* or by pressing Enter in the last one.
+
+For developers: a field that shares the row with the one before it has `"join": true` in the stored list of fields; `Form::getRows()` returns the fields grouped by row, and the public template wraps rows of several fields in `.site-form__row`.

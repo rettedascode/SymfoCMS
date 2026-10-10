@@ -108,3 +108,6 @@
     .dnd-preview { transform: none; }
     .dnd-handle, .dnd-menu__item { transition: none; }
 }
+
+/* Over a list that refuses the item, the landing spot fades: letting go there moves nothing. */
+.dnd-not-allowed .dnd-placeholder { opacity: .3; outline-style: dotted; }

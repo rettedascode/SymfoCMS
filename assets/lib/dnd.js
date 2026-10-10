@@ -44,8 +44,8 @@ let liveRegion = null;
 let activeToast = null;
 let toastTimer = null;
 let suppressClickUntil = 0;
-// True while the pointer is over a list that refuses the dragged item: letting go there cancels the drag.
-let overRejectingList = false;
+// While something is dragged: what it is, and where the pointer was seen last.
+let dragging = null;
 
 export const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
@@ -176,9 +176,12 @@ class DragList {
             bubbleScroll: true,
             scrollSensitivity: 90,
             scrollSpeed: 18,
-            onStart: () => {
+            // An empty list takes an item in as soon as the pointer comes this close (in pixels),
+            // so thin drop areas such as the gaps between the rows of a form are easy to hit.
+            emptyInsertThreshold: 12,
+            onStart: (event) => {
                 closeMenu();
-                overRejectingList = false;
+                startWatchingPointer(event.item, this.group);
                 document.documentElement.classList.add('dnd-dragging');
             },
             onMove: (event) => this.onPointerMove(event),
@@ -227,14 +230,10 @@ class DragList {
 
         if (target && !target.accepts(event.dragged)) {
             // Shows "not here": the list is marked and the cursor changes.
-            event.to.classList.add('dnd-rejects');
-            document.documentElement.classList.add('dnd-not-allowed');
-            overRejectingList = true;
+            markRejection(event.to);
 
             return false;
         }
-
-        overRejectingList = false;
 
         return true;
     }
@@ -244,8 +243,8 @@ class DragList {
         clearRejection();
         // The browser sends a click to the handle after a drag; that must not open the menu.
         suppressClickUntil = Date.now() + 300;
-        const cancelled = overRejectingList;
-        overRejectingList = false;
+        // Let go over a list that refuses the item? Then nothing moves, wherever the item passed on its way.
+        const cancelled = null !== stopWatchingPointer(event.item);
 
         if (cancelled) {
             // Dropped on "not allowed": everything stays as it was, wherever the item passed on its way.
@@ -333,6 +332,69 @@ class DragList {
             showMenu(item, handleElement);
         }
     }
+}
+
+function markRejection(listElement) {
+    listElement.classList.add('dnd-rejects');
+    document.documentElement.classList.add('dnd-not-allowed');
+}
+
+/**
+ * The list under the given point that would refuse the item, or null.
+ * The copy of the item that follows the pointer is looked through.
+ */
+function rejectingListAt(x, y, item, group) {
+    for (const element of document.elementsFromPoint(x, y)) {
+        if (element.closest('.dnd-preview')) {
+            continue;
+        }
+        for (let node = element; node; node = node.parentElement) {
+            const list = registry.get(node);
+            if (list) {
+                // Its own list, and lists that have nothing to do with this drag, never refuse it.
+                return list.group === group && node !== item.parentElement && !list.accepts(item) ? node : null;
+            }
+        }
+
+        return null;
+    }
+
+    return null;
+}
+
+/** Keeps the "not allowed" state in step with the pointer for as long as the drag lasts. */
+function startWatchingPointer(item, group) {
+    const listener = (event) => {
+        const point = event.touches?.[0] ?? event;
+        dragging.x = point.clientX;
+        dragging.y = point.clientY;
+        clearRejection();
+        const rejecting = rejectingListAt(dragging.x, dragging.y, item, group);
+        if (rejecting) {
+            markRejection(rejecting);
+        }
+    };
+    dragging = { x: null, y: null, group, listener };
+    document.addEventListener('pointermove', listener, true);
+    document.addEventListener('mousemove', listener, true);
+    document.addEventListener('touchmove', listener, true);
+}
+
+/**
+ * @returns {Element|null} the refusing list the pointer was over when the drag ended
+ */
+function stopWatchingPointer(item) {
+    if (!dragging) {
+        return null;
+    }
+
+    const { x, y, group, listener } = dragging;
+    document.removeEventListener('pointermove', listener, true);
+    document.removeEventListener('mousemove', listener, true);
+    document.removeEventListener('touchmove', listener, true);
+    dragging = null;
+
+    return x === null ? null : rejectingListAt(x, y, item, group);
 }
 
 function clearRejection() {

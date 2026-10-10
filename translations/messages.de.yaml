@@ -925,3 +925,15 @@ editor.drop_images: Bilder hier ablegen
 editor.dropped_image: Das Bild wurde als neuer Block eingefügt.
 editor.dropped_gallery: Die Bilder wurden als Galerie eingefügt.
 dnd.not_allowed: Dort kann es nicht abgelegt werden. Nichts wurde verschoben.
+
+form.palette: Felder
+form.palette_hint: Ziehen Sie ein Feld in das Formular oder klicken Sie es an, um es am Ende einzufügen.
+form.js.palette_add: '„%type%“ hinzufügen: in das Formular ziehen oder klicken, um am Ende einzufügen'
+form.js.added: '„%type%“ wurde am Ende des Formulars eingefügt.'
+form.js.list_row: 'Zeile %number% des Formulars'
+form.js.list_new_row: Eine neue Zeile
+form.js.drop_new_row: Hier ablegen für eine eigene Zeile
+form.js.list_options: 'Auswahlmöglichkeiten von „%field%“'
+form.js.option_number: 'Auswahl %number%'
+form.js.option_add: Auswahl hinzufügen
+form.js.option_delete: Diese Auswahl entfernen
